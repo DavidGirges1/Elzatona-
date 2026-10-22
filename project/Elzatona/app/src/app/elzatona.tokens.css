@@ -1,0 +1,81 @@
+/* Elzatona / الزتونة — Playful Academic Design Tokens v1.0
+   Import in app/globals.css, or merge into it once. Light mode only for MVP.
+   Never use inline random hex values in screen components. */
+:root {
+  color-scheme: light;
+  /* Background and content */
+  --ez-canvas: #edf3fb;
+  --ez-page: #f6fafd;
+  --ez-surface: #ffffff;
+  --ez-ink: #172533;
+  --ez-ink-muted: #5c6878;
+  --ez-border: #dfe8f1;
+  /* Strong action */
+  --ez-primary: #176b87;
+  --ez-primary-hover: #12556d;
+  --ez-on-primary: #ffffff;
+  /* Pastel surfaces */
+  --ez-sky: #d5edf7;
+  --ez-lavender: #e1e3fa;
+  --ez-pink: #f7ddf4;
+  --ez-sunshine: #fff0c5;
+  --ez-mint: #dff3e1;
+  --ez-peach: #ffe0d2;
+  /* Foreground on pastel */
+  --ez-sky-ink: #185776;
+  --ez-lavender-ink: #453ba2;
+  --ez-pink-ink: #92246c;
+  --ez-sunshine-ink: #815000;
+  --ez-mint-ink: #256642;
+  --ez-peach-ink: #a14927;
+  /* Feedback */
+  --ez-success: #237c4b;
+  --ez-danger: #b9384b;
+  /* Type families: load via next/font/google in app layout */
+  --ez-font-display: var(--font-alexandria, "Alexandria"), sans-serif;
+  --ez-font-body: var(--font-tajawal, "Tajawal"), sans-serif;
+  /* Shape and spacing */
+  --ez-radius-input: 12px;
+  --ez-radius-button: 14px;
+  --ez-radius-icon: 14px;
+  --ez-radius-resource: 18px;
+  --ez-radius-course: 24px;
+  --ez-radius-feature: 28px;
+  --ez-radius-pill: 999px;
+  --ez-space-1: 4px;
+  --ez-space-2: 8px;
+  --ez-space-3: 12px;
+  --ez-space-4: 16px;
+  --ez-space-5: 20px;
+  --ez-space-6: 24px;
+  --ez-space-8: 32px;
+  --ez-space-10: 40px;
+  --ez-space-12: 48px;
+  --ez-shadow-elevated: 0 6px 24px rgba(24, 56, 88, 0.055);
+  --ez-max-content: 1100px;
+  --ez-motion-fast: 150ms;
+}
+
+/* If using shadcn tokens, map them to Elzatona values in one place.
+   Shadcn/Tailwind version-dependent mappings must be adapted to the project's
+   generated globals.css. Example roles (do not duplicate existing vars):
+   --background: var(--ez-page); --foreground: var(--ez-ink);
+   --card: var(--ez-surface); --card-foreground: var(--ez-ink);
+   --primary: var(--ez-primary); --primary-foreground: var(--ez-on-primary);
+   --muted: var(--ez-canvas); --muted-foreground: var(--ez-ink-muted);
+   --border: var(--ez-border); --radius: var(--ez-radius-input);
+*/
+
+:focus-visible {
+  outline: 3px solid var(--ez-primary);
+  outline-offset: 3px;
+}
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

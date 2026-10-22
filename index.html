@@ -1,0 +1,1035 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elzatona — Coming Soon | Gamified Learning Platform</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                    },
+                    colors: {
+                        outerBg: '#CFD6E6',
+                        shellBg: '#F4F9F9',
+                        pastelBlue: '#D3E7EE',
+                        pastelPurple: '#DCDDF8',
+                        pastelPink: '#FAD9F0',
+                        pastelCream: '#FDF4C7',
+                        pastelSky: '#DDF0FF',
+                        pastelGreen: '#A9DF96',
+                        pastelOrange: '#F2C078',
+                        pastelCoral: '#F49797',
+                        brandTeal: '#2C5E7A',
+                        darkInk: '#1A2129',
+                        mutedInk: '#6C7A89',
+                    },
+                    boxShadow: {
+                        'shell': '0 30px 70px -15px rgba(26, 33, 41, 0.16), 0 0 0 1px rgba(255, 255, 255, 0.85) inset',
+                        'card': '0 10px 25px -5px rgba(44, 94, 122, 0.06), 0 4px 10px -2px rgba(44, 94, 122, 0.03)',
+                        'pill': '0 4px 12px rgba(26, 33, 41, 0.05)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        body {
+            background-color: #CFD6E6;
+            color: #1A2129;
+            overflow-x: hidden;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Interactive Background Canvas */
+        #bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* Sunburst effect for the Podium Card (matching reference Leaderboard) */
+        .sunburst-bg {
+            background: repeating-conic-gradient(
+                from 0deg at 50% 60%,
+                rgba(242, 192, 120, 0.14) 0deg 12deg,
+                transparent 12deg 24deg
+            );
+        }
+
+        /* Floating Animation for UI Elements */
+        @keyframes floatSlow {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-8px) rotate(1.5deg); }
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { transform: scale(1); opacity: 0.9; }
+            50% { transform: scale(1.06); opacity: 1; }
+        }
+
+        @keyframes barWave {
+            0%, 100% { transform: scaleY(1); }
+            50% { transform: scaleY(0.75); }
+        }
+
+        .animate-float {
+            animation: floatSlow 5s ease-in-out infinite;
+        }
+
+        .animate-float-delayed {
+            animation: floatSlow 6s ease-in-out 2s infinite;
+        }
+
+        .bar-item {
+            transform-origin: bottom;
+            transition: all 0.3s ease;
+        }
+
+        .bar-item:hover {
+            background-color: #2C5E7A !important;
+            transform: scaleY(1.12);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #CFD6E6;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #2C5E7A;
+            border-radius: 9999px;
+        }
+
+        /* Digit Flip Transition */
+        .timer-digit {
+            font-variant-numeric: tabular-nums;
+            transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .digit-pop {
+            transform: scale(1.09);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-3 sm:p-6 lg:p-10 relative">
+
+    <!-- Cool Interactive Animated Canvas Background -->
+    <canvas id="bg-canvas"></canvas>
+
+    <!-- Floating Reward Toast Notification (No alert() used) -->
+    <div id="reward-toast" class="fixed top-6 right-6 z-50 transform translate-x-[150%] transition-transform duration-500 bg-white/95 backdrop-blur-md border border-white rounded-2xl shadow-2xl px-5 py-4 flex items-center gap-4 max-w-sm">
+        <div class="w-11 h-11 rounded-xl bg-pastelCream flex items-center justify-center text-xl shadow-sm">
+            🎉
+        </div>
+        <div>
+            <div class="flex items-center gap-2">
+                <span class="font-bold text-sm text-darkInk" id="toast-title">Early Bird Reward!</span>
+                <span class="bg-pastelBlue text-brandTeal text-[11px] font-extrabold px-2 py-0.5 rounded-full">+50 💎</span>
+            </div>
+            <p class="text-xs text-mutedInk mt-0.5" id="toast-desc">Added to your Elzatona launch wallet.</p>
+        </div>
+    </div>
+
+    <!-- Main Dashboard Window Shell (Inspired directly by the reference image) -->
+    <main class="relative z-10 w-full max-w-[1280px] bg-shellBg/90 backdrop-blur-xl rounded-[28px] sm:rounded-[36px] shadow-shell border border-white/90 overflow-hidden flex flex-col md:flex-row min-h-[780px]">
+
+        <!-- Left Sidebar Navigation (Matching the clean white vertical bar in the image) -->
+        <aside class="w-full md:w-[84px] bg-white flex md:flex-col items-center justify-between px-6 py-4 md:py-8 border-b md:border-b-0 md:border-r border-slate-100 shrink-0">
+            <!-- Brand Monogram Logo -->
+            <a href="#" onclick="triggerReward('Elzatona Brand', 'The Olive of Knowledge — Launching in 24 Hours!', 15); return false;" class="group flex items-center gap-2 focus:outline-none" title="Elzatona Platform">
+                <div class="w-11 h-11 rounded-2xl bg-darkInk text-white flex items-center justify-center font-extrabold text-lg tracking-tighter shadow-md group-hover:bg-brandTeal transition-colors">
+                    EZ
+                </div>
+            </a>
+
+            <!-- Navigation Icons -->
+            <nav class="flex md:flex-col items-center gap-3 sm:gap-5">
+                <button onclick="switchTab('timer', this)" class="nav-btn w-11 h-11 rounded-full bg-brandTeal text-white flex items-center justify-center shadow-md transition-all hover:scale-105" title="Countdown Dashboard">
+                    <i class="fa-solid fa-house text-sm"></i>
+                </button>
+                <button onclick="switchTab('notes', this)" class="nav-btn w-11 h-11 rounded-full text-mutedInk hover:bg-pastelBlue/50 hover:text-brandTeal flex items-center justify-center transition-all" title="Community-Driven Notes">
+                    <i class="fa-solid fa-file-lines text-sm"></i>
+                </button>
+                <button onclick="switchTab('voting', this)" class="nav-btn w-11 h-11 rounded-full text-mutedInk hover:bg-pastelPurple/60 hover:text-brandTeal flex items-center justify-center transition-all" title="Smart Voting System">
+                    <i class="fa-solid fa-circle-arrow-up text-base"></i>
+                </button>
+                <button onclick="switchTab('prep', this)" class="nav-btn w-11 h-11 rounded-full text-mutedInk hover:bg-pastelCream hover:text-amber-600 flex items-center justify-center transition-all" title="Faster Exam Prep">
+                    <i class="fa-solid fa-bolt text-sm"></i>
+                </button>
+                <button onclick="focusEmailInput()" class="nav-btn hidden sm:flex w-11 h-11 rounded-full text-mutedInk hover:bg-pastelPink/60 hover:text-brandTeal items-center justify-center transition-all relative" title="Join Viber Waitlist">
+                    <i class="fa-brands fa-viber text-sm"></i>
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 absolute top-2.5 right-2.5"></span>
+                </button>
+            </nav>
+
+            <!-- Bottom Action Icons -->
+            <div class="hidden md:flex flex-col items-center gap-4 text-mutedInk">
+                <button onclick="toggleFastForward()" id="speed-btn" class="w-10 h-10 rounded-full hover:bg-slate-100 flex items-center justify-center transition-colors" title="Test Timer Speed">
+                    <i class="fa-solid fa-gear text-sm"></i>
+                </button>
+                <button onclick="resetTimer24h()" class="w-10 h-10 rounded-full hover:bg-slate-100 flex items-center justify-center transition-colors" title="Reset 24h Clock">
+                    <i class="fa-solid fa-rotate-right text-sm"></i>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Dashboard Content Area -->
+        <div class="flex-1 p-5 sm:p-8 lg:p-10 flex flex-col justify-between overflow-y-auto">
+
+            <!-- Top Header Bar (Mirrors "Dashboard" + Gems/Coins pill + Bell with red dot) -->
+            <header class="flex flex-wrap items-center justify-between gap-4 mb-7">
+                <div class="flex items-center gap-3">
+                    <h1 class="text-2xl sm:text-3xl font-extrabold text-darkInk tracking-tight">
+                        Elzatona <span class="font-normal text-mutedInk text-lg sm:text-xl">/ Launchpad</span>
+                    </h1>
+                    <span class="inline-flex items-center gap-1.5 bg-pastelGreen/40 border border-pastelGreen text-emerald-900 text-xs font-bold px-3 py-1 rounded-full">
+                        <span class="w-2 h-2 rounded-full bg-emerald-600 animate-ping"></span>
+                        24H VIBER DROP
+                    </span>
+                </div>
+
+                <!-- Right Gamified Pills (Exact match to top-right of reference image) -->
+                <div class="flex items-center gap-3">
+                    <!-- Interactive Gems & Coins Pill -->
+                    <button onclick="triggerReward('Bonus Stash Collected!', 'You tapped the treasure chest! Keep exploring.', 100)" class="bg-white hover:bg-slate-50 transition-all shadow-pill rounded-full px-4 py-2 flex items-center gap-4 border border-slate-100/80 active:scale-95">
+                        <div class="flex items-center gap-1.5">
+                            <!-- Cyan Diamond SVG -->
+                            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none">
+                                <path d="M6 3H18L22 9L12 21L2 9L6 3Z" fill="#38BDF8"/>
+                                <path d="M12 21L17 9L14 3H10L7 9L12 21Z" fill="#0284C7" fill-opacity="0.4"/>
+                            </svg>
+                            <span id="gem-counter" class="font-extrabold text-xs sm:text-sm text-darkInk">144</span>
+                        </div>
+                        <div class="w-[1px] h-4 bg-slate-200"></div>
+                        <div class="flex items-center gap-1.5">
+                            <!-- Gold Coin SVG -->
+                            <span class="w-4 h-4 rounded-full bg-amber-400 text-amber-900 flex items-center justify-center text-[10px] font-black shadow-inner">$</span>
+                            <span id="coin-counter" class="font-extrabold text-xs sm:text-sm text-darkInk">2,321</span>
+                        </div>
+                    </button>
+
+                    <!-- Notification Bell with Red Dot -->
+                    <button onclick="focusEmailInput()" class="w-10 h-10 rounded-full bg-white shadow-pill border border-slate-100/80 flex items-center justify-center relative hover:scale-105 transition-transform" title="Get Launch Alert">
+                        <i class="fa-regular fa-bell text-darkInk text-sm"></i>
+                        <span class="w-2.5 h-2.5 rounded-full bg-rose-500 border-2 border-white absolute top-1.5 right-2"></span>
+                    </button>
+                </div>
+            </header>
+
+            <!-- 24-HOUR COUNTDOWN ROW (Styled exactly like the 3 Pastel Metric Cards in the reference image) -->
+            <section aria-label="24 Hour Countdown Timer" class="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-5 mb-7">
+                <!-- Card 1: HOURS (Pastel Blue #D3E7EE) -->
+                <div class="bg-pastelBlue rounded-[24px] p-5 sm:p-6 flex flex-col justify-between min-h-[136px] shadow-card relative overflow-hidden group hover:-translate-y-1 transition-all duration-300">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs sm:text-sm font-bold text-darkInk/80">Hours Remaining</span>
+                        <div class="w-8 h-8 rounded-full bg-brandTeal/10 text-brandTeal flex items-center justify-center">
+                            <i class="fa-solid fa-chart-pie text-sm"></i>
+                        </div>
+                    </div>
+                    <div class="flex items-baseline justify-between mt-4">
+                        <div class="flex items-baseline gap-1">
+                            <span id="hours-val" class="timer-digit text-4xl sm:text-5xl font-extrabold text-darkInk tracking-tight">23</span>
+                            <span class="text-lg sm:text-xl font-bold text-darkInk/60">h</span>
+                        </div>
+                        <span class="text-xs font-bold text-brandTeal bg-white/60 px-2.5 py-1 rounded-full">
+                            / 24h cycle
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Card 2: MINUTES (Pastel Lavender #DCDDF8) -->
+                <div class="bg-pastelPurple rounded-[24px] p-5 sm:p-6 flex flex-col justify-between min-h-[136px] shadow-card relative overflow-hidden group hover:-translate-y-1 transition-all duration-300">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs sm:text-sm font-bold text-darkInk/80">Minutes to Launch</span>
+                        <div class="w-8 h-8 rounded-full bg-indigo-950/10 text-indigo-950 flex items-center justify-center">
+                            <i class="fa-solid fa-book-open text-sm"></i>
+                        </div>
+                    </div>
+                    <div class="flex items-baseline justify-between mt-4">
+                        <div class="flex items-baseline gap-1">
+                            <span id="minutes-val" class="timer-digit text-4xl sm:text-5xl font-extrabold text-darkInk tracking-tight">59</span>
+                            <span class="text-lg sm:text-xl font-bold text-darkInk/60">/ 60m</span>
+                        </div>
+                        <span class="text-xs font-bold text-indigo-900 bg-white/60 px-2.5 py-1 rounded-full">
+                            Syncing
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Card 3: SECONDS (Pastel Pink #FAD9F0) -->
+                <div class="bg-pastelPink rounded-[24px] p-5 sm:p-6 flex flex-col justify-between min-h-[136px] shadow-card relative overflow-hidden group hover:-translate-y-1 transition-all duration-300">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs sm:text-sm font-bold text-darkInk/80">Live Seconds</span>
+                        <div class="w-8 h-8 rounded-full bg-fuchsia-950/10 text-fuchsia-950 flex items-center justify-center">
+                            <i class="fa-solid fa-clock text-sm animate-spin" style="animation-duration: 8s;"></i>
+                        </div>
+                    </div>
+                    <div class="flex items-baseline justify-between mt-4">
+                        <div class="flex items-baseline gap-1">
+                            <span id="seconds-val" class="timer-digit text-4xl sm:text-5xl font-extrabold text-darkInk tracking-tight">59</span>
+                            <span id="ms-val" class="text-lg sm:text-xl font-bold text-darkInk/50">/ 60s</span>
+                        </div>
+                        <span class="text-xs font-extrabold text-rose-700 bg-white/70 px-2.5 py-1 rounded-full flex items-center gap-1">
+                            <span class="w-1.5 h-1.5 rounded-full bg-rose-600 animate-ping"></span> LIVE
+                        </span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- CLEAN 3-PILLAR SHOWCASE: What Elzatona Actually Does -->
+            <section class="grid grid-cols-1 lg:grid-cols-12 gap-6 flex-1">
+
+                <!-- PILLAR 1: COMMUNITY-DRIVEN NOTES (4 cols) -->
+                <div id="pillar-notes" class="lg:col-span-4 bg-white rounded-[26px] p-6 shadow-card flex flex-col justify-between border border-slate-100/80 transition-all duration-300">
+                    <div>
+                        <!-- Card Header -->
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center gap-2.5">
+                                <div class="w-9 h-9 rounded-xl bg-pastelBlue text-brandTeal flex items-center justify-center font-bold shadow-sm">
+                                    <i class="fa-solid fa-users-viewfinder text-sm"></i>
+                                </div>
+                                <div>
+                                    <h2 class="font-extrabold text-base text-darkInk leading-tight">Community-Driven Notes</h2>
+                                    <p class="text-[11px] text-mutedInk font-medium">Crowdsourced & peer-refined</p>
+                                </div>
+                            </div>
+                            <span class="bg-brandTeal text-white text-[11px] font-bold px-2.5 py-1 rounded-full">Collab</span>
+                        </div>
+
+                        <!-- Interactive Subject Note Switcher Pills -->
+                        <div class="grid grid-cols-3 gap-2 mb-4">
+                            <button onclick="switchNotePreview(0, this)" class="note-tab-btn bg-pastelSky border border-sky-200 text-brandTeal rounded-xl py-2 px-2 text-[11px] font-extrabold transition-all shadow-sm">
+                                Algorithms
+                            </button>
+                            <button onclick="switchNotePreview(1, this)" class="note-tab-btn bg-shellBg hover:bg-pastelBlue/40 border border-slate-100 text-mutedInk rounded-xl py-2 px-2 text-[11px] font-bold transition-all">
+                                OS Kernel
+                            </button>
+                            <button onclick="switchNotePreview(2, this)" class="note-tab-btn bg-shellBg hover:bg-pastelBlue/40 border border-slate-100 text-mutedInk rounded-xl py-2 px-2 text-[11px] font-bold transition-all">
+                                DB Indexing
+                            </button>
+                        </div>
+
+                        <!-- Purposeful Graphic & Interactive Note Canvas -->
+                        <div class="bg-pastelCream/75 border border-amber-200/70 rounded-[22px] p-4 relative overflow-hidden mb-4">
+                            <!-- Custom Vector Illustration: Collaborative Note Document & Highlighter -->
+                            <div class="flex items-start justify-between gap-3 mb-3">
+                                <div class="flex items-center gap-2">
+                                    <span id="note-badge" class="bg-white/90 text-amber-800 text-[10px] font-extrabold px-2.5 py-1 rounded-full shadow-sm border border-amber-200/60">
+                                        ✨ Elzatona Summary
+                                    </span>
+                                    <span id="note-contributors" class="text-[11px] font-bold text-darkInk/70">
+                                        +18 Contributors
+                                    </span>
+                                </div>
+                                <!-- Custom SVG Graphic of Layered Shared Notes -->
+                                <svg class="w-11 h-11 shrink-0" viewBox="0 0 64 64" fill="none">
+                                    <rect x="14" y="8" width="38" height="46" rx="7" fill="#D3E7EE" stroke="#2C5E7A" stroke-width="2.5"/>
+                                    <rect x="8" y="14" width="38" height="44" rx="7" fill="#FFFFFF" stroke="#1A2129" stroke-width="2.5"/>
+                                    <rect x="15" y="23" width="24" height="5" rx="2.5" fill="#FDE047"/>
+                                    <line x1="15" y1="34" x2="38" y2="34" stroke="#2C5E7A" stroke-width="2.5" stroke-linecap="round"/>
+                                    <line x1="15" y1="41" x2="32" y2="41" stroke="#6C7A89" stroke-width="2.5" stroke-linecap="round"/>
+                                    <circle cx="44" cy="48" r="10" fill="#A9DF96" stroke="#1A2129" stroke-width="2.5"/>
+                                    <path d="M40 48L43 51L49 45" stroke="#1A2129" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </div>
+
+                            <!-- Dynamic Note Content -->
+                            <h3 id="note-title" class="font-extrabold text-sm text-darkInk mb-1.5">
+                                Dijkstra & Shortest Path (O(E + V log V))
+                            </h3>
+                            <p id="note-body" class="text-xs text-darkInk/80 leading-relaxed bg-white/80 rounded-xl p-3 border border-white">
+                                Use a <mark id="note-highlight" class="bg-amber-200/90 text-darkInk font-bold px-1 rounded">Min-Priority Queue</mark> for non-negative weights. If negative edges exist, switch to Bellman-Ford to detect negative cycles.
+                            </p>
+
+                            <!-- Contributor Avatars + Interactive Highlight Toggle -->
+                            <div class="flex items-center justify-between mt-3 pt-2 border-t border-amber-300/40">
+                                <div class="flex items-center -space-x-2">
+                                    <span class="w-6 h-6 rounded-full bg-pastelBlue border-2 border-white flex items-center justify-center text-[10px] font-extrabold text-brandTeal">AH</span>
+                                    <span class="w-6 h-6 rounded-full bg-pastelPink border-2 border-white flex items-center justify-center text-[10px] font-extrabold text-rose-800">SM</span>
+                                    <span class="w-6 h-6 rounded-full bg-pastelPurple border-2 border-white flex items-center justify-center text-[10px] font-extrabold text-indigo-900">YK</span>
+                                    <span class="w-6 h-6 rounded-full bg-darkInk text-white border-2 border-white flex items-center justify-center text-[9px] font-bold">+15</span>
+                                </div>
+                                <button onclick="toggleVerifyNote()" id="verify-note-btn" class="text-[11px] font-extrabold text-brandTeal bg-white hover:bg-pastelGreen/40 px-3 py-1 rounded-full shadow-sm transition-colors flex items-center gap-1">
+                                    <i class="fa-solid fa-highlighter text-[10px]"></i>
+                                    <span>Highlight Key Exam Tip</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bottom Summary Benefit Pill -->
+                    <div class="bg-pastelSky/60 rounded-2xl p-3.5 flex items-center justify-between border border-sky-200/60">
+                        <div class="flex items-center gap-3">
+                            <div class="w-9 h-9 rounded-xl bg-white text-brandTeal flex items-center justify-center shadow-sm font-extrabold text-xs">
+                                100%
+                            </div>
+                            <div>
+                                <h4 class="font-extrabold text-xs text-darkInk">Written by Top Students</h4>
+                                <p class="text-[11px] text-mutedInk">Real lecture insights, zero textbook fluff.</p>
+                            </div>
+                        </div>
+                        <span class="text-xs font-extrabold text-brandTeal bg-white px-2.5 py-1 rounded-full shadow-sm">💎 +15</span>
+                    </div>
+                </div>
+
+                <!-- PILLAR 2: SMART VOTING SYSTEM (4 cols - Styled with reference Podium & Upvote Cards) -->
+                <div id="pillar-voting" class="lg:col-span-4 bg-white rounded-[26px] p-6 shadow-card flex flex-col justify-between border border-slate-100/80 transition-all duration-300">
+                    <div>
+                        <!-- Card Header -->
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="flex items-center gap-2.5">
+                                <div class="w-9 h-9 rounded-xl bg-pastelGreen/50 text-emerald-900 flex items-center justify-center font-bold shadow-sm">
+                                    <i class="fa-solid fa-arrow-up-wide-short text-sm"></i>
+                                </div>
+                                <div>
+                                    <h2 class="font-extrabold text-base text-darkInk leading-tight">Smart Voting System</h2>
+                                    <p class="text-[11px] text-mutedInk font-medium">Best exam "Zatona" rises to #1</p>
+                                </div>
+                            </div>
+                            <span class="text-[11px] font-extrabold text-emerald-900 bg-pastelGreen/50 px-2.5 py-1 rounded-full">Live Rank</span>
+                        </div>
+
+                        <!-- Purposeful Graphic: Sunburst Community Quality Podium (#2 Amber, #1 Green, #3 Coral) -->
+                        <div class="sunburst-bg rounded-2xl pt-3.5 px-3 mb-4 border border-slate-100">
+                            <div class="grid grid-cols-3 gap-2 items-end text-center">
+                                <!-- #2 Ranked Note -->
+                                <div class="flex flex-col items-center">
+                                    <span class="text-[10px] font-bold text-darkInk truncate max-w-full">OS Deadlocks</span>
+                                    <span class="bg-white border border-slate-200 rounded-full px-2 py-0.5 text-[10px] font-extrabold text-darkInk shadow-sm my-1">
+                                        ▲ <span id="podium-vote-2">342</span>
+                                    </span>
+                                    <div class="w-full h-14 bg-pastelOrange rounded-t-xl flex flex-col items-center justify-center font-extrabold text-xs text-darkInk shadow-inner">
+                                        <span>#2</span>
+                                        <span class="text-[9px] font-bold opacity-75">94% Helpful</span>
+                                    </div>
+                                </div>
+
+                                <!-- #1 Top Voted Note -->
+                                <div class="flex flex-col items-center">
+                                    <span class="bg-emerald-700 text-white text-[9px] font-extrabold px-2 py-0.5 rounded-full mb-0.5">TOP ZATONA</span>
+                                    <span class="text-[11px] font-extrabold text-darkInk truncate max-w-full">SQL Joins Sheet</span>
+                                    <span class="bg-white border border-emerald-300 rounded-full px-2 py-0.5 text-[10px] font-extrabold text-emerald-900 shadow-sm my-1">
+                                        ▲ <span id="podium-vote-1">618</span>
+                                    </span>
+                                    <div class="w-full h-20 bg-pastelGreen rounded-t-xl flex flex-col items-center justify-center font-extrabold text-sm text-darkInk shadow-inner">
+                                        <span>#1</span>
+                                        <span class="text-[9px] font-bold opacity-80">99% Verified</span>
+                                    </div>
+                                </div>
+
+                                <!-- #3 Ranked Note -->
+                                <div class="flex flex-col items-center">
+                                    <span class="text-[10px] font-bold text-darkInk truncate max-w-full">TCP Handshake</span>
+                                    <span class="bg-white border border-slate-200 rounded-full px-2 py-0.5 text-[10px] font-extrabold text-darkInk shadow-sm my-1">
+                                        ▲ <span id="podium-vote-3">219</span>
+                                    </span>
+                                    <div class="w-full h-11 bg-pastelCoral rounded-t-xl flex flex-col items-center justify-center font-extrabold text-xs text-darkInk shadow-inner">
+                                        <span>#3</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Interactive Live Upvote Demo List (Click to Upvote & Earn Gems) -->
+                    <div class="space-y-2.5">
+                        <div class="flex items-center justify-between text-[11px] font-bold text-mutedInk px-1">
+                            <span>Try upvoting a high-yield summary:</span>
+                            <span class="text-brandTeal">+10 💎 per vote</span>
+                        </div>
+
+                        <!-- Upvote Item 1 -->
+                        <div class="bg-shellBg hover:bg-pastelBlue/30 transition-all rounded-2xl p-2.5 px-3.5 flex items-center justify-between border border-slate-100">
+                            <div class="flex items-center gap-3 min-w-0">
+                                <div class="w-8 h-8 rounded-xl bg-pastelGreen/40 text-emerald-900 flex items-center justify-center font-extrabold text-xs shrink-0">
+                                    #1
+                                </div>
+                                <div class="truncate">
+                                    <h4 class="font-extrabold text-xs text-darkInk truncate">SQL Joins & Indexing 1-Pager</h4>
+                                    <span class="text-[10px] font-semibold text-mutedInk">Final Exam Gold • Verified by 42 peers</span>
+                                </div>
+                            </div>
+                            <button onclick="castVote(1, this)" class="upvote-btn shrink-0 bg-white hover:bg-pastelGreen/60 border border-slate-200 rounded-xl px-3 py-1.5 flex items-center gap-1.5 text-xs font-extrabold text-darkInk shadow-sm transition-all active:scale-95">
+                                <i class="fa-solid fa-caret-up text-emerald-600 text-sm"></i>
+                                <span id="vote-count-1">618</span>
+                            </button>
+                        </div>
+
+                        <!-- Upvote Item 2 -->
+                        <div class="bg-shellBg hover:bg-pastelBlue/30 transition-all rounded-2xl p-2.5 px-3.5 flex items-center justify-between border border-slate-100">
+                            <div class="flex items-center gap-3 min-w-0">
+                                <div class="w-8 h-8 rounded-xl bg-pastelOrange/40 text-amber-900 flex items-center justify-center font-extrabold text-xs shrink-0">
+                                    #2
+                                </div>
+                                <div class="truncate">
+                                    <h4 class="font-extrabold text-xs text-darkInk truncate">OS Deadlock 4 Conditions Cheat</h4>
+                                    <span class="text-[10px] font-semibold text-mutedInk">Midterm Capsule • 3 min read</span>
+                                </div>
+                            </div>
+                            <button onclick="castVote(2, this)" class="upvote-btn shrink-0 bg-white hover:bg-pastelGreen/60 border border-slate-200 rounded-xl px-3 py-1.5 flex items-center gap-1.5 text-xs font-extrabold text-darkInk shadow-sm transition-all active:scale-95">
+                                <i class="fa-solid fa-caret-up text-emerald-600 text-sm"></i>
+                                <span id="vote-count-2">342</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PILLAR 3: FASTER EXAM PREP + VIBER LAUNCH WAITLIST (4 cols) -->
+                <div id="pillar-prep" class="lg:col-span-4 bg-white rounded-[26px] p-6 shadow-card flex flex-col justify-between border border-slate-100/80 transition-all duration-300">
+                    <div>
+                        <!-- Header matching "Study Success 78%" from reference -->
+                        <div class="flex items-baseline justify-between mb-3">
+                            <div class="flex items-center gap-2.5">
+                                <div class="w-9 h-9 rounded-xl bg-pastelPink text-rose-900 flex items-center justify-center font-bold shadow-sm">
+                                    <i class="fa-solid fa-gauge-high text-sm"></i>
+                                </div>
+                                <div>
+                                    <h2 class="font-extrabold text-base text-darkInk leading-tight">Faster Exam Prep</h2>
+                                    <p class="text-[11px] text-mutedInk font-medium">Skip 300-page slides</p>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <span id="readiness-pct" class="text-2xl font-extrabold text-darkInk">3.5x</span>
+                                <span class="block text-[10px] font-extrabold text-brandTeal uppercase">Faster Revision</span>
+                            </div>
+                        </div>
+
+                        <!-- Study Success Efficiency Card (Matches the Pastel Blue bar chart box in reference) -->
+                        <div class="bg-pastelBlue/60 rounded-[20px] p-4 mb-4 border border-pastelBlue">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-xs font-extrabold text-darkInk">Study Time Saved per Subject</span>
+                                <span id="saved-hours-pill" class="text-[11px] font-extrabold text-brandTeal bg-white/80 px-2.5 py-0.5 rounded-full shadow-sm">
+                                    12h → 2.5h
+                                </span>
+                            </div>
+
+                            <!-- Interactive Bar Chart (Matches vertical bar graphic in reference) -->
+                            <div id="bar-chart" class="h-14 flex items-end justify-between gap-1 px-1 mb-2">
+                                <!-- Populated dynamically by JS -->
+                            </div>
+
+                            <div class="flex items-center justify-between text-[10px] font-bold text-mutedInk px-1">
+                                <span>Traditional Cramming</span>
+                                <span class="text-brandTeal font-extrabold">Elzatona Exam Capsules ⚡</span>
+                            </div>
+                        </div>
+
+                        <!-- High-Yield Exam Checklist (Interactive Exam Prep Preview) -->
+                        <div class="space-y-2 mb-4">
+                            <div onclick="togglePrepTask(this)" class=" cursor-pointer bg-pastelPurple/45 hover:bg-pastelPurple/75 transition-colors rounded-xl p-2.5 px-3 flex items-center justify-between">
+                                <div class="flex items-center gap-2.5">
+                                    <span class="prep-check w-5 h-5 rounded-md bg-brandTeal text-white flex items-center justify-center text-[10px]">
+                                        <i class="fa-solid fa-check"></i>
+                                    </span>
+                                    <span class="text-xs font-bold text-darkInk">Distilled 1-Page Exam Sheets</span>
+                                </div>
+                                <span class="text-[10px] font-extrabold text-brandTeal bg-white px-2 py-0.5 rounded-full">Ready</span>
+                            </div>
+
+                            <div onclick="togglePrepTask(this)" class="cursor-pointer bg-pastelCream/80 hover:bg-pastelCream transition-colors rounded-xl p-2.5 px-3 flex items-center justify-between">
+                                <div class="flex items-center gap-2.5">
+                                    <span class="prep-check w-5 h-5 rounded-md bg-brandTeal text-white flex items-center justify-center text-[10px]">
+                                        <i class="fa-solid fa-check"></i>
+                                    </span>
+                                    <span class="text-xs font-bold text-darkInk">Top-Voted Past Paper Questions</span>
+                                </div>
+                                <span class="text-[10px] font-extrabold text-amber-800 bg-white px-2 py-0.5 rounded-full">High Yield</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Prominent Early Access / Viber Notification Box -->
+                    <div class="bg-shellBg rounded-2xl p-3.5 border border-slate-200/80">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-xs font-extrabold text-darkInk flex items-center gap-1.5">
+                                <i class="fa-brands fa-viber text-brandTeal"></i>
+                                Get Early Access in 24h
+                            </span>
+                            <span id="waitlist-badge" class="text-[10px] font-extrabold text-emerald-800 bg-pastelGreen/50 px-2 py-0.5 rounded-full">
+                                +250 💎 Bonus
+                            </span>
+                        </div>
+                        <form id="waitlist-form" onsubmit="handleSubscribe(event)" class="relative flex items-center">
+                            <input
+                                id="email-input"
+                                type="text"
+                                required
+                                placeholder="Email or Viber number..."
+                                class="w-full bg-white text-darkInk placeholder-mutedInk text-xs font-semibold rounded-full py-2.5 pl-4 pr-28 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-brandTeal shadow-sm"
+                            />
+                            <button
+                                type="submit"
+                                class="absolute right-1 top-1 bottom-1 bg-brandTeal hover:bg-darkInk text-white font-bold text-xs px-4 rounded-full transition-colors flex items-center gap-1.5 shadow-sm"
+                            >
+                                <span>Notify Me</span>
+                                <i class="fa-solid fa-paper-plane text-[10px]"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+            </section>
+        </div>
+    </main>
+
+    <!-- JavaScript: 24H Live Countdown Timer, Interactive Gamification & Cool Pastel Canvas Animation -->
+    <script>
+        /* ==========================================================================
+           1. LIVE 24-HOUR COUNTDOWN TIMER
+           ========================================================================== */
+        const STORAGE_KEY = 'elzatona_launch_target_24h';
+        let fastForwardMultiplier = 1;
+
+        function getOrCreateTargetTime() {
+            const saved = localStorage.getItem(STORAGE_KEY);
+            const now = Date.now();
+            if (saved && parseInt(saved, 10) > now) {
+                return parseInt(saved, 10);
+            }
+            const twentyFourHoursLater = now + (24 * 60 * 60 * 1000);
+            localStorage.setItem(STORAGE_KEY, twentyFourHoursLater.toString());
+            return twentyFourHoursLater;
+        }
+
+        let targetTimestamp = getOrCreateTargetTime();
+        let simulatedOffset = 0;
+
+        const hoursEl = document.getElementById('hours-val');
+        const minutesEl = document.getElementById('minutes-val');
+        const secondsEl = document.getElementById('seconds-val');
+
+        function updateDigit(el, newVal) {
+            if (el.textContent !== newVal) {
+                el.textContent = newVal;
+                el.classList.add('digit-pop');
+                setTimeout(() => el.classList.remove('digit-pop'), 200);
+            }
+        }
+
+        function updateCountdown() {
+            if (fastForwardMultiplier > 1) {
+                simulatedOffset += 1000 * (fastForwardMultiplier - 1);
+            }
+
+            const now = Date.now() + simulatedOffset;
+            let diff = Math.max(0, targetTimestamp - now);
+
+            // Auto-restart 24h cycle if it reaches zero
+            if (diff === 0) {
+                targetTimestamp = Date.now() + (24 * 60 * 60 * 1000);
+                simulatedOffset = 0;
+                localStorage.setItem(STORAGE_KEY, targetTimestamp.toString());
+                triggerReward('24H Cycle Complete!', 'Elzatona Launch Wave refreshed!', 100);
+                diff = 24 * 60 * 60 * 1000;
+            }
+
+            const hours = Math.floor(diff / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+            updateDigit(hoursEl, String(hours).padStart(2, '0'));
+            updateDigit(minutesEl, String(minutes).padStart(2, '0'));
+            updateDigit(secondsEl, String(seconds).padStart(2, '0'));
+        }
+
+        function resetTimer24h() {
+            simulatedOffset = 0;
+            fastForwardMultiplier = 1;
+            targetTimestamp = Date.now() + (24 * 60 * 60 * 1000);
+            localStorage.setItem(STORAGE_KEY, targetTimestamp.toString());
+            updateCountdown();
+            triggerReward('24H Timer Reset', 'Countdown restored to a full 24:00:00.', 10);
+        }
+
+        function toggleFastForward() {
+            fastForwardMultiplier = fastForwardMultiplier === 1 ? 60 : 1;
+            const speedBtn = document.getElementById('speed-btn');
+            if (fastForwardMultiplier > 1) {
+                speedBtn.classList.add('bg-pastelPink', 'text-brandTeal');
+                triggerReward('Turbo Time Enabled (60x)', 'Watch the 24h countdown fly!', 15);
+            } else {
+                speedBtn.classList.remove('bg-pastelPink', 'text-brandTeal');
+                triggerReward('Real-Time Restored (1x)', 'Ticking at normal speed.', 5);
+            }
+        }
+
+        setInterval(updateCountdown, 250);
+        updateCountdown();
+
+        /* ==========================================================================
+           2. MINI BAR CHART GENERATOR (Mirrors "Study Success" bar chart)
+           ========================================================================== */
+        function renderBarChart() {
+            const chart = document.getElementById('bar-chart');
+            const heights = [35, 38, 42, 45, 50, 54, 58, 64, 70, 76, 82, 88, 92, 96, 100, 94, 98, 100];
+            chart.innerHTML = '';
+            heights.forEach((h, idx) => {
+                const bar = document.createElement('div');
+                const isHighlight = idx >= 12;
+                bar.className = `bar-item flex-1 rounded-full cursor-pointer ${isHighlight ? 'bg-brandTeal' : 'bg-brandTeal/35'}`;
+                bar.style.height = `${h}%`;
+                bar.title = `Efficiency Index: ${h}%`;
+                bar.onclick = () => triggerReward('Faster Exam Prep', `Elzatona condenses lecture slides by ${h}%!`, 10);
+                chart.appendChild(bar);
+            });
+        }
+        renderBarChart();
+
+        /* ==========================================================================
+           3. CORE FEATURES INTERACTIVITY (Notes, Voting, Exam Prep & Waitlist)
+           ========================================================================== */
+        let gems = 144;
+        let coins = 2321;
+        let toastTimeout = null;
+
+        const sampleNotes = [
+            {
+                title: 'Dijkstra & Shortest Path (O(E + V log V))',
+                badge: '✨ Elzatona Summary',
+                contributors: '+18 Contributors',
+                body: 'Use a <mark id="note-highlight" class="bg-amber-200/90 text-darkInk font-bold px-1 rounded">Min-Priority Queue</mark> for non-negative weights. If negative edges exist, switch to Bellman-Ford to detect negative cycles.'
+            },
+            {
+                title: 'OS Kernel: 4 Necessary Deadlock Conditions',
+                badge: '🔥 Midterm Gold',
+                contributors: '+27 Contributors',
+                body: 'Coffman conditions: <mark id="note-highlight" class="bg-amber-200/90 text-darkInk font-bold px-1 rounded">Mutual Exclusion, Hold & Wait</mark>, No Preemption, and Circular Wait. Break any one condition to prevent deadlock.'
+            },
+            {
+                title: 'B+ Tree vs Hash Indexing in Databases',
+                badge: '⚡ 2-Min Capsule',
+                contributors: '+31 Contributors',
+                body: 'Use <mark id="note-highlight" class="bg-amber-200/90 text-darkInk font-bold px-1 rounded">B+ Trees for Range Queries</mark> (ORDER BY, BETWEEN) and Hash Indexes strictly for O(1) exact equality lookups.'
+            }
+        ];
+
+        function switchNotePreview(index, btn) {
+            document.querySelectorAll('.note-tab-btn').forEach(el => {
+                el.className = 'note-tab-btn bg-shellBg hover:bg-pastelBlue/40 border border-slate-100 text-mutedInk rounded-xl py-2 px-2 text-[11px] font-bold transition-all';
+            });
+            btn.className = 'note-tab-btn bg-pastelSky border border-sky-200 text-brandTeal rounded-xl py-2 px-2 text-[11px] font-extrabold transition-all shadow-sm';
+
+            const note = sampleNotes[index];
+            document.getElementById('note-title').textContent = note.title;
+            document.getElementById('note-badge').textContent = note.badge;
+            document.getElementById('note-contributors').textContent = note.contributors;
+            document.getElementById('note-body').innerHTML = note.body;
+
+            triggerReward('Community Note Loaded', `Previewing ${note.title}`, 10);
+        }
+
+        function toggleVerifyNote() {
+            const hl = document.getElementById('note-highlight');
+            if (hl) {
+                hl.classList.toggle('bg-amber-200/90');
+                hl.classList.toggle('bg-pastelGreen');
+            }
+            triggerReward('Peer Highlight Toggled!', 'Community highlights help you spot exam questions fast.', 15);
+        }
+
+        function castVote(itemIndex, btn) {
+            const countEl = document.getElementById(`vote-count-${itemIndex}`);
+            const podiumEl = document.getElementById(`podium-vote-${itemIndex}`);
+            let current = parseInt(countEl.textContent, 10);
+            current += 1;
+            countEl.textContent = current;
+            if (podiumEl) podiumEl.textContent = current;
+
+            btn.classList.add('bg-pastelGreen/60', 'border-emerald-400', 'scale-105');
+            setTimeout(() => btn.classList.remove('scale-105'), 200);
+
+            triggerReward('Upvote Recorded!', 'You helped push the clearest study summary to the top.', 10);
+        }
+
+        function togglePrepTask(row) {
+            const badge = row.querySelector('.prep-check');
+            badge.classList.toggle('bg-brandTeal');
+            badge.classList.toggle('bg-emerald-600');
+            triggerReward('Exam Capsule Checked!', 'Ready for 3.5x faster exam revision at launch.', 15);
+        }
+
+        function triggerReward(title, desc, gemBonus = 25) {
+            gems += gemBonus;
+            coins += gemBonus * 3;
+            document.getElementById('gem-counter').textContent = gems.toLocaleString();
+            document.getElementById('coin-counter').textContent = coins.toLocaleString();
+
+            const toast = document.getElementById('reward-toast');
+            document.getElementById('toast-title').textContent = title;
+            document.getElementById('toast-desc').textContent = desc;
+
+            toast.classList.remove('translate-x-[150%]');
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                toast.classList.add('translate-x-[150%]');
+            }, 3400);
+
+            spawnCelebrationParticles();
+        }
+
+        function focusEmailInput() {
+            const input = document.getElementById('email-input');
+            input.focus();
+            input.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        function switchTab(tab, btn) {
+            document.querySelectorAll('.nav-btn').forEach(el => {
+                el.classList.remove('bg-brandTeal', 'text-white', 'shadow-md');
+                el.classList.add('text-mutedInk');
+            });
+            btn.classList.add('bg-brandTeal', 'text-white', 'shadow-md');
+            btn.classList.remove('text-mutedInk');
+
+            const map = {
+                notes: 'pillar-notes',
+                voting: 'pillar-voting',
+                prep: 'pillar-prep'
+            };
+            Object.values(map).forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.classList.remove('ring-2', 'ring-brandTeal');
+            });
+
+            if (map[tab]) {
+                const target = document.getElementById(map[tab]);
+                target.classList.add('ring-2', 'ring-brandTeal');
+                target.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+        }
+
+        function handleSubscribe(e) {
+            e.preventDefault();
+            const input = document.getElementById('email-input');
+            const val = input.value.trim();
+            if (!val) return;
+
+            const displayName = val.includes('@') ? val.split('@')[0] : val;
+            document.getElementById('waitlist-badge').textContent = `Joined ✓`;
+
+            input.value = '';
+            input.placeholder = `You're on the list, ${displayName}! 🎉`;
+            triggerReward('Welcome to Elzatona!', `We'll alert ${displayName} the moment our 24h timer hits zero.`, 250);
+        }
+
+        /* ==========================================================================
+           4. COOL BACKGROUND ANIMATION (Interactive Pastel Blobs + Gamified Particles)
+           ========================================================================== */
+        const canvas = document.getElementById('bg-canvas');
+        const ctx = canvas.getContext('2d');
+
+        let width = canvas.width = window.innerWidth;
+        let height = canvas.height = window.innerHeight;
+
+        const mouse = { x: width / 2, y: height / 2, targetX: width / 2, targetY: height / 2 };
+
+        window.addEventListener('mousemove', (e) => {
+            mouse.targetX = e.clientX;
+            mouse.targetY = e.clientY;
+        });
+
+        window.addEventListener('touchmove', (e) => {
+            if (e.touches.length > 0) {
+                mouse.targetX = e.touches[0].clientX;
+                mouse.targetY = e.touches[0].clientY;
+            }
+        });
+
+        window.addEventListener('resize', () => {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        });
+
+        // Soft Pastel Orbs matching the reference image palette
+        const orbs = [
+            { x: width * 0.15, y: height * 0.2, r: 220, color: 'rgba(211, 231, 238, 0.75)', vx: 0.4, vy: 0.3 },  // Pastel Blue
+            { x: width * 0.85, y: height * 0.25, r: 250, color: 'rgba(220, 221, 248, 0.75)', vx: -0.35, vy: 0.4 }, // Pastel Purple
+            { x: width * 0.2, y: height * 0.85, r: 230, color: 'rgba(250, 217, 240, 0.7)', vx: 0.3, vy: -0.35 },  // Pastel Pink
+            { x: width * 0.8, y: height * 0.8, r: 200, color: 'rgba(169, 223, 150, 0.55)', vx: -0.4, vy: -0.25 }, // Pastel Green
+            { x: width * 0.5, y: height * 0.5, r: 260, color: 'rgba(253, 244, 199, 0.6)', vx: 0.25, vy: 0.25 }    // Pastel Cream
+        ];
+
+        // Floating Gamified Geometric Shapes (Diamonds, Coins, Stars, Olive Leaves)
+        const shapes = [];
+        const shapeTypes = ['diamond', 'coin', 'star', 'ring'];
+        const shapeColors = ['#38BDF8', '#FBBF24', '#A9DF96', '#F49797', '#2C5E7A', '#DCDDF8'];
+
+        for (let i = 0; i < 28; i++) {
+            shapes.push({
+                x: Math.random() * width,
+                y: Math.random() * height,
+                size: 8 + Math.random() * 14,
+                type: shapeTypes[i % shapeTypes.length],
+                color: shapeColors[i % shapeColors.length],
+                vx: (Math.random() - 0.5) * 0.7,
+                vy: -0.3 - Math.random() * 0.6,
+                angle: Math.random() * Math.PI * 2,
+                vAngle: (Math.random() - 0.5) * 0.02
+            });
+        }
+
+        // Celebration Burst Particles when user interacts
+        const burstParticles = [];
+        function spawnCelebrationParticles() {
+            const cx = width / 2;
+            const cy = height / 2;
+            for (let i = 0; i < 24; i++) {
+                const angle = (Math.PI * 2 * i) / 24;
+                const speed = 3 + Math.random() * 6;
+                burstParticles.push({
+                    x: cx,
+                    y: cy,
+                    vx: Math.cos(angle) * speed,
+                    vy: Math.sin(angle) * speed,
+                    size: 5 + Math.random() * 6,
+                    color: shapeColors[i % shapeColors.length],
+                    alpha: 1
+                });
+            }
+        }
+
+        function drawShape(s) {
+            ctx.save();
+            ctx.translate(s.x, s.y);
+            ctx.rotate(s.angle);
+            ctx.fillStyle = s.color;
+            ctx.strokeStyle = 'rgba(255,255,255,0.8)';
+            ctx.lineWidth = 1.5;
+
+            if (s.type === 'diamond') {
+                ctx.beginPath();
+                ctx.moveTo(0, -s.size);
+                ctx.lineTo(s.size * 0.8, 0);
+                ctx.lineTo(0, s.size);
+                ctx.lineTo(-s.size * 0.8, 0);
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
+            } else if (s.type === 'coin') {
+                ctx.beginPath();
+                ctx.arc(0, 0, s.size * 0.75, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.stroke();
+            } else if (s.type === 'ring') {
+                ctx.beginPath();
+                ctx.arc(0, 0, s.size * 0.7, 0, Math.PI * 2);
+                ctx.strokeStyle = s.color;
+                ctx.lineWidth = 3;
+                ctx.stroke();
+            } else {
+                // Rounded Pill / Star
+                ctx.beginPath();
+                ctx.roundRect(-s.size * 0.6, -s.size * 0.6, s.size * 1.2, s.size * 1.2, 4);
+                ctx.fill();
+                ctx.stroke();
+            }
+            ctx.restore();
+        }
+
+        function animateBackground() {
+            ctx.clearRect(0, 0, width, height);
+
+            // Smooth mouse interpolation
+            mouse.x += (mouse.targetX - mouse.x) * 0.05;
+            mouse.y += (mouse.targetY - mouse.y) * 0.05;
+
+            // 1. Draw dreamy floating pastel gradient orbs
+            orbs.forEach((orb, idx) => {
+                orb.x += orb.vx;
+                orb.y += orb.vy;
+
+                if (orb.x < 0 || orb.x > width) orb.vx *= -1;
+                if (orb.y < 0 || orb.y > height) orb.vy *= -1;
+
+                const parallaxX = (mouse.x - width / 2) * (0.02 * (idx + 1));
+                const parallaxY = (mouse.y - height / 2) * (0.02 * (idx + 1));
+
+                const grad = ctx.createRadialGradient(
+                    orb.x + parallaxX, orb.y + parallaxY, 10,
+                    orb.x + parallaxX, orb.y + parallaxY, orb.r
+                );
+                grad.addColorStop(0, orb.color);
+                grad.addColorStop(1, 'rgba(207, 214, 230, 0)');
+
+                ctx.fillStyle = grad;
+                ctx.beginPath();
+                ctx.arc(orb.x + parallaxX, orb.y + parallaxY, orb.r, 0, Math.PI * 2);
+                ctx.fill();
+            });
+
+            // 2. Draw floating gamified shapes
+            shapes.forEach(s => {
+                s.x += s.vx;
+                s.y += s.vy;
+                s.angle += s.vAngle;
+
+                // Gentle mouse repulsion
+                const dx = s.x - mouse.x;
+                const dy = s.y - mouse.y;
+                const dist = Math.hypot(dx, dy);
+                if (dist < 140 && dist > 0) {
+                    s.x += (dx / dist) * 1.2;
+                    s.y += (dy / dist) * 1.2;
+                }
+
+                if (s.y < -30) s.y = height + 30;
+                if (s.x < -30) s.x = width + 30;
+                if (s.x > width + 30) s.x = -30;
+
+                drawShape(s);
+            });
+
+            // 3. Draw celebration burst particles
+            for (let i = burstParticles.length - 1; i >= 0; i--) {
+                const p = burstParticles[i];
+                p.x += p.vx;
+                p.y += p.vy;
+                p.alpha -= 0.02;
+
+                if (p.alpha <= 0) {
+                    burstParticles.splice(i, 1);
+                    continue;
+                }
+
+                ctx.save();
+                ctx.globalAlpha = p.alpha;
+                ctx.fillStyle = p.color;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            }
+
+            requestAnimationFrame(animateBackground);
+        }
+
+        window.onload = function () {
+            animateBackground();
+        };
+    </script>
+</body>
+</html>

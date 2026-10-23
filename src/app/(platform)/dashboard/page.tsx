@@ -80,9 +80,7 @@ export default async function Home() {
               اختار موادك <ArrowUpLeft size={18} />
             </Link>
           </div>
-          <p className="muted">
-            حسب مستوى المقرر في اللائحة. تقدر تضيف مواد من أي سنة.
-          </p>
+          <p className="muted">تقدر تضيف مواد من أي سنة.</p>
           <div className="course-grid">
             {suggestions.map((c) => (
               <CourseTile key={c.id} course={c} />

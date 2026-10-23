@@ -122,13 +122,6 @@ export default async function Courses({
               اعرض المواد
             </button>
           </div>
-          {availablePrograms.length > 0 && (
-            <p className="muted catalog-note">
-              المتطلبات العامة ومتطلبات الكلية بتظهر مع كل تخصص. الإجباري
-              والاختياري بيختلفوا حسب التخصص؛ الاقتراح حسب المستوى، مش جدول
-              الترم أو تأكيد استيفاء المتطلبات السابقة.
-            </p>
-          )}
         </details>
       </SearchBar>
       <div className="section-head">

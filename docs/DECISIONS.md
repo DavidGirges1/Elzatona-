@@ -34,3 +34,7 @@ The owner's new request supersedes the earlier three-course pilot limit and stri
 Discovery uses year for ordering, not access control; department filters retain common requirements. One shared code has one hub, with normalized per-department requirement mappings. Students explicitly select courses in groups of up to one visible page; bulk addition is idempotent and does not toggle existing follows. A student's saved library survives academic-context changes, including year changes. Contributions and public access use the existing course permissions and moderation controls. No artificial resources, memberships, engagement counts or prerequisite blocks are introduced.
 
 Source, transcription, page mapping, reproducible import and test instructions: [curriculum/README.md](curriculum/README.md).
+
+## Keep curriculum provenance out of student flows — 23 October 2026
+
+The owner rejects the regulations/prerequisite/source-page disclosure as clutter. Keep provenance in developer documentation and use curriculum metadata for suggestions/filtering behind the scenes. Course pages should focus on resources and discussion. Remove the disclosure entirely, including the course-page query and related registration disclaimers elsewhere in the student interface; this requires no database change.

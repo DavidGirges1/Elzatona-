@@ -47,7 +47,7 @@ test.describe("Capital curriculum with real Supabase", () => {
     !enabled,
     "Requires explicit temporary QA accounts and curriculum state.",
   );
-  test("guest opens an imported hub, its source details and the public shared resource", async ({
+  test("guest opens an imported hub and the public shared resource", async ({
     page,
     request,
   }, info) => {
@@ -55,11 +55,10 @@ test.describe("Capital curriculum with real Supabase", () => {
     await expect(
       page.getByRole("heading", { name: "مقدمة في الحاسبات", exact: true }),
     ).toBeVisible();
-    await page.getByText("المادة في اللائحة", { exact: true }).click();
-    await expect(page.locator(".curriculum-details")).toContainText(
-      "متطلب كلية · إجباري",
-    );
-    await expect(page.locator(".curriculum-details")).toContainText("١٥");
+    await expect(page.locator(".curriculum-details")).toHaveCount(0);
+    await expect(
+      page.getByText("المادة في اللائحة", { exact: true }),
+    ).toHaveCount(0);
     await page.screenshot({
       path: `docs/screenshots/curriculum-course-${info.project.name}.png`,
       fullPage: true,

@@ -4,7 +4,11 @@ Updated **23 October 2026**. Current phase: **Capital computing curriculum and c
 
 Earlier owner instruction to keep Coming Soon at `/` and develop under `/test` is now **superseded**: the owner explicitly requests replacing Coming Soon with the actual platform at `/`. The earlier `/test` URL was public, not access control. Original instructions, design pack, uploaded ZIP and the full new request are retained under `docs/owner-instructions`, `docs/original-design-pack`, `docs/specification` and `docs/original-attachments`.
 
-## Capital computing curriculum and course selection — current milestone
+## Course-page clutter removal — current follow-up
+
+The owner explicitly requests removal of the student-facing regulations/provenance section. Removed the complete `المادة في اللائحة` disclosure, compulsory/elective source-page list, prerequisite note and registration disclaimer from course hubs, plus the related regulation/registration explanation text in discovery, the picker and dashboard. Removed the unused course-page curriculum query/imports and disclosure styles. Subject codes, normal metadata, resources/discussions, follows, the imported data and suggestion/filter logic remain in place. Source provenance remains engineering documentation only. Validation passed: **177 tests / 10 files (23.26 seconds)**, lint, formatting and the full production build (including TypeScript). Local production browser inspection passed **9/9 course/discovery checks at 390/768/1440px**, confirming the section is absent and resource/discussion/contribution controls remain visible. No database changes were made. Publication and live verification are in progress.
+
+## Capital computing curriculum and course selection — verified milestone
 
 Owner requests all subjects from the supplied faculty regulations, prioritized suggestions by year, access to other years, and bulk addition to `موادي`. Full source/provenance and logic: [curriculum/README.md](curriculum/README.md).
 

@@ -116,7 +116,6 @@ export function CoursePicker({
         <Link href="/dashboard" className="text-link">
           افتح موادي
         </Link>
-        <p className="muted">مكتبتك على الزتونة، مش تسجيل رسمي في الكلية.</p>
         {state.error && (
           <p className="form-error" role="alert">
             {state.error}

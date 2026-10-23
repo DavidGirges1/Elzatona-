@@ -2447,9 +2447,6 @@ input[type="checkbox"] {
 .catalog-explainer {
   margin-block: 16px;
 }
-.catalog-note {
-  margin-block: 12px;
-}
 .course-picker {
   display: block;
 }
@@ -2553,18 +2550,6 @@ input[type="checkbox"] {
 .catalog-pagination {
   justify-content: center;
 }
-.curriculum-details {
-  margin-block: 16px;
-}
-.curriculum-details summary {
-  min-height: 44px;
-  cursor: pointer;
-}
-.curriculum-details ul {
-  padding-inline-start: 24px;
-  margin-block: 8px;
-}
-
 .catalog-filters {
   margin-block-start: 12px;
 }

@@ -3,14 +3,12 @@ import { notFound } from "next/navigation";
 import { Plus, ArrowRight } from "lucide-react";
 import {
   getCourse,
-  getCourseRequirements,
   getTopics,
   getResources,
   getHighlights,
   getDiscussions,
   getFollowedIds,
 } from "@/lib/data";
-import { scopes } from "@/lib/course-catalog";
 import { currentUser } from "@/lib/supabase/server";
 import { follow } from "@/lib/actions";
 import { ar } from "@/i18n/ar-EG";
@@ -43,7 +41,6 @@ export default async function CoursePage({
   const { slug } = await params;
   const course = await getCourse(slug);
   if (!course) notFound();
-  const requirements = await getCourseRequirements([course.id]);
   const s = await searchParams;
   const path = `/courses/${slug}`;
   const page = Math.max(1, Math.min(Math.trunc(Number(s.page)) || 1, 1000));
@@ -93,29 +90,6 @@ export default async function CoursePage({
           )}
         </p>
         {course.description && <p>{course.description}</p>}
-        {requirements.length > 0 && (
-          <details className="curriculum-details">
-            <summary>المادة في اللائحة</summary>
-            <ul>
-              {requirements.map((r) => (
-                <li key={r.scope}>
-                  {scopes[r.scope as keyof typeof scopes]} ·{" "}
-                  {r.kind === "required" ? "إجباري" : "اختياري"} · ص{" "}
-                  {new Intl.NumberFormat("ar-EG").format(r.source_page)}
-                </li>
-              ))}
-            </ul>
-            {course.prerequisite_note && (
-              <p>
-                المتطلب السابق: <bdi>{course.prerequisite_note}</bdi>
-              </p>
-            )}
-            <p className="muted">
-              اللائحة المرفقة، إصدار ٢٠٢١. المستوى للاقتراح؛ إضافة المادة هنا مش
-              تسجيل رسمي ولا بتثبت استيفاء المتطلبات.
-            </p>
-          </details>
-        )}
         <div className="actions">
           {user ? (
             <ActionForm action={follow.bind(null, course.id, path)}>

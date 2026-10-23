@@ -13,7 +13,7 @@ export function AuthFrame({
         <Link className="wordmark" href="/">
           الزتونة.
         </Link>
-        <Link href={admin ? "/" : "/courses"} className="text-link">
+        <Link href="/" className="text-link">
           <ArrowRight size={16} />
           {admin ? "الصفحة الرئيسية" : "ارجع للتصفح"}
         </Link>

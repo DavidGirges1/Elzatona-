@@ -53,14 +53,12 @@ export async function fixtures() {
     name_ar: "جامعة تجريبية · بيانات اختبار",
   });
   if (result.error) throw result.error;
-  result = await admin
-    .from("faculties")
-    .insert({
-      id: faculty,
-      slug: `qa-faculty-${run}`,
-      name: "QA Faculty",
-      name_ar: "كلية اختبار",
-    });
+  result = await admin.from("faculties").insert({
+    id: faculty,
+    slug: `qa-faculty-${run}`,
+    name: "QA Faculty",
+    name_ar: "كلية اختبار",
+  });
   if (result.error) throw result.error;
   result = await admin
     .from("university_faculties")

@@ -28,6 +28,7 @@ Owner confirmed: **keep Coming Soon at `/`; all new development under `/test`**.
 
 - `npm run typecheck`: passed, strict TypeScript.
 - `npm run lint`: passed, zero errors/warnings.
+- `npm run format:check`: passed after formatting the isolated-fixture helper; no application behavior changed.
 - `npm test`: **152 passed, 7 files, 5.80 seconds**. Includes fresh application of **8 migrations** against embedded PostgreSQL, existing resource/community/Storage RLS protections, username rules, academic foreign keys, role spoofing/admin denial, private user emails, suspension, analytics deduplication and current academic checks at privileged PDF finalization.
 - Complete Node 24 production build: passed. Standard Next.js App Router output; no TypeScript error suppression. Docker is only this environment's listener/proxy workaround.
 - Additional hosted PDF academic-eligibility checks: **3/3 passed** (disabled academic option blocks pending publication; restoring eligibility permits publication and guest visibility).

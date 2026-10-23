@@ -251,7 +251,7 @@ test.describe("Academic identity and admin — real hosted backend", () => {
     await page.getByRole("button", { name: "جاهز · افتح موادي" }).click();
     await expect(page).toHaveURL(/\/dashboard$/, { timeout: 12000 });
     await expect(
-      page.getByRole("heading", { name: "مواد سنتك لسه بتتجهز" }),
+      page.getByRole("heading", { name: "مواد كليتك لسه بتتجهز" }),
     ).toBeVisible();
     await expect(page.locator(".course-tile")).toHaveCount(0);
   });

@@ -26,3 +26,11 @@ The earlier milestone notes above are historical. The owner subsequently authori
 - Three new additive migrations have been applied and checked on the actual hosted project as well as fresh embedded PostgreSQL. Source/hosted timestamp mapping is recorded in implementation status; do not reset the existing project.
 - First-party page events are coarse categories with a random tab-session identifier, no IP/email/query/body. DAU/MAU count authenticated non-admin accounts with visits. Metrics include testing and bots, and are labeled accordingly. Raw events are admin-private; retention maintenance is documented.
 - Use existing semantic colors, Alexandria/Tajawal, RTL shell and shadcn Button. Lightweight CSS/IntersectionObserver animation replaces a large animation dependency; reduced motion and keyboard preview interaction are verified.
+
+## Capital computing curriculum and course groups — 23 October 2026
+
+The owner's new request supersedes the earlier three-course pilot limit and strict same-year course-discovery rule for the supplied faculty. Import all 122 distinct courses from their 2021 regulations into the existing Capital University/computers context; preserve other institutions' original records. The PDF's Helwan label is recorded as source provenance. Article 18 supplies levels directly from course codes. Do not guess semesters, passed prerequisites, current offering schedules, or a student's specialization.
+
+Discovery uses year for ordering, not access control; department filters retain common requirements. One shared code has one hub, with normalized per-department requirement mappings. Students explicitly select courses in groups of up to one visible page; bulk addition is idempotent and does not toggle existing follows. A student's saved library survives academic-context changes, including year changes. Contributions and public access use the existing course permissions and moderation controls. No artificial resources, memberships, engagement counts or prerequisite blocks are introduced.
+
+Source, transcription, page mapping, reproducible import and test instructions: [curriculum/README.md](curriculum/README.md).

@@ -622,6 +622,8 @@ input[type="checkbox"] {
     padding: 0 16px;
   }
   .topbar {
+    flex-wrap: wrap;
+    padding-block: 12px;
     min-height: 80px;
     margin-bottom: 24px;
     gap: 12px;
@@ -2439,4 +2441,137 @@ input[type="checkbox"] {
     width: 36px;
     height: 36px;
   }
+}
+
+/* Course selection stays compact; existing pastel tiles retain their identity. */
+.catalog-explainer {
+  margin-block: 16px;
+}
+.catalog-note {
+  margin-block: 12px;
+}
+.course-picker {
+  display: block;
+}
+.course-selection-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+}
+.course-select-all {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  cursor: pointer;
+}
+.course-select-all input,
+.course-checkbox input {
+  width: 20px;
+  height: 20px;
+  accent-color: var(--ez-primary);
+}
+.course-choice-list {
+  margin-block: 16px;
+  display: grid;
+  gap: 12px;
+}
+.course-choice {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  border: 1px solid var(--ez-border);
+  border-radius: var(--ez-radius-resource);
+  padding: 16px;
+  background: var(--ez-surface);
+  min-width: 0;
+}
+.course-choice.is-followed {
+  border-inline-start: 4px solid var(--ez-primary);
+}
+.course-checkbox {
+  min-width: 44px;
+  min-height: 44px;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+.course-choice .grow {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.course-choice-title {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-weight: 700;
+  color: var(--ez-ink);
+}
+.course-choice-title:hover {
+  color: var(--ez-primary);
+  text-decoration: underline;
+}
+.course-choice-english {
+  margin-block: 0 8px;
+}
+.course-choice-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  color: var(--ez-ink-muted);
+  font-size: 14px;
+}
+.course-match {
+  display: inline-flex;
+  margin-block-start: 8px;
+  margin-inline-end: 8px;
+  border-radius: var(--ez-radius-pill);
+  padding: 4px 12px;
+  background: var(--ez-sky);
+  color: var(--ez-sky-ink);
+  font-size: 14px;
+}
+.course-selection-footer {
+  position: sticky;
+  bottom: 12px;
+  z-index: 2;
+  box-shadow: var(--ez-shadow-elevated);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  border: 1px solid var(--ez-border);
+  border-radius: var(--ez-radius-resource);
+  background: var(--ez-surface);
+}
+.course-selection-footer p {
+  flex-basis: 100%;
+}
+.catalog-pagination {
+  justify-content: center;
+}
+.curriculum-details {
+  margin-block: 16px;
+}
+.curriculum-details summary {
+  min-height: 44px;
+  cursor: pointer;
+}
+.curriculum-details ul {
+  padding-inline-start: 24px;
+  margin-block: 8px;
+}
+
+.catalog-filters {
+  margin-block-start: 12px;
+}
+.catalog-filters summary {
+  min-height: 44px;
+  padding-block: 8px;
+  color: var(--ez-primary);
+  cursor: pointer;
+  font-weight: 700;
 }

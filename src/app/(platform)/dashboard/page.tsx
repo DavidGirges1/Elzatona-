@@ -2,7 +2,7 @@ import Link from "next/link";
 import { requireStudent } from "@/lib/auth/session";
 import { ArrowUpLeft, Plus, BookOpen } from "lucide-react";
 import { currentUser, configured } from "@/lib/supabase/server";
-import { getCourses, getFollowedIds, getResources } from "@/lib/data";
+import { getCourses, getFollowedCourses, getResources } from "@/lib/data";
 import { ar } from "@/i18n/ar-EG";
 import {
   CourseTile,
@@ -11,15 +11,21 @@ import {
   ResourceRow,
 } from "@/components/content";
 export default async function Home() {
-  await requireStudent("/dashboard");
+  const { context } = await requireStudent("/dashboard");
   const user = await currentUser();
-  const [courses, ids] = await Promise.all([getCourses(), getFollowedIds()]);
-  const selected = user ? courses.filter((c) => ids.includes(c.id)) : courses;
+  const [courses, selected] = await Promise.all([
+    getCourses(),
+    getFollowedCourses(),
+  ]);
+  const ids = selected.map((c) => c.id);
+  const suggestions = courses
+    .filter(
+      (c) => c.year_level === context.academic_year && !ids.includes(c.id),
+    )
+    .slice(0, 6);
   const updates =
     user && ids.length
-      ? (await getResources())
-          .filter((r) => ids.includes(r.course_id))
-          .slice(0, 4)
+      ? (await getResources({ courseIds: ids })).slice(0, 4)
       : [];
   return (
     <>
@@ -50,12 +56,12 @@ export default async function Home() {
       ) : (
         <>
           <Empty
-            title={courses.length ? "لسه مضفتش موادك" : "مواد سنتك لسه بتتجهز"}
+            title={courses.length ? "لسه مضفتش موادك" : "مواد كليتك لسه بتتجهز"}
           >
             <p>
               {courses.length
-                ? "اختار من مواد جامعتك وسنتك، وخلي المصادر اللي بتحتاجها قريبة منك."
-                : "لسه مفيش مواد مضافة لجامعتك وكليتك وسنتك. ارجع قريب، أو راجع بياناتك الدراسية لو محتاجة تعديل."}
+                ? "ابدأ بمواد سنتك، أو اختار من سنين تانية. مفيش مادة بتتضاف من غير اختيارك."
+                : "لسه مفيش مواد مضافة لجامعتك وكليتك. راجع بياناتك الدراسية لو محتاجة تعديل."}
             </p>
             <Link
               className="button primary"
@@ -64,17 +70,25 @@ export default async function Home() {
               {courses.length ? "اختار موادك" : "راجع بياناتك الدراسية"}
             </Link>
           </Empty>
-          {user && courses.length > 0 && (
-            <section>
-              <h2 className="section-head">مواد جامعتك وسنتك</h2>
-              <div className="course-grid">
-                {courses.map((c) => (
-                  <CourseTile key={c.id} course={c} />
-                ))}
-              </div>
-            </section>
-          )}
         </>
+      )}
+      {suggestions.length > 0 && (
+        <section>
+          <div className="section-head">
+            <h2>مقترحة لسنتك</h2>
+            <Link href={`/courses?year=${context.academic_year}`}>
+              اختار موادك <ArrowUpLeft size={18} />
+            </Link>
+          </div>
+          <p className="muted">
+            حسب مستوى المقرر في اللائحة. تقدر تضيف مواد من أي سنة.
+          </p>
+          <div className="course-grid">
+            {suggestions.map((c) => (
+              <CourseTile key={c.id} course={c} />
+            ))}
+          </div>
+        </section>
       )}
       {updates.length > 0 && (
         <section>

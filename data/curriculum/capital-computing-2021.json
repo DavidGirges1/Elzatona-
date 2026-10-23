@@ -1,0 +1,2161 @@
+{
+  "source": {
+    "file": "docs/curriculum/capital-computing-regulations-2021.pdf",
+    "sha256": "a2a3079af917565c446629e6d9928e820d828e30284059c0714b9e665b934da7",
+    "title": "اللائحة الداخلية لكلية الحاسبات والذكاء الاصطناعي — جامعة حلوان، إصدار 2021",
+    "university_slug": "capital-university",
+    "faculty_slug": "computers",
+    "year_rule": "Article 18, printed page 13 (PDF page 16): hundreds digit is study level.",
+    "page_offset": 3,
+    "notes": [
+      "Owner explicitly supplied the Helwan-labelled 2021 regulations for Capital University. No new affiliation is inferred.",
+      "Import covers all tables in articles 19–21, printed pages 14–29, for general/faculty requirements and CS/IT/IS/AI. No separate SE or medical-informatics curriculum is supplied.",
+      "IS 450 retains the Arabic table title رغم اختلافها عن العنوان الإنجليزي. Titles normalize Arabic letter forms and obvious English typography; project titles add the department to distinguish hubs.",
+      "No semester or prerequisite eligibility is inferred; prerequisites are informational."
+    ]
+  },
+  "courses": [
+    {
+      "code": "CS 111",
+      "code_ar": "حسب 111",
+      "title_ar": "مقدمة في الحاسبات",
+      "title_en": "Introduction to Computers",
+      "year": 1,
+      "credit_hours": 3,
+      "prerequisites": "",
+      "requirements": [
+        {
+          "scope": "faculty",
+          "kind": "required",
+          "page": 15
+        }
+      ]
+    },
+    {
+      "code": "CS 112",
+      "code_ar": "حسب 112",
+      "title_ar": "برمجة الحاسبات 1",
+      "title_en": "Programming 1",
+      "year": 1,
+      "credit_hours": 3,
+      "prerequisites": "CS 111",
+      "requirements": [
+        {
+          "scope": "faculty",
+          "kind": "required",
+          "page": 15
+        }
+      ]
+    },
+    {
+      "code": "HU 111",
+      "code_ar": "إنس 111",
+      "title_ar": "لغة إنجليزية 1",
+      "title_en": "English I",
+      "year": 1,
+      "credit_hours": 2,
+      "prerequisites": "",
+      "requirements": [
+        {
+          "scope": "general",
+          "kind": "required",
+          "page": 14
+        }
+      ]
+    },
+    {
+      "code": "HU 112",
+      "code_ar": "إنس 112",
+      "title_ar": "لغة إنجليزية 2",
+      "title_en": "English II",
+      "year": 1,
+      "credit_hours": 2,
+      "prerequisites": "",
+      "requirements": [
+        {
+          "scope": "general",
+          "kind": "required",
+          "page": 14
+        }
+      ]
+    },
+    {
+      "code": "HU 121",
+      "code_ar": "إنس 121",
+      "title_ar": "مبادئ الاقتصاد",
+      "title_en": "Fundamentals of Economics",
+      "year": 1,
+      "credit_hours": 3,
+      "prerequisites": "",
+      "requirements": [
+        {
+          "scope": "general",
+          "kind": "elective",
+          "page": 14
+        }
+      ]
+    },
+    {
+      "code": "HU 122",
+      "code_ar": "إنس 122",
+      "title_ar": "مبادئ الإدارة",
+      "title_en": "Fundamentals of Management",
+      "year": 1,
+      "credit_hours": 3,
+      "prerequisites": "",
+      "requirements": [
+        {
+          "scope": "faculty",
+          "kind": "elective",
+          "page": 17
+        }
+      ]
+    },
+    {
+      "code": "IT 111",
+      "code_ar": "تقن 111",
+      "title_ar": "إلكترونيات 1",
+      "title_en": "Electronics 1",
+      "year": 1,
+      "credit_hours": 3,
+      "prerequisites": "",
+      "requirements": [
+        {
+          "scope": "faculty",
+          "kind": "required",
+          "page": 15
+        }
+      ]
+    },
+    {
+      "code": "MA 111",
+      "code_ar": "ريض 111",
+      "title_ar": "رياضيات 1",
+      "title_en": "Mathematics 1",
+      "year": 1,
+      "credit_hours": 3,
+      "prerequisites": "",
+      "requirements": [
+        {
+          "scope": "faculty",
+          "kind": "required",
+          "page": 15
+        }
+      ]
+    },
+    {
+      "code": "MA 112",
+      "code_ar": "ريض 112",
+      "title_ar": "تراكيب محددة",
+      "title_en": "Discrete Mathematics",
+      "year": 1,
+      "credit_hours": 3,
+      "prerequisites": "",
+      "requirements": [
+        {
+          "scope": "faculty",
+          "kind": "required",
+          "page": 15
+        }
+      ]
+    },
+    {
+      "code": "MA 113",
+      "code_ar": "ريض 113",
+      "title_ar": "رياضيات 2",
+      "title_en": "Mathematics 2",
+      "year": 1,
+      "credit_hours": 3,
+      "prerequisites": "MA 111",
+      "requirements": [
+        {
+          "scope": "faculty",
+          "kind": "required",
+          "page": 15
+        }
+      ]
+    },
+    {
+      "code": "PH 111",
+      "code_ar": "فيز 111",
+      "title_ar": "فيزياء",
+      "title_en": "Physics",
+      "year": 1,
+      "credit_hours": 3,
+      "prerequisites": "",
+      "requirements": [
+        {
+          "scope": "faculty",
+          "kind": "required",
+          "page": 15
+        }
+      ]
+    },
+    {
+      "code": "ST 121",
+      "code_ar": "إحص 121",
+      "title_ar": "إحصاء واحتمالات 1",
+      "title_en": "Probability and Statistics 1",
+      "year": 1,
+      "credit_hours": 3,
+      "prerequisites": "",
+      "requirements": [
+        {
+          "scope": "faculty",
+          "kind": "required",
+          "page": 15
+        }
+      ]
+    },
+    {
+      "code": "ST 122",
+      "code_ar": "إحص 122",
+      "title_ar": "إحصاء واحتمالات 2",
+      "title_en": "Probability and Statistics 2",
+      "year": 1,
+      "credit_hours": 3,
+      "prerequisites": "ST 121",
+      "requirements": [
+        {
+          "scope": "faculty",
+          "kind": "elective",
+          "page": 17
+        }
+      ]
+    },
+    {
+      "code": "CS 213",
+      "code_ar": "حسب 213",
+      "title_ar": "برمجة الحاسبات 2",
+      "title_en": "Programming 2",
+      "year": 2,
+      "credit_hours": 3,
+      "prerequisites": "CS 112",
+      "requirements": [
+        {
+          "scope": "faculty",
+          "kind": "required",
+          "page": 16
+        }
+      ]
+    },
+    {
+      "code": "CS 214",
+      "code_ar": "حسب 214",
+      "title_ar": "هياكل البيانات",
+      "title_en": "Data Structures",
+      "year": 2,
+      "credit_hours": 3,
+      "prerequisites": "CS 112",
+      "requirements": [
+        {
+          "scope": "faculty",
+          "kind": "required",
+          "page": 16
+        }
+      ]
+    },
+    {
+      "code": "CS 221",
+      "code_ar": "حسب 221",
+      "title_ar": "تصميم منطقي",
+      "title_en": "Logic Design",
+      "year": 2,
+      "credit_hours": 3,
+      "prerequisites": "",
+      "requirements": [
+        {
+          "scope": "faculty",
+          "kind": "required",
+          "page": 15
+        }
+      ]
+    },
+    {
+      "code": "CS 241",
+      "code_ar": "حسب 241",
+      "title_ar": "نظم التشغيل 1",
+      "title_en": "Operating Systems 1",
+      "year": 2,
+      "credit_hours": 3,
+      "prerequisites": "CS 112",
+      "requirements": [
+        {
+          "scope": "faculty",
+          "kind": "required",
+          "page": 16
+        }
+      ]
+    },
+    {
+      "code": "CS 251",
+      "code_ar": "حسب 251",
+      "title_ar": "هندسة البرمجيات 1",
+      "title_en": "Software Engineering 1",
+      "year": 2,
+      "credit_hours": 3,
+      "prerequisites": "CS 112",
+      "requirements": [
+        {
+          "scope": "faculty",
+          "kind": "required",
+          "page": 16
+        }
+      ]
+    },
+    {
+      "code": "HU 213",
+      "code_ar": "إنس 213",
+      "title_ar": "لغة إنجليزية 3",
+      "title_en": "English III",
+      "year": 2,
+      "credit_hours": 3,
+      "prerequisites": "HU 111، HU 112",
+      "requirements": [
+        {
+          "scope": "general",
+          "kind": "elective",
+          "page": 14
+        }
+      ]
+    },
+    {
+      "code": "IS 211",
+      "code_ar": "نال 211",
+      "title_ar": "نظم قواعد البيانات 1",
+      "title_en": "Database System 1",
+      "year": 2,
+      "credit_hours": 3,
+      "prerequisites": "",
+      "requirements": [
+        {
+          "scope": "faculty",
+          "kind": "required",
+          "page": 16
+        }
+      ]
+    },
+    {
+      "code": "IS 231",
+      "code_ar": "نال 231",
+      "title_ar": "أساسيات نظم المعلومات",
+      "title_en": "Fundamentals of Information Systems",
+      "year": 2,
+      "credit_hours": 3,
+      "prerequisites": "",
+      "requirements": [
+        {
+          "scope": "faculty",
+          "kind": "required",
+          "page": 16
+        }
+      ]
+    },
+    {
+      "code": "IS 240",
+      "code_ar": "نال 240",
+      "title_ar": "بحوث العمليات",
+      "title_en": "Operations Research",
+      "year": 2,
+      "credit_hours": 3,
+      "prerequisites": "",
+      "requirements": [
+        {
+          "scope": "faculty",
+          "kind": "required",
+          "page": 16
+        }
+      ]
+    },
+    {
+      "code": "IS 241",
+      "code_ar": "نال 241",
+      "title_ar": "النمذجة والمحاكاة",
+      "title_en": "Modeling and Simulation",
+      "year": 2,
+      "credit_hours": 3,
+      "prerequisites": "",
+      "requirements": [
+        {
+          "scope": "faculty",
+          "kind": "elective",
+          "page": 17
+        }
+      ]
+    },
+    {
+      "code": "IT 211",
+      "code_ar": "تقن 211",
+      "title_ar": "صيانة الحاسب",
+      "title_en": "Computer Maintenance",
+      "year": 2,
+      "credit_hours": 3,
+      "prerequisites": "",
+      "requirements": [
+        {
+          "scope": "faculty",
+          "kind": "elective",
+          "page": 17
+        }
+      ]
+    },
+    {
+      "code": "IT 221",
+      "code_ar": "تقن 221",
+      "title_ar": "تراسل البيانات",
+      "title_en": "Data Communication",
+      "year": 2,
+      "credit_hours": 3,
+      "prerequisites": "ST 121",
+      "requirements": [
+        {
+          "scope": "faculty",
+          "kind": "required",
+          "page": 16
+        }
+      ]
+    },
+    {
+      "code": "IT 222",
+      "code_ar": "تقن 222",
+      "title_ar": "شبكات الحاسبات 1",
+      "title_en": "Computer Networks 1",
+      "year": 2,
+      "credit_hours": 3,
+      "prerequisites": "IT 221",
+      "requirements": [
+        {
+          "scope": "faculty",
+          "kind": "required",
+          "page": 16
+        }
+      ]
+    },
+    {
+      "code": "IT 223",
+      "code_ar": "تقن 223",
+      "title_ar": "تكنولوجيا الإنترنت",
+      "title_en": "Internet Technology",
+      "year": 2,
+      "credit_hours": 3,
+      "prerequisites": "",
+      "requirements": [
+        {
+          "scope": "faculty",
+          "kind": "required",
+          "page": 16
+        }
+      ]
+    },
+    {
+      "code": "IT 241",
+      "code_ar": "تقن 241",
+      "title_ar": "إشارات ونظم",
+      "title_en": "Signals and Systems",
+      "year": 2,
+      "credit_hours": 3,
+      "prerequisites": "MA 113",
+      "requirements": [
+        {
+          "scope": "faculty",
+          "kind": "elective",
+          "page": 17
+        }
+      ]
+    },
+    {
+      "code": "AI 310",
+      "code_ar": "ذك 310",
+      "title_ar": "الذكاء الاصطناعي",
+      "title_en": "Artificial Intelligence",
+      "year": 3,
+      "credit_hours": 3,
+      "prerequisites": "CS 316",
+      "requirements": [
+        {
+          "scope": "cs",
+          "kind": "required",
+          "page": 18
+        },
+        {
+          "scope": "it",
+          "kind": "required",
+          "page": 21
+        },
+        {
+          "scope": "is",
+          "kind": "elective",
+          "page": 25
+        },
+        {
+          "scope": "ai",
+          "kind": "required",
+          "page": 27
+        }
+      ]
+    },
+    {
+      "code": "AI 320",
+      "code_ar": "ذك 320",
+      "title_ar": "نظرية التحسين المحدبة",
+      "title_en": "Convex Optimization Theory",
+      "year": 3,
+      "credit_hours": 3,
+      "prerequisites": "MA 113",
+      "requirements": [
+        {
+          "scope": "ai",
+          "kind": "required",
+          "page": 27
+        }
+      ]
+    },
+    {
+      "code": "AI 330",
+      "code_ar": "ذك 330",
+      "title_ar": "تعلم الآلة",
+      "title_en": "Machine Learning",
+      "year": 3,
+      "credit_hours": 3,
+      "prerequisites": "ST 122",
+      "requirements": [
+        {
+          "scope": "cs",
+          "kind": "required",
+          "page": 18
+        },
+        {
+          "scope": "ai",
+          "kind": "required",
+          "page": 27
+        }
+      ]
+    },
+    {
+      "code": "AI 335",
+      "code_ar": "ذك 335",
+      "title_ar": "الشبكات العصبية والتعلم العميق",
+      "title_en": "Neural Networks & Deep Learning",
+      "year": 3,
+      "credit_hours": 3,
+      "prerequisites": "AI 330",
+      "requirements": [
+        {
+          "scope": "cs",
+          "kind": "elective",
+          "page": 19
+        },
+        {
+          "scope": "ai",
+          "kind": "required",
+          "page": 27
+        }
+      ]
+    },
+    {
+      "code": "AI 350",
+      "code_ar": "ذك 350",
+      "title_ar": "التمثيل المرئي للبيانات",
+      "title_en": "Data Visualization",
+      "year": 3,
+      "credit_hours": 3,
+      "prerequisites": "ST 122",
+      "requirements": [
+        {
+          "scope": "cs",
+          "kind": "elective",
+          "page": 19
+        },
+        {
+          "scope": "ai",
+          "kind": "elective",
+          "page": 29
+        }
+      ]
+    },
+    {
+      "code": "AI 360",
+      "code_ar": "ذك 360",
+      "title_ar": "معالجة اللغات الطبيعية",
+      "title_en": "Natural Language Processing",
+      "year": 3,
+      "credit_hours": 3,
+      "prerequisites": "AI 310",
+      "requirements": [
+        {
+          "scope": "cs",
+          "kind": "elective",
+          "page": 19
+        },
+        {
+          "scope": "ai",
+          "kind": "required",
+          "page": 27
+        }
+      ]
+    },
+    {
+      "code": "AI 370",
+      "code_ar": "ذك 370",
+      "title_ar": "تعلم الآلة المتقدم",
+      "title_en": "Advanced Machine Learning",
+      "year": 3,
+      "credit_hours": 3,
+      "prerequisites": "AI 330",
+      "requirements": [
+        {
+          "scope": "ai",
+          "kind": "required",
+          "page": 27
+        }
+      ]
+    },
+    {
+      "code": "AI 380",
+      "code_ar": "ذك 380",
+      "title_ar": "التفاعل بين الإنسان والآلة",
+      "title_en": "Human Computer Interaction",
+      "year": 3,
+      "credit_hours": 3,
+      "prerequisites": "AI 310",
+      "requirements": [
+        {
+          "scope": "cs",
+          "kind": "elective",
+          "page": 19
+        },
+        {
+          "scope": "ai",
+          "kind": "elective",
+          "page": 28
+        }
+      ]
+    },
+    {
+      "code": "CS 313",
+      "code_ar": "حسب 313",
+      "title_ar": "برمجة الحاسبات 3",
+      "title_en": "Programming 3",
+      "year": 3,
+      "credit_hours": 3,
+      "prerequisites": "CS 213",
+      "requirements": [
+        {
+          "scope": "faculty",
+          "kind": "elective",
+          "page": 17
+        }
+      ]
+    },
+    {
+      "code": "CS 316",
+      "code_ar": "حسب 316",
+      "title_ar": "خوارزميات",
+      "title_en": "Algorithms",
+      "year": 3,
+      "credit_hours": 3,
+      "prerequisites": "CS 214",
+      "requirements": [
+        {
+          "scope": "faculty",
+          "kind": "required",
+          "page": 16
+        }
+      ]
+    },
+    {
+      "code": "CS 322",
+      "code_ar": "حسب 322",
+      "title_ar": "تنظيم الحاسبات",
+      "title_en": "Computer Organization",
+      "year": 3,
+      "credit_hours": 3,
+      "prerequisites": "CS 221",
+      "requirements": [
+        {
+          "scope": "cs",
+          "kind": "required",
+          "page": 18
+        }
+      ]
+    },
+    {
+      "code": "CS 342",
+      "code_ar": "حسب 342",
+      "title_ar": "نظم التشغيل 2",
+      "title_en": "Operating Systems II",
+      "year": 3,
+      "credit_hours": 3,
+      "prerequisites": "CS 241",
+      "requirements": [
+        {
+          "scope": "cs",
+          "kind": "required",
+          "page": 18
+        }
+      ]
+    },
+    {
+      "code": "CS 352",
+      "code_ar": "حسب 352",
+      "title_ar": "هندسة البرمجيات 2",
+      "title_en": "Software Engineering 2",
+      "year": 3,
+      "credit_hours": 3,
+      "prerequisites": "CS 251",
+      "requirements": [
+        {
+          "scope": "cs",
+          "kind": "required",
+          "page": 18
+        },
+        {
+          "scope": "it",
+          "kind": "elective",
+          "page": 22
+        },
+        {
+          "scope": "is",
+          "kind": "elective",
+          "page": 25
+        }
+      ]
+    },
+    {
+      "code": "HU 313",
+      "code_ar": "إنس 313",
+      "title_ar": "حقوق الإنسان ومكافحة الفساد",
+      "title_en": "Human Rights",
+      "year": 3,
+      "credit_hours": 2,
+      "prerequisites": "",
+      "requirements": [
+        {
+          "scope": "general",
+          "kind": "required",
+          "page": 14
+        }
+      ]
+    },
+    {
+      "code": "HU 323",
+      "code_ar": "إنس 323",
+      "title_ar": "مبادئ المحاسبة",
+      "title_en": "Fundamentals of Accounting",
+      "year": 3,
+      "credit_hours": 3,
+      "prerequisites": "",
+      "requirements": [
+        {
+          "scope": "general",
+          "kind": "elective",
+          "page": 14
+        }
+      ]
+    },
+    {
+      "code": "HU 331",
+      "code_ar": "إنس 331",
+      "title_ar": "مهارات التفاوض والاتصال",
+      "title_en": "Communication & Negotiation Skills",
+      "year": 3,
+      "credit_hours": 3,
+      "prerequisites": "",
+      "requirements": [
+        {
+          "scope": "general",
+          "kind": "elective",
+          "page": 14
+        }
+      ]
+    },
+    {
+      "code": "HU 332",
+      "code_ar": "إنس 332",
+      "title_ar": "التفكير الإبداعي",
+      "title_en": "Creative Thinking",
+      "year": 3,
+      "credit_hours": 3,
+      "prerequisites": "",
+      "requirements": [
+        {
+          "scope": "general",
+          "kind": "elective",
+          "page": 14
+        }
+      ]
+    },
+    {
+      "code": "HU 333",
+      "code_ar": "إنس 333",
+      "title_ar": "الإعلام",
+      "title_en": "Mass Communication",
+      "year": 3,
+      "credit_hours": 3,
+      "prerequisites": "",
+      "requirements": [
+        {
+          "scope": "general",
+          "kind": "elective",
+          "page": 14
+        }
+      ]
+    },
+    {
+      "code": "HU 334",
+      "code_ar": "إنس 334",
+      "title_ar": "أخلاقيات المهنة",
+      "title_en": "Professional Ethics",
+      "year": 3,
+      "credit_hours": 3,
+      "prerequisites": "",
+      "requirements": [
+        {
+          "scope": "general",
+          "kind": "elective",
+          "page": 14
+        }
+      ]
+    },
+    {
+      "code": "IS 312",
+      "code_ar": "نال 312",
+      "title_ar": "نظم قواعد البيانات 2",
+      "title_en": "Database Systems 2",
+      "year": 3,
+      "credit_hours": 3,
+      "prerequisites": "IS 211",
+      "requirements": [
+        {
+          "scope": "cs",
+          "kind": "elective",
+          "page": 20
+        },
+        {
+          "scope": "it",
+          "kind": "elective",
+          "page": 22
+        },
+        {
+          "scope": "is",
+          "kind": "required",
+          "page": 24
+        },
+        {
+          "scope": "ai",
+          "kind": "elective",
+          "page": 29
+        }
+      ]
+    },
+    {
+      "code": "IS 313",
+      "code_ar": "نال 313",
+      "title_ar": "تخزين واسترجاع البيانات",
+      "title_en": "Data Storage and Retrieval",
+      "year": 3,
+      "credit_hours": 3,
+      "prerequisites": "IS 211",
+      "requirements": [
+        {
+          "scope": "is",
+          "kind": "required",
+          "page": 24
+        }
+      ]
+    },
+    {
+      "code": "IS 321",
+      "code_ar": "نال 321",
+      "title_ar": "إدارة المشروعات",
+      "title_en": "Projects Management",
+      "year": 3,
+      "credit_hours": 3,
+      "prerequisites": "IS 240",
+      "requirements": [
+        {
+          "scope": "faculty",
+          "kind": "elective",
+          "page": 17
+        }
+      ]
+    },
+    {
+      "code": "IS 333",
+      "code_ar": "نال 333",
+      "title_ar": "نظم المعلومات الإدارية",
+      "title_en": "Management Information Systems",
+      "year": 3,
+      "credit_hours": 3,
+      "prerequisites": "IS 231",
+      "requirements": [
+        {
+          "scope": "is",
+          "kind": "required",
+          "page": 24
+        }
+      ]
+    },
+    {
+      "code": "IS 334",
+      "code_ar": "نال 334",
+      "title_ar": "نظم المعلومات المحاسبية",
+      "title_en": "Accounting Information Systems",
+      "year": 3,
+      "credit_hours": 3,
+      "prerequisites": "IS 231",
+      "requirements": [
+        {
+          "scope": "is",
+          "kind": "elective",
+          "page": 25
+        }
+      ]
+    },
+    {
+      "code": "IS 342",
+      "code_ar": "نال 342",
+      "title_ar": "لغات المحاكاة",
+      "title_en": "Simulation Languages",
+      "year": 3,
+      "credit_hours": 3,
+      "prerequisites": "IS 241",
+      "requirements": [
+        {
+          "scope": "faculty",
+          "kind": "elective",
+          "page": 17
+        }
+      ]
+    },
+    {
+      "code": "IS 345",
+      "code_ar": "نال 345",
+      "title_ar": "تطبيقات الإنترنت",
+      "title_en": "Internet Applications",
+      "year": 3,
+      "credit_hours": 3,
+      "prerequisites": "IT 223",
+      "requirements": [
+        {
+          "scope": "it",
+          "kind": "elective",
+          "page": 22
+        },
+        {
+          "scope": "is",
+          "kind": "required",
+          "page": 24
+        }
+      ]
+    },
+    {
+      "code": "IS 350",
+      "code_ar": "نال 350",
+      "title_ar": "ذكاء الأعمال وتحليل البيانات",
+      "title_en": "Business Intelligence and Data Analytics",
+      "year": 3,
+      "credit_hours": 3,
+      "prerequisites": "ST 122",
+      "requirements": [
+        {
+          "scope": "is",
+          "kind": "required",
+          "page": 24
+        }
+      ]
+    },
+    {
+      "code": "IS 351",
+      "code_ar": "نال 351",
+      "title_ar": "تحليل وتصميم نظم المعلومات 1",
+      "title_en": "System Analysis and Design 1",
+      "year": 3,
+      "credit_hours": 3,
+      "prerequisites": "IS 231",
+      "requirements": [
+        {
+          "scope": "faculty",
+          "kind": "required",
+          "page": 16
+        }
+      ]
+    },
+    {
+      "code": "IS 352",
+      "code_ar": "نال 352",
+      "title_ar": "تحليل وتصميم نظم المعلومات 2",
+      "title_en": "Analysis and Design of Information Systems 2",
+      "year": 3,
+      "credit_hours": 3,
+      "prerequisites": "IS 351",
+      "requirements": [
+        {
+          "scope": "is",
+          "kind": "required",
+          "page": 24
+        }
+      ]
+    },
+    {
+      "code": "IS 360",
+      "code_ar": "نال 360",
+      "title_ar": "مقدمة في علم البيانات",
+      "title_en": "Introduction to Data Science",
+      "year": 3,
+      "credit_hours": 3,
+      "prerequisites": "IS 312",
+      "requirements": [
+        {
+          "scope": "is",
+          "kind": "required",
+          "page": 24
+        },
+        {
+          "scope": "ai",
+          "kind": "elective",
+          "page": 29
+        }
+      ]
+    },
+    {
+      "code": "IS 365",
+      "code_ar": "نال 365",
+      "title_ar": "تكنولوجيا البيانات الكبيرة",
+      "title_en": "Big Data Technologies",
+      "year": 3,
+      "credit_hours": 3,
+      "prerequisites": "IS 211",
+      "requirements": [
+        {
+          "scope": "is",
+          "kind": "required",
+          "page": 24
+        },
+        {
+          "scope": "ai",
+          "kind": "required",
+          "page": 27
+        }
+      ]
+    },
+    {
+      "code": "IT 311",
+      "code_ar": "تقن 311",
+      "title_ar": "عمارة الحاسبات",
+      "title_en": "Computer Architecture",
+      "year": 3,
+      "credit_hours": 3,
+      "prerequisites": "CS 221",
+      "requirements": [
+        {
+          "scope": "it",
+          "kind": "required",
+          "page": 21
+        }
+      ]
+    },
+    {
+      "code": "IT 312",
+      "code_ar": "تقن 312",
+      "title_ar": "المعالجات الدقيقة",
+      "title_en": "Microprocessors",
+      "year": 3,
+      "credit_hours": 3,
+      "prerequisites": "CS 221",
+      "requirements": [
+        {
+          "scope": "cs",
+          "kind": "elective",
+          "page": 19
+        },
+        {
+          "scope": "it",
+          "kind": "elective",
+          "page": 22
+        },
+        {
+          "scope": "ai",
+          "kind": "elective",
+          "page": 28
+        }
+      ]
+    },
+    {
+      "code": "IT 313",
+      "code_ar": "تقن 313",
+      "title_ar": "واجهات الحاسبات",
+      "title_en": "Computer Interfaces",
+      "year": 3,
+      "credit_hours": 3,
+      "prerequisites": "IT 311",
+      "requirements": [
+        {
+          "scope": "it",
+          "kind": "elective",
+          "page": 22
+        }
+      ]
+    },
+    {
+      "code": "IT 321",
+      "code_ar": "تقن 321",
+      "title_ar": "تكنولوجيا الاتصالات",
+      "title_en": "Communication Technology",
+      "year": 3,
+      "credit_hours": 3,
+      "prerequisites": "IT 221",
+      "requirements": [
+        {
+          "scope": "it",
+          "kind": "required",
+          "page": 21
+        }
+      ]
+    },
+    {
+      "code": "IT 322",
+      "code_ar": "تقن 322",
+      "title_ar": "شبكات الحاسبات 2",
+      "title_en": "Computer Networks 2",
+      "year": 3,
+      "credit_hours": 3,
+      "prerequisites": "IT 222",
+      "requirements": [
+        {
+          "scope": "it",
+          "kind": "required",
+          "page": 21
+        }
+      ]
+    },
+    {
+      "code": "IT 331",
+      "code_ar": "تقن 331",
+      "title_ar": "نظم الرسم بالحاسب 1",
+      "title_en": "Computer Graphics 1",
+      "year": 3,
+      "credit_hours": 3,
+      "prerequisites": "CS 112",
+      "requirements": [
+        {
+          "scope": "cs",
+          "kind": "required",
+          "page": 18
+        },
+        {
+          "scope": "it",
+          "kind": "required",
+          "page": 21
+        }
+      ]
+    },
+    {
+      "code": "IT 332",
+      "code_ar": "تقن 332",
+      "title_ar": "نظم الرسم بالحاسب 2",
+      "title_en": "Computer Graphics 2",
+      "year": 3,
+      "credit_hours": 3,
+      "prerequisites": "IT 331",
+      "requirements": [
+        {
+          "scope": "it",
+          "kind": "elective",
+          "page": 22
+        }
+      ]
+    },
+    {
+      "code": "IT 341",
+      "code_ar": "تقن 341",
+      "title_ar": "معالجة الإشارات الرقمية",
+      "title_en": "Digital Signal Processing",
+      "year": 3,
+      "credit_hours": 3,
+      "prerequisites": "MA 112",
+      "requirements": [
+        {
+          "scope": "it",
+          "kind": "required",
+          "page": 21
+        },
+        {
+          "scope": "ai",
+          "kind": "elective",
+          "page": 28
+        }
+      ]
+    },
+    {
+      "code": "IT 342",
+      "code_ar": "تقن 342",
+      "title_ar": "التعرف على الأنماط",
+      "title_en": "Pattern Recognition",
+      "year": 3,
+      "credit_hours": 3,
+      "prerequisites": "",
+      "requirements": [
+        {
+          "scope": "cs",
+          "kind": "elective",
+          "page": 20
+        },
+        {
+          "scope": "it",
+          "kind": "required",
+          "page": 21
+        }
+      ]
+    },
+    {
+      "code": "AI 420",
+      "code_ar": "ذك 420",
+      "title_ar": "الخوارزميات التطورية",
+      "title_en": "Evolutionary Algorithms",
+      "year": 4,
+      "credit_hours": 3,
+      "prerequisites": "AI 320",
+      "requirements": [
+        {
+          "scope": "ai",
+          "kind": "required",
+          "page": 27
+        }
+      ]
+    },
+    {
+      "code": "AI 430",
+      "code_ar": "ذك 430",
+      "title_ar": "الذكاء الحسابي",
+      "title_en": "Computational Intelligence",
+      "year": 4,
+      "credit_hours": 3,
+      "prerequisites": "AI 310",
+      "requirements": [
+        {
+          "scope": "ai",
+          "kind": "required",
+          "page": 27
+        }
+      ]
+    },
+    {
+      "code": "AI 435",
+      "code_ar": "ذك 435",
+      "title_ar": "معالجة اللغات المنطوقة",
+      "title_en": "Spoken Language Processing",
+      "year": 4,
+      "credit_hours": 3,
+      "prerequisites": "AI 360",
+      "requirements": [
+        {
+          "scope": "ai",
+          "kind": "elective",
+          "page": 29
+        }
+      ]
+    },
+    {
+      "code": "AI 457",
+      "code_ar": "ذك 457",
+      "title_ar": "تمثيل المعرفة",
+      "title_en": "Knowledge Representation",
+      "year": 4,
+      "credit_hours": 3,
+      "prerequisites": "AI 310",
+      "requirements": [
+        {
+          "scope": "ai",
+          "kind": "elective",
+          "page": 29
+        }
+      ]
+    },
+    {
+      "code": "AI 460",
+      "code_ar": "ذك 460",
+      "title_ar": "فهم اللغات الطبيعية",
+      "title_en": "Natural Language Understanding",
+      "year": 4,
+      "credit_hours": 3,
+      "prerequisites": "AI 360",
+      "requirements": [
+        {
+          "scope": "ai",
+          "kind": "required",
+          "page": 27
+        }
+      ]
+    },
+    {
+      "code": "AI 490",
+      "code_ar": "ذك 490",
+      "title_ar": "المعلوماتية الحيوية",
+      "title_en": "Bioinformatics",
+      "year": 4,
+      "credit_hours": 3,
+      "prerequisites": "AI 310",
+      "requirements": [
+        {
+          "scope": "ai",
+          "kind": "elective",
+          "page": 28
+        }
+      ]
+    },
+    {
+      "code": "AI 496",
+      "code_ar": "ذك 496",
+      "title_ar": "موضوعات مختارة في الذكاء الاصطناعي",
+      "title_en": "Selected Topics in Artificial Intelligence",
+      "year": 4,
+      "credit_hours": 3,
+      "prerequisites": "المستوى الرابع",
+      "requirements": [
+        {
+          "scope": "ai",
+          "kind": "elective",
+          "page": 29
+        }
+      ]
+    },
+    {
+      "code": "AI 498",
+      "code_ar": "ذك 498",
+      "title_ar": "مشروع الذكاء الاصطناعي",
+      "title_en": "Project — Artificial Intelligence",
+      "year": 4,
+      "credit_hours": 6,
+      "prerequisites": "CS 251؛ شروط المشروع وفقًا للمادة 8",
+      "requirements": [
+        {
+          "scope": "ai",
+          "kind": "required",
+          "page": 27
+        }
+      ]
+    },
+    {
+      "code": "CS 405",
+      "code_ar": "حسب 405",
+      "title_ar": "نظرية الحسابات",
+      "title_en": "Theory of Computation",
+      "year": 4,
+      "credit_hours": 3,
+      "prerequisites": "MA 112",
+      "requirements": [
+        {
+          "scope": "cs",
+          "kind": "required",
+          "page": 18
+        }
+      ]
+    },
+    {
+      "code": "CS 410",
+      "code_ar": "حسب 410",
+      "title_ar": "مفاهيم لغات البرمجة",
+      "title_en": "Concepts of Programming Languages",
+      "year": 4,
+      "credit_hours": 3,
+      "prerequisites": "CS 112",
+      "requirements": [
+        {
+          "scope": "cs",
+          "kind": "elective",
+          "page": 19
+        }
+      ]
+    },
+    {
+      "code": "CS 416",
+      "code_ar": "حسب 416",
+      "title_ar": "الخوارزميات المتقدمة",
+      "title_en": "Advanced Algorithms",
+      "year": 4,
+      "credit_hours": 3,
+      "prerequisites": "CS 316",
+      "requirements": [
+        {
+          "scope": "cs",
+          "kind": "elective",
+          "page": 19
+        },
+        {
+          "scope": "ai",
+          "kind": "elective",
+          "page": 28
+        }
+      ]
+    },
+    {
+      "code": "CS 419",
+      "code_ar": "حسب 419",
+      "title_ar": "المترجمات",
+      "title_en": "Compilers",
+      "year": 4,
+      "credit_hours": 3,
+      "prerequisites": "CS 214",
+      "requirements": [
+        {
+          "scope": "cs",
+          "kind": "required",
+          "page": 18
+        }
+      ]
+    },
+    {
+      "code": "CS 460",
+      "code_ar": "حسب 460",
+      "title_ar": "النظم الموزعة والحوسبة السحابية",
+      "title_en": "Distributed Systems and Cloud Computing",
+      "year": 4,
+      "credit_hours": 3,
+      "prerequisites": "IT 222",
+      "requirements": [
+        {
+          "scope": "cs",
+          "kind": "required",
+          "page": 18
+        },
+        {
+          "scope": "ai",
+          "kind": "elective",
+          "page": 28
+        }
+      ]
+    },
+    {
+      "code": "CS 471",
+      "code_ar": "حسب 471",
+      "title_ar": "المعالجة على التوازي والحسابات عالية الأداء",
+      "title_en": "Parallel Processing and High Performance Computing",
+      "year": 4,
+      "credit_hours": 3,
+      "prerequisites": "CS 241",
+      "requirements": [
+        {
+          "scope": "cs",
+          "kind": "required",
+          "page": 18
+        },
+        {
+          "scope": "ai",
+          "kind": "elective",
+          "page": 28
+        }
+      ]
+    },
+    {
+      "code": "CS 480",
+      "code_ar": "حسب 480",
+      "title_ar": "التشفير",
+      "title_en": "Cryptography",
+      "year": 4,
+      "credit_hours": 3,
+      "prerequisites": "ST 121",
+      "requirements": [
+        {
+          "scope": "cs",
+          "kind": "elective",
+          "page": 19
+        },
+        {
+          "scope": "ai",
+          "kind": "elective",
+          "page": 28
+        }
+      ]
+    },
+    {
+      "code": "CS 496",
+      "code_ar": "حسب 496",
+      "title_ar": "موضوعات مختارة في علوم الحاسب",
+      "title_en": "Selected Topics in Computer Science",
+      "year": 4,
+      "credit_hours": 3,
+      "prerequisites": "المستوى الرابع",
+      "requirements": [
+        {
+          "scope": "cs",
+          "kind": "elective",
+          "page": 20
+        }
+      ]
+    },
+    {
+      "code": "CS 498",
+      "code_ar": "حسب 498",
+      "title_ar": "مشروع علوم الحاسب",
+      "title_en": "Project — Computer Science",
+      "year": 4,
+      "credit_hours": 6,
+      "prerequisites": "CS 251؛ شروط المشروع وفقًا للمادة 8",
+      "requirements": [
+        {
+          "scope": "cs",
+          "kind": "required",
+          "page": 18
+        }
+      ]
+    },
+    {
+      "code": "IS 414",
+      "code_ar": "نال 414",
+      "title_ar": "تأمين نظم المعلومات",
+      "title_en": "Information Systems Security",
+      "year": 4,
+      "credit_hours": 3,
+      "prerequisites": "IS 211",
+      "requirements": [
+        {
+          "scope": "is",
+          "kind": "required",
+          "page": 24
+        }
+      ]
+    },
+    {
+      "code": "IS 415",
+      "code_ar": "نال 415",
+      "title_ar": "قواعد البيانات الشيئية",
+      "title_en": "Object Oriented Databases",
+      "year": 4,
+      "credit_hours": 3,
+      "prerequisites": "IS 211",
+      "requirements": [
+        {
+          "scope": "is",
+          "kind": "elective",
+          "page": 25
+        }
+      ]
+    },
+    {
+      "code": "IS 416",
+      "code_ar": "نال 416",
+      "title_ar": "قواعد البيانات الموزعة",
+      "title_en": "Distributed Databases",
+      "year": 4,
+      "credit_hours": 3,
+      "prerequisites": "IS 211",
+      "requirements": [
+        {
+          "scope": "is",
+          "kind": "elective",
+          "page": 26
+        }
+      ]
+    },
+    {
+      "code": "IS 421",
+      "code_ar": "نال 421",
+      "title_ar": "التنقيب في البيانات",
+      "title_en": "Data Mining",
+      "year": 4,
+      "credit_hours": 3,
+      "prerequisites": "IS 211",
+      "requirements": [
+        {
+          "scope": "is",
+          "kind": "elective",
+          "page": 25
+        }
+      ]
+    },
+    {
+      "code": "IS 422",
+      "code_ar": "نال 422",
+      "title_ar": "مستودعات البيانات",
+      "title_en": "Data Warehousing",
+      "year": 4,
+      "credit_hours": 3,
+      "prerequisites": "IS 211",
+      "requirements": [
+        {
+          "scope": "is",
+          "kind": "elective",
+          "page": 26
+        }
+      ]
+    },
+    {
+      "code": "IS 434",
+      "code_ar": "نال 434",
+      "title_ar": "تأكيد جودة البرمجيات ونظم المعلومات",
+      "title_en": "Quality Assurance of Information Systems and Programming",
+      "year": 4,
+      "credit_hours": 3,
+      "prerequisites": "IS 352",
+      "requirements": [
+        {
+          "scope": "cs",
+          "kind": "elective",
+          "page": 20
+        },
+        {
+          "scope": "is",
+          "kind": "elective",
+          "page": 25
+        }
+      ]
+    },
+    {
+      "code": "IS 435",
+      "code_ar": "نال 435",
+      "title_ar": "إدارة مراكز المعلومات",
+      "title_en": "Information Centers Management",
+      "year": 4,
+      "credit_hours": 3,
+      "prerequisites": "",
+      "requirements": [
+        {
+          "scope": "is",
+          "kind": "elective",
+          "page": 25
+        }
+      ]
+    },
+    {
+      "code": "IS 441",
+      "code_ar": "نال 441",
+      "title_ar": "نظم المعلومات الذكية",
+      "title_en": "Intelligent Information Systems",
+      "year": 4,
+      "credit_hours": 3,
+      "prerequisites": "AI 310",
+      "requirements": [
+        {
+          "scope": "is",
+          "kind": "elective",
+          "page": 25
+        }
+      ]
+    },
+    {
+      "code": "IS 442",
+      "code_ar": "نال 442",
+      "title_ar": "التجارة الإلكترونية",
+      "title_en": "E-Commerce",
+      "year": 4,
+      "credit_hours": 3,
+      "prerequisites": "IS 345",
+      "requirements": [
+        {
+          "scope": "is",
+          "kind": "elective",
+          "page": 25
+        }
+      ]
+    },
+    {
+      "code": "IS 443",
+      "code_ar": "نال 443",
+      "title_ar": "نظم المعلومات الجغرافية",
+      "title_en": "Geographical Information Systems",
+      "year": 4,
+      "credit_hours": 3,
+      "prerequisites": "IS 211",
+      "requirements": [
+        {
+          "scope": "is",
+          "kind": "elective",
+          "page": 26
+        }
+      ]
+    },
+    {
+      "code": "IS 444",
+      "code_ar": "نال 444",
+      "title_ar": "نظم معلومات الوسائط المتعددة",
+      "title_en": "Multimedia Information Systems",
+      "year": 4,
+      "credit_hours": 3,
+      "prerequisites": "IS 211",
+      "requirements": [
+        {
+          "scope": "is",
+          "kind": "elective",
+          "page": 26
+        }
+      ]
+    },
+    {
+      "code": "IS 448",
+      "code_ar": "نال 448",
+      "title_ar": "إدارة قواعد المعرفة",
+      "title_en": "Knowledge Base Management",
+      "year": 4,
+      "credit_hours": 3,
+      "prerequisites": "IS 312",
+      "requirements": [
+        {
+          "scope": "is",
+          "kind": "required",
+          "page": 24
+        }
+      ]
+    },
+    {
+      "code": "IS 450",
+      "code_ar": "نال 450",
+      "title_ar": "اختبار وتكامل البيانات",
+      "title_en": "Software Testing and Integration",
+      "year": 4,
+      "credit_hours": 3,
+      "prerequisites": "IS 352",
+      "requirements": [
+        {
+          "scope": "is",
+          "kind": "elective",
+          "page": 26
+        }
+      ]
+    },
+    {
+      "code": "IS 451",
+      "code_ar": "نال 451",
+      "title_ar": "نظم دعم اتخاذ القرار",
+      "title_en": "Decision Support Systems",
+      "year": 4,
+      "credit_hours": 3,
+      "prerequisites": "IS 231",
+      "requirements": [
+        {
+          "scope": "is",
+          "kind": "required",
+          "page": 24
+        }
+      ]
+    },
+    {
+      "code": "IS 453",
+      "code_ar": "نال 453",
+      "title_ar": "منهجيات تطوير نظم المعلومات",
+      "title_en": "Information Systems Development Methodologies",
+      "year": 4,
+      "credit_hours": 3,
+      "prerequisites": "IS 352",
+      "requirements": [
+        {
+          "scope": "is",
+          "kind": "elective",
+          "page": 25
+        }
+      ]
+    },
+    {
+      "code": "IS 455",
+      "code_ar": "نال 455",
+      "title_ar": "ضمان جودة البرمجيات واختبارها",
+      "title_en": "Software Quality Assurance and Testing",
+      "year": 4,
+      "credit_hours": 3,
+      "prerequisites": "IS 231",
+      "requirements": [
+        {
+          "scope": "is",
+          "kind": "elective",
+          "page": 26
+        }
+      ]
+    },
+    {
+      "code": "IS 460",
+      "code_ar": "نال 460",
+      "title_ar": "مقدمة في التعلم العميق",
+      "title_en": "Introduction to Deep Learning",
+      "year": 4,
+      "credit_hours": 3,
+      "prerequisites": "IS 448",
+      "requirements": [
+        {
+          "scope": "is",
+          "kind": "elective",
+          "page": 26
+        }
+      ]
+    },
+    {
+      "code": "IS 496",
+      "code_ar": "نال 496",
+      "title_ar": "موضوعات مختارة في نظم المعلومات",
+      "title_en": "Selected Topics in Information Systems",
+      "year": 4,
+      "credit_hours": 3,
+      "prerequisites": "المستوى الرابع",
+      "requirements": [
+        {
+          "scope": "is",
+          "kind": "elective",
+          "page": 26
+        }
+      ]
+    },
+    {
+      "code": "IS 498",
+      "code_ar": "نال 498",
+      "title_ar": "مشروع نظم المعلومات",
+      "title_en": "Project — Information Systems",
+      "year": 4,
+      "credit_hours": 6,
+      "prerequisites": "IS 351؛ شروط المشروع وفقًا للمادة 8",
+      "requirements": [
+        {
+          "scope": "is",
+          "kind": "required",
+          "page": 24
+        }
+      ]
+    },
+    {
+      "code": "IT 411",
+      "code_ar": "تقن 411",
+      "title_ar": "نظم الحاسبات الموزعة والمتوازية",
+      "title_en": "Distributed and Parallel Computer Systems",
+      "year": 4,
+      "credit_hours": 3,
+      "prerequisites": "IT 311",
+      "requirements": [
+        {
+          "scope": "it",
+          "kind": "elective",
+          "page": 22
+        }
+      ]
+    },
+    {
+      "code": "IT 412",
+      "code_ar": "تقن 412",
+      "title_ar": "نظم الزمن الحقيقي",
+      "title_en": "Real Time Systems",
+      "year": 4,
+      "credit_hours": 3,
+      "prerequisites": "IT 311",
+      "requirements": [
+        {
+          "scope": "it",
+          "kind": "elective",
+          "page": 22
+        }
+      ]
+    },
+    {
+      "code": "IT 414",
+      "code_ar": "تقن 414",
+      "title_ar": "النظم المدمجة",
+      "title_en": "Embedded Systems",
+      "year": 4,
+      "credit_hours": 3,
+      "prerequisites": "IT 312",
+      "requirements": [
+        {
+          "scope": "cs",
+          "kind": "elective",
+          "page": 19
+        },
+        {
+          "scope": "it",
+          "kind": "elective",
+          "page": 23
+        },
+        {
+          "scope": "ai",
+          "kind": "elective",
+          "page": 28
+        }
+      ]
+    },
+    {
+      "code": "IT 415",
+      "code_ar": "تقن 415",
+      "title_ar": "الروبوت",
+      "title_en": "Robotics",
+      "year": 4,
+      "credit_hours": 3,
+      "prerequisites": "MA 112",
+      "requirements": [
+        {
+          "scope": "it",
+          "kind": "elective",
+          "page": 23
+        },
+        {
+          "scope": "ai",
+          "kind": "elective",
+          "page": 29
+        }
+      ]
+    },
+    {
+      "code": "IT 422",
+      "code_ar": "تقن 422",
+      "title_ar": "الشبكات اللاسلكية والمتحركة",
+      "title_en": "Wireless and Mobile Networks",
+      "year": 4,
+      "credit_hours": 3,
+      "prerequisites": "IT 322",
+      "requirements": [
+        {
+          "scope": "it",
+          "kind": "elective",
+          "page": 22
+        }
+      ]
+    },
+    {
+      "code": "IT 423",
+      "code_ar": "تقن 423",
+      "title_ar": "تأمين شبكات الحاسبات والمعلومات",
+      "title_en": "Information and Computer Networks Security",
+      "year": 4,
+      "credit_hours": 3,
+      "prerequisites": "IT 222",
+      "requirements": [
+        {
+          "scope": "cs",
+          "kind": "required",
+          "page": 18
+        },
+        {
+          "scope": "it",
+          "kind": "required",
+          "page": 21
+        },
+        {
+          "scope": "is",
+          "kind": "elective",
+          "page": 26
+        }
+      ]
+    },
+    {
+      "code": "IT 425",
+      "code_ar": "تقن 425",
+      "title_ar": "أنظمة إنترنت الأشياء المدمجة",
+      "title_en": "Embedded Internet of Things Systems",
+      "year": 4,
+      "credit_hours": 3,
+      "prerequisites": "IT 414",
+      "requirements": [
+        {
+          "scope": "it",
+          "kind": "elective",
+          "page": 23
+        },
+        {
+          "scope": "ai",
+          "kind": "elective",
+          "page": 29
+        }
+      ]
+    },
+    {
+      "code": "IT 431",
+      "code_ar": "تقن 431",
+      "title_ar": "الواقع الافتراضي",
+      "title_en": "Virtual Reality",
+      "year": 4,
+      "credit_hours": 3,
+      "prerequisites": "IT 331",
+      "requirements": [
+        {
+          "scope": "it",
+          "kind": "elective",
+          "page": 22
+        }
+      ]
+    },
+    {
+      "code": "IT 433",
+      "code_ar": "تقن 433",
+      "title_ar": "الوسائط المتعددة",
+      "title_en": "Multimedia",
+      "year": 4,
+      "credit_hours": 3,
+      "prerequisites": "CS 112",
+      "requirements": [
+        {
+          "scope": "cs",
+          "kind": "elective",
+          "page": 20
+        },
+        {
+          "scope": "it",
+          "kind": "required",
+          "page": 21
+        }
+      ]
+    },
+    {
+      "code": "IT 441",
+      "code_ar": "تقن 441",
+      "title_ar": "معالجة الصور 1",
+      "title_en": "Image Processing 1",
+      "year": 4,
+      "credit_hours": 3,
+      "prerequisites": "IT 241",
+      "requirements": [
+        {
+          "scope": "cs",
+          "kind": "elective",
+          "page": 19
+        },
+        {
+          "scope": "it",
+          "kind": "required",
+          "page": 21
+        },
+        {
+          "scope": "ai",
+          "kind": "required",
+          "page": 27
+        }
+      ]
+    },
+    {
+      "code": "IT 442",
+      "code_ar": "تقن 442",
+      "title_ar": "معالجة الصور 2",
+      "title_en": "Image Processing 2",
+      "year": 4,
+      "credit_hours": 3,
+      "prerequisites": "IT 441",
+      "requirements": [
+        {
+          "scope": "it",
+          "kind": "elective",
+          "page": 22
+        }
+      ]
+    },
+    {
+      "code": "IT 443",
+      "code_ar": "تقن 443",
+      "title_ar": "معالجة الكلام",
+      "title_en": "Speech Processing",
+      "year": 4,
+      "credit_hours": 3,
+      "prerequisites": "IT 241",
+      "requirements": [
+        {
+          "scope": "it",
+          "kind": "elective",
+          "page": 22
+        },
+        {
+          "scope": "ai",
+          "kind": "elective",
+          "page": 28
+        }
+      ]
+    },
+    {
+      "code": "IT 444",
+      "code_ar": "تقن 444",
+      "title_ar": "الرؤية بالحاسب",
+      "title_en": "Computer Vision",
+      "year": 4,
+      "credit_hours": 3,
+      "prerequisites": "CS 316",
+      "requirements": [
+        {
+          "scope": "cs",
+          "kind": "elective",
+          "page": 20
+        },
+        {
+          "scope": "it",
+          "kind": "required",
+          "page": 21
+        },
+        {
+          "scope": "ai",
+          "kind": "elective",
+          "page": 29
+        }
+      ]
+    },
+    {
+      "code": "IT 455",
+      "code_ar": "تقن 455",
+      "title_ar": "معالجة الصوت والفيديو بالصورة الرقمية",
+      "title_en": "Image, Audio and Video Processing",
+      "year": 4,
+      "credit_hours": 3,
+      "prerequisites": "IT 443",
+      "requirements": [
+        {
+          "scope": "it",
+          "kind": "elective",
+          "page": 23
+        }
+      ]
+    },
+    {
+      "code": "IT 456",
+      "code_ar": "تقن 456",
+      "title_ar": "تصميم الرسوم المتحركة ثلاثية الأبعاد",
+      "title_en": "3D Modeling and Animation",
+      "year": 4,
+      "credit_hours": 3,
+      "prerequisites": "IT 331",
+      "requirements": [
+        {
+          "scope": "it",
+          "kind": "elective",
+          "page": 23
+        }
+      ]
+    },
+    {
+      "code": "IT 457",
+      "code_ar": "تقن 457",
+      "title_ar": "تطوير الألعاب",
+      "title_en": "Game Development",
+      "year": 4,
+      "credit_hours": 3,
+      "prerequisites": "IT 331",
+      "requirements": [
+        {
+          "scope": "it",
+          "kind": "elective",
+          "page": 23
+        }
+      ]
+    },
+    {
+      "code": "IT 496",
+      "code_ar": "تقن 496",
+      "title_ar": "موضوعات مختارة في تكنولوجيا المعلومات",
+      "title_en": "Selected Topics in Information Technology",
+      "year": 4,
+      "credit_hours": 3,
+      "prerequisites": "المستوى الرابع",
+      "requirements": [
+        {
+          "scope": "it",
+          "kind": "elective",
+          "page": 23
+        }
+      ]
+    },
+    {
+      "code": "IT 498",
+      "code_ar": "تقن 498",
+      "title_ar": "مشروع تكنولوجيا المعلومات",
+      "title_en": "Project — Information Technology",
+      "year": 4,
+      "credit_hours": 6,
+      "prerequisites": "IT 222؛ شروط المشروع وفقًا للمادة 8",
+      "requirements": [
+        {
+          "scope": "it",
+          "kind": "required",
+          "page": 21
+        }
+      ]
+    }
+  ]
+}

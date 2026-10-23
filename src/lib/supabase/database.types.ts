@@ -109,6 +109,24 @@ export type Database = {
         >;
         Relationships: [];
       };
+      course_requirements: {
+        Row: {
+          course_id: string;
+          scope: string;
+          kind: string;
+          source_page: number;
+        };
+        Insert: {
+          course_id: string;
+          scope: string;
+          kind: string;
+          source_page: number;
+        };
+        Update: Partial<
+          Database["public"]["Tables"]["course_requirements"]["Insert"]
+        >;
+        Relationships: [];
+      };
       courses: {
         Row: {
           id: string;
@@ -126,6 +144,10 @@ export type Database = {
           created_at: string;
           faculty_id: string | null;
           semester: number | null;
+          code_ar: string | null;
+          credit_hours: number | null;
+          prerequisite_note: string | null;
+          curriculum_source: string | null;
         };
         Insert: {
           id?: string;
@@ -143,6 +165,10 @@ export type Database = {
           created_at?: string;
           faculty_id?: string | null;
           semester?: number | null;
+          code_ar?: string | null;
+          credit_hours?: number | null;
+          prerequisite_note?: string | null;
+          curriculum_source?: string | null;
         };
         Update: Partial<Database["public"]["Tables"]["courses"]["Insert"]>;
         Relationships: [];
@@ -651,11 +677,11 @@ export type Database = {
         Args: { p_email: string; p_username: string };
         Returns: string;
       };
+      admin_overview: { Args: Record<string, never>; Returns: Json };
       finalize_pdf_checked: {
         Args: { p_resource: string | null; p_author: string };
         Returns: undefined;
       };
-      admin_overview: { Args: Record<string, never>; Returns: Json };
       finalize_pdf: { Args: { p_resource: string | null }; Returns: undefined };
       account_active: { Args: Record<string, never>; Returns: boolean };
       is_admin: { Args: Record<string, never>; Returns: boolean };
@@ -746,6 +772,7 @@ export type Database = {
         Args: { p_username: string; p_key: string };
         Returns: string;
       };
+      add_courses: { Args: { p_courses: string[] }; Returns: number };
     };
     Enums: Record<string, never>;
     CompositeTypes: Record<string, never>;

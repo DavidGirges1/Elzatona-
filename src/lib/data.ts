@@ -3,6 +3,7 @@ import { cache } from "react";
 import { studentContext } from "@/lib/auth/session";
 import { createClient, configured, currentUser } from "@/lib/supabase/server";
 import type { Database } from "@/lib/supabase/database.types";
+import { matchesCourse } from "@/lib/course-catalog";
 import { resourceTypes } from "@/lib/validation";
 export type Course = Database["public"]["Tables"]["courses"]["Row"];
 export type Resource = Omit<
@@ -21,31 +22,26 @@ export const getCourse = cache(async (slug: string) => {
   if (error) throw error;
   return data;
 });
-export async function getCourses(query = "") {
+export async function getCourses(query = "", allUniversities = false) {
   if (!configured()) return [];
   const db = await createClient();
   let queryBuilder = db
     .from("courses")
     .select("*")
     .eq("is_active", true)
-    .order("title")
-    .limit(100);
-  if (await currentUser()) {
+    .order("year_level")
+    .order("code")
+    .limit(1000);
+  if (!allUniversities && (await currentUser())) {
     const context = await studentContext();
     if (!context?.ready) return [];
     queryBuilder = queryBuilder
       .eq("university_id", context.university_id!)
-      .eq("faculty_id", context.faculty_id!)
-      .eq("year_level", context.academic_year!);
+      .eq("faculty_id", context.faculty_id!);
   }
   const { data, error } = await queryBuilder;
   if (error) throw error;
-  const q = query.toLocaleLowerCase();
-  return (data || []).filter((c) =>
-    [c.title, c.title_ar, c.title_en, c.code, c.department_ar].some((v) =>
-      v?.toLocaleLowerCase().includes(q),
-    ),
-  );
+  return (data || []).filter((c) => matchesCourse(c, query));
 }
 export async function getFollowedIds() {
   const user = await currentUser();
@@ -57,6 +53,29 @@ export async function getFollowedIds() {
     .eq("user_id", user.id);
   if (error) throw error;
   return (data || []).map((x) => x.course_id);
+}
+export async function getFollowedCourses() {
+  const ids = await getFollowedIds();
+  if (!ids.length) return [];
+  const db = await createClient();
+  const { data, error } = await db
+    .from("courses")
+    .select("*")
+    .in("id", ids)
+    .eq("is_active", true)
+    .order("title");
+  if (error) throw error;
+  return data || [];
+}
+export async function getCourseRequirements(ids: string[]) {
+  if (!configured() || !ids.length) return [];
+  const db = await createClient();
+  const { data, error } = await db
+    .from("course_requirements")
+    .select("*")
+    .in("course_id", ids);
+  if (error) throw error;
+  return data || [];
 }
 export async function getTopics(courseId: string) {
   const db = await createClient();
@@ -70,6 +89,7 @@ export async function getTopics(courseId: string) {
 }
 export type ResourceFilters = {
   courseId?: string;
+  courseIds?: string[];
   q?: string;
   type?: string;
   topic?: string;
@@ -79,6 +99,7 @@ export type ResourceFilters = {
 };
 export async function getResources({
   courseId,
+  courseIds,
   q,
   type,
   topic,
@@ -86,10 +107,11 @@ export async function getResources({
   page = 1,
   ids,
 }: ResourceFilters = {}) {
-  if (!configured() || ids?.length === 0) return [];
+  if (!configured() || ids?.length === 0 || courseIds?.length === 0) return [];
   const db = await createClient();
   let query = db.from("resource_cards").select("*").eq("status", "published");
   if (courseId) query = query.eq("course_id", courseId);
+  if (courseIds) query = query.in("course_id", courseIds);
   if (ids) query = query.in("id", ids);
   if (type && resourceTypes.includes(type as Resource["type"]))
     query = query.eq("type", type);

@@ -1,4 +1,5 @@
 "use server";
+import { requireStudent } from "@/lib/auth/session";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
@@ -33,6 +34,33 @@ export async function follow(
   if (error) return failure();
   revalidatePath("/", "layout");
   return {};
+}
+export async function addCourses(
+  next: string,
+  _state: ActionState,
+  form: FormData,
+): Promise<ActionState> {
+  const parsed = z
+    .array(idSchema)
+    .min(1)
+    .max(100)
+    .safeParse(form.getAll("courses"));
+  if (!parsed.success)
+    return failure("اختار مادة واحدة على الأقل، ولحد ١٠٠ مادة في المرة.");
+  const { db } = await requireStudent(next);
+  const { data, error } = await db.rpc("add_courses", {
+    p_courses: [...new Set(parsed.data)],
+  });
+  if (error)
+    return failure(
+      "الإضافة ماكملتش. مادة ممكن تكون مش متاحة؛ اختياراتك لسه موجودة، جرّب تاني.",
+    );
+  revalidatePath("/", "layout");
+  return {
+    success: data
+      ? `اتضافت المواد لموادي · ${new Intl.NumberFormat("ar-EG").format(data)}`
+      : "المواد دي موجودة في موادي بالفعل.",
+  };
 }
 export async function vote(
   resourceId: string,

@@ -66,7 +66,7 @@ test("unfollowing the last course shows contextual suggestions without silently 
     0,
   );
   await expect(
-    page.getByRole("heading", { name: "مواد جامعتك وسنتك" }),
+    page.getByRole("heading", { name: "مقترحة لسنتك" }),
   ).toBeVisible();
   await page.goto(`/courses/${state.slug}`);
   await page.getByRole("button", { name: "ضيف لموادي", exact: true }).click();

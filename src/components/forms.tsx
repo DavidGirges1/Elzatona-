@@ -10,13 +10,15 @@ export type FormAction = (
 export function Submit({
   children,
   variant = "default",
+  disabled = false,
 }: {
   children: React.ReactNode;
+  disabled?: boolean;
   variant?: "default" | "outline" | "ghost";
 }) {
   const { pending } = useFormStatus();
   return (
-    <Button variant={variant} disabled={pending} type="submit">
+    <Button variant={variant} disabled={pending || disabled} type="submit">
       {pending ? "جاري الحفظ…" : children}
     </Button>
   );

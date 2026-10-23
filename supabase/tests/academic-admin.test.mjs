@@ -330,9 +330,20 @@ it("unverified PDF cannot be published by admin bypass", async () => {
     ),
   ).rejects.toThrow("file verification");
 });
-it("changing academic context removes unrelated saved courses", async () => {
+it("changing academic context preserves explicitly selected courses", async () => {
+  const before = (
+    await as(A, "select course_id from public.user_courses order by course_id")
+  ).rows;
+  expect(before.length).toBeGreaterThan(0);
   await as(A, `select public.set_academic_context('${V}','${G}',1)`);
-  expect((await as(A, "select * from public.user_courses")).rows).toEqual([]);
+  expect(
+    (
+      await as(
+        A,
+        "select course_id from public.user_courses order by course_id",
+      )
+    ).rows,
+  ).toEqual(before);
 });
 it("inactive academic configuration invalidates context readiness", async () => {
   await owner(

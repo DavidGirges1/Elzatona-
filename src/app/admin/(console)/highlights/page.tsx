@@ -12,7 +12,7 @@ export default async function Highlights({
   const db = await createClient();
   if (!(await db.rpc("is_moderator")).data) notFound();
   const s = await searchParams;
-  const courses = await getCourses();
+  const courses = await getCourses("", true);
   const course = courses.find((c) => c.id === s.course) || courses[0];
   const resources = course ? await getResources({ courseId: course.id }) : [];
   const { data: existing } = course

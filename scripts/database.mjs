@@ -61,6 +61,7 @@ export async function generateTypes(db) {
     25: "string",
     2950: "string",
     1007: "number[]",
+    2951: "string[]",
     3802: "Json",
   };
   const functions = funcs
@@ -84,6 +85,9 @@ export async function generateTypes(db) {
       const ret =
         {
           uuid: "string",
+          integer: "number",
+          smallint: "number",
+          bigint: "number",
           boolean: "boolean",
           text: "string",
           void: "undefined",

@@ -44,6 +44,15 @@ export function CourseTile({ course }: { course: Course }) {
         <bdi>{course.title_en || course.code}</bdi>
       </p>
       <span className="course-context">
+        <bdi dir="ltr">{course.code}</bdi>
+        {course.year_level && (
+          <>
+            {" "}
+            · المستوى {new Intl.NumberFormat("ar-EG").format(course.year_level)}
+          </>
+        )}
+      </span>
+      <span className="course-context">
         {course.department_ar || course.department}
       </span>
     </Link>

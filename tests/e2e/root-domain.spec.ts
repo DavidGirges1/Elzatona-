@@ -76,7 +76,9 @@ test("hosted course discovery, native search and course navigation work at root"
   );
   await page.goto("/courses");
   await page
-    .getByRole("textbox", { name: "بتدوّر على ملخص، امتحان، أو شرح؟" })
+    .getByRole("textbox", {
+      name: "دوّر باسم المادة أو كودها، بالعربي أو بالإنجليزي",
+    })
     .fill("هياكل");
   await page.getByRole("button", { name: "بحث", exact: true }).click();
   await expect(page).toHaveURL(/\/courses\?q=/);

@@ -18,7 +18,9 @@ test("root routing keeps links, native search and assets inside the platform", a
   );
   await page.goto(at("/courses"));
   await page
-    .getByRole("textbox", { name: "بتدوّر على ملخص، امتحان، أو شرح؟" })
+    .getByRole("textbox", {
+      name: "دوّر باسم المادة أو كودها، بالعربي أو بالإنجليزي",
+    })
     .fill("هياكل");
   await page.getByRole("button", { name: "بحث", exact: true }).click();
   await expect(page).toHaveURL(new RegExp(`${mount}/courses\\?q=`));

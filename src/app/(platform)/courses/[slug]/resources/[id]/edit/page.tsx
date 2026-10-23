@@ -1,3 +1,5 @@
+import { materialAccess } from "@/lib/material-access";
+import { MaterialLocked } from "@/components/material-locked";
 import { notFound, redirect } from "next/navigation";
 import { getResource, getTopics } from "@/lib/data";
 import { currentUser } from "@/lib/supabase/server";
@@ -16,7 +18,9 @@ export default async function Edit({
     redirect(
       `/login?next=${encodeURIComponent(`/courses/${slug}/resources/${id}/edit`)}`,
     );
-  if (r.author_id !== user.id) notFound();
+  const access = await materialAccess();
+  if (!access.can_organize && !(r.author_id === user.id && access.can_publish))
+    return <MaterialLocked slug={slug} edit />;
   const topics = await getTopics(r.course_id);
   return (
     <div className="form-page">

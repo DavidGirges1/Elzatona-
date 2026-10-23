@@ -2811,3 +2811,44 @@ input[type="checkbox"] {
     inset-inline-end: 0;
   }
 }
+
+.publishing-policy {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--ez-space-4);
+  margin-bottom: var(--ez-space-6);
+}
+.publishing-policy > div:first-child {
+  flex: 1 1 280px;
+}
+.publishing-policy p {
+  margin-bottom: 0;
+}
+.material-permission-labels {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ez-space-1);
+  margin-bottom: var(--ez-space-2);
+}
+.material-locked {
+  max-width: 560px;
+  margin: var(--ez-space-6) auto;
+  display: grid;
+  gap: var(--ez-space-4);
+  justify-items: start;
+}
+.material-locked h1 {
+  font-size: 24px;
+  margin: 0;
+}
+.material-launch-label {
+  font-size: 14px;
+}
+.topic-organizer {
+  margin-bottom: var(--ez-space-4);
+}
+.topic-organizer summary {
+  cursor: pointer;
+  min-height: 44px;
+}

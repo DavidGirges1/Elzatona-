@@ -1,4 +1,5 @@
 "use server";
+import { materialAccess, publishingLockedMessage } from "@/lib/material-access";
 import { requireStudent } from "@/lib/auth/session";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
@@ -102,6 +103,8 @@ export async function submitResource(
   form: FormData,
 ): Promise<ActionState> {
   const { db, user } = await actor(`/courses/${slug}/submit`);
+  if (!(await materialAccess()).can_publish)
+    return failure(publishingLockedMessage);
   const raw = Object.fromEntries(form);
   const file = form.get("file");
   const isPdf = file instanceof File && file.size > 0;
@@ -137,7 +140,10 @@ export async function submitResource(
       p_rights: true,
       p_ai: p.is_ai_assisted === "on",
     });
-    if (error || !data) return failure();
+    if (error || !data)
+      return failure(
+        error?.code === "42501" ? publishingLockedMessage : undefined,
+      );
     id = data;
     const { error: uploadError } = await db.storage
       .from("course-pdfs")
@@ -151,7 +157,9 @@ export async function submitResource(
       );
     const published = await finalizePdf(db, id, user.id);
     if (!published)
-      return failure("الملف لسه معلّق. افتح حسابك لإعادة المحاولة.");
+      return failure(
+        "الملف لسه معلّق ومش ظاهر للطلبة. ممكن صلاحية النشر اتغيّرت؛ راجع الإدارة.",
+      );
   } else {
     const { data, error } = await db.rpc("submit_resource", {
       p_course: p.course_id,
@@ -163,7 +171,10 @@ export async function submitResource(
       p_rights: true,
       p_ai: p.is_ai_assisted === "on",
     });
-    if (error || !data) return failure();
+    if (error || !data)
+      return failure(
+        error?.code === "42501" ? publishingLockedMessage : undefined,
+      );
     id = data;
   }
   revalidatePath(`/courses/${slug}`);
@@ -176,6 +187,9 @@ export async function editResource(
   form: FormData,
 ): Promise<ActionState> {
   const { db } = await actor(`/courses/${slug}/resources/${id}/edit`);
+  const access = await materialAccess();
+  if (!access.can_publish && !access.can_organize)
+    return failure("تعديل وتنظيم المصادر متاح للحسابات المصرّح لها فقط.");
   const title = z.string().trim().min(4).max(160).safeParse(form.get("title"));
   const description = z.string().max(2000).safeParse(form.get("description"));
   const topic = z
@@ -384,4 +398,29 @@ export async function retryPdf(
     return failure("الملف مش موجود أو غير صالح. اختاره وجرّب تاني.");
   revalidatePath("/", "layout");
   return {};
+}
+
+export async function addMaterialTopic(
+  courseId: string,
+  slug: string,
+  _state: ActionState,
+  form: FormData,
+): Promise<ActionState> {
+  const { db } = await actor(`/courses/${slug}`);
+  const title = z.string().trim().min(2).max(120).safeParse(form.get("title"));
+  if (!title.success || !idSchema.safeParse(courseId).success)
+    return failure("اكتب اسم الموضوع من حرفين لـ١٢٠ حرف.");
+  const { error } = await db.rpc("add_material_topic", {
+    p_course: courseId,
+    p_title: title.data,
+  });
+  if (error)
+    return failure(
+      "إضافة الموضوع متاحة للمنظّمين المصرّح لهم فقط، في مادة متاحة.",
+    );
+  revalidatePath("/", "layout");
+  return {
+    success:
+      "الموضوع موجود دلوقتي ضمن اختيارات المادة. افتح المصدر واختار تعديل المصدر لتنظيمه.",
+  };
 }

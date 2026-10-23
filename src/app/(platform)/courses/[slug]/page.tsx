@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { materialAccess } from "@/lib/material-access";
 import { notFound } from "next/navigation";
 import { Plus, ArrowRight } from "lucide-react";
 import {
@@ -10,7 +11,7 @@ import {
   getFollowedIds,
 } from "@/lib/data";
 import { currentUser } from "@/lib/supabase/server";
-import { follow } from "@/lib/actions";
+import { follow, addMaterialTopic } from "@/lib/actions";
 import { ar } from "@/i18n/ar-EG";
 import { ActionForm, Submit } from "@/components/forms";
 import { SearchBar, ResourceRow, Empty } from "@/components/content";
@@ -53,6 +54,7 @@ export default async function CoursePage({
       getFollowedIds(),
       currentUser(),
     ]);
+  const access = await materialAccess();
   const pagination = (n: number) => {
     const q = new URLSearchParams();
     for (const [key, value] of Object.entries(s))
@@ -105,12 +107,40 @@ export default async function CoursePage({
               ضيف لموادي
             </Link>
           )}
-          <Link className="button secondary" href={`${path}/submit`}>
-            <Plus size={18} />
-            {ar.add}
-          </Link>
+          {access.can_publish ? (
+            <Link className="button secondary" href={`${path}/submit`}>
+              <Plus size={18} />
+              {ar.add}
+            </Link>
+          ) : (
+            <span className="muted material-launch-label">
+              الإضافة للمصرّح لهم
+            </span>
+          )}
         </div>
       </section>
+      {access.can_organize && (
+        <details className="panel topic-organizer">
+          <summary className="text-link">تنظيم موضوعات المادة</summary>
+          <p className="muted">
+            ضيف محاضرة أو موضوع، وبعدها افتح المصدر واختار «تعديل المصدر» عشان
+            تنقله للموضوع المناسب.
+          </p>
+          <ActionForm action={addMaterialTopic.bind(null, course.id, slug)}>
+            <label className="field">
+              اسم الموضوع أو المحاضرة
+              <input
+                name="title"
+                minLength={2}
+                maxLength={120}
+                required
+                dir="auto"
+              />
+            </label>
+            <Submit variant="outline">ضيف الموضوع</Submit>
+          </ActionForm>
+        </details>
+      )}
       <nav className="tabs" aria-label="أقسام المادة">
         <Link
           href={path}
@@ -215,9 +245,13 @@ export default async function CoursePage({
             </div>
           ) : (
             <Empty>
-              <Link className="text-link" href={`${path}/submit`}>
-                ضيف أول مصدر
-              </Link>
+              {access.can_publish ? (
+                <Link className="text-link" href={`${path}/submit`}>
+                  ضيف أول مصدر
+                </Link>
+              ) : (
+                <p className="muted">المصادر هتظهر هنا أول ما تتضاف.</p>
+              )}
             </Empty>
           )}
           <nav className="pagination" aria-label="صفحات المصادر">

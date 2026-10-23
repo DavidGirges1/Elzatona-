@@ -37,6 +37,9 @@ beforeAll(async () => {
   first = rows.find((c) => c.code === "CS 111").id;
   third = rows.find((c) => c.code === "CS 316").id;
   fourth = rows.find((c) => c.code === "CS 419").id;
+  await owner(
+    `insert into public.material_permissions(user_id,can_publish) values('${A}',true),('${B}',true)`,
+  );
 });
 afterAll(async () => await db?.close());
 it("imports all 122 courses into the existing faculty without invented semesters", async () => {

@@ -34,6 +34,9 @@ beforeAll(async () => {
     .rows[0].id;
   G = (await owner("select id from public.faculties where slug='computers'"))
     .rows[0].id;
+  await owner(
+    `insert into public.material_permissions(user_id,can_publish) values('${A}',true),('${B}',true)`,
+  );
 });
 afterAll(async () => await db?.close());
 it("seeds exactly the requested onboarding universities and configurable years", async () => {

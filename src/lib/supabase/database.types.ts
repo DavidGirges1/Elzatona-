@@ -241,6 +241,44 @@ export type Database = {
         Update: Partial<Database["public"]["Tables"]["faculties"]["Insert"]>;
         Relationships: [];
       };
+      material_permissions: {
+        Row: {
+          user_id: string;
+          can_publish: boolean;
+          can_organize: boolean;
+          updated_by: string | null;
+          updated_at: string;
+        };
+        Insert: {
+          user_id: string;
+          can_publish?: boolean;
+          can_organize?: boolean;
+          updated_by?: string | null;
+          updated_at?: string;
+        };
+        Update: Partial<
+          Database["public"]["Tables"]["material_permissions"]["Insert"]
+        >;
+        Relationships: [];
+      };
+      material_publishing_settings: {
+        Row: {
+          singleton: boolean;
+          open_to_all: boolean;
+          updated_at: string;
+          updated_by: string | null;
+        };
+        Insert: {
+          singleton?: boolean;
+          open_to_all?: boolean;
+          updated_at?: string;
+          updated_by?: string | null;
+        };
+        Update: Partial<
+          Database["public"]["Tables"]["material_publishing_settings"]["Insert"]
+        >;
+        Relationships: [];
+      };
       moderation_actions: {
         Row: {
           id: string;
@@ -678,11 +716,13 @@ export type Database = {
         Returns: string;
       };
       admin_overview: { Args: Record<string, never>; Returns: Json };
+      finalize_pdf: { Args: { p_resource: string | null }; Returns: undefined };
+      can_publish_materials: { Args: Record<string, never>; Returns: boolean };
+      material_access: { Args: Record<string, never>; Returns: Json };
       finalize_pdf_checked: {
         Args: { p_resource: string | null; p_author: string };
         Returns: undefined;
       };
-      finalize_pdf: { Args: { p_resource: string | null }; Returns: undefined };
       account_active: { Args: Record<string, never>; Returns: boolean };
       is_admin: { Args: Record<string, never>; Returns: boolean };
       track_page_view: {
@@ -691,14 +731,6 @@ export type Database = {
       };
       claim_username: { Args: { p_username: string }; Returns: undefined };
       student_context: { Args: Record<string, never>; Returns: Json };
-      set_academic_context: {
-        Args: {
-          p_university: string | null;
-          p_faculty?: string | null;
-          p_year?: number | null;
-        };
-        Returns: undefined;
-      };
       admin_save_university: {
         Args: {
           p_id: string | null;
@@ -773,6 +805,32 @@ export type Database = {
         Returns: string;
       };
       add_courses: { Args: { p_courses: string[] }; Returns: number };
+      set_academic_context: {
+        Args: {
+          p_university: string | null;
+          p_faculty?: string | null;
+          p_year?: number | null;
+        };
+        Returns: undefined;
+      };
+      admin_set_material_permissions: {
+        Args: {
+          p_user: string;
+          p_publish: boolean;
+          p_organize: boolean;
+          p_reason: string;
+          p_confirm: boolean;
+        };
+        Returns: undefined;
+      };
+      admin_set_publishing_mode: {
+        Args: { p_open: boolean; p_reason: string; p_confirm: boolean };
+        Returns: undefined;
+      };
+      add_material_topic: {
+        Args: { p_course: string; p_title: string };
+        Returns: string;
+      };
     };
     Enums: Record<string, never>;
     CompositeTypes: Record<string, never>;

@@ -26,6 +26,9 @@ beforeAll(async () => {
   await admin(
     `update public.profiles set username_claimed=true where id in('${A}','${B}','${M}');update public.student_academics set university_id=(select id from public.universities where slug='capital-university'),faculty_id=(select id from public.faculties where slug='computers'),academic_year=1,completed_at=now() where user_id in('${A}','${B}','${M}');`,
   );
+  await admin(
+    `insert into public.material_permissions(user_id,can_publish) values('${A}',true),('${B}',true)`,
+  );
   const x = await as(
     A,
     `select public.submit_resource('${C}',null,'شرح Trees','شرح تجريبي','notes','https://example.org/trees',true,false) as id`,

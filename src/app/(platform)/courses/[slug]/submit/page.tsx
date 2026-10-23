@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { materialAccess } from "@/lib/material-access";
+import { MaterialLocked } from "@/components/material-locked";
 import { pdfEnabled } from "@/lib/supabase/files";
 import { notFound, redirect } from "next/navigation";
 import { currentUser } from "@/lib/supabase/server";
@@ -18,6 +20,8 @@ export default async function SubmitPage({
     redirect(`/login?next=${encodeURIComponent(`/courses/${slug}/submit`)}`);
   const c = await getCourse(slug);
   if (!c) notFound();
+  if (!(await materialAccess()).can_publish)
+    return <MaterialLocked slug={slug} />;
   const topics = await getTopics(c.id);
   return (
     <div className="form-page">

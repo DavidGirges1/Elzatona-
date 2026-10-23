@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { materialAccess } from "@/lib/material-access";
 import { appPath } from "@/lib/paths";
 import { MaterialPreview } from "@/components/material-preview";
 import { ResourceVote } from "@/components/resource-vote";
@@ -45,6 +46,7 @@ export default async function ResourcePage({
     getDiscussions(r.course_id, id),
     searchParams,
   ]);
+  const access = await materialAccess();
   let saved = false,
     myVote = 0;
   if (user) {
@@ -146,11 +148,13 @@ export default async function ResourcePage({
           <Link className="text-link" href={`${path}/report`}>
             بلّغ عن مشكلة
           </Link>
-          {user?.id === r.author_id && (
-            <Link className="text-link" href={`${path}/edit`}>
-              تعديل المصدر
-            </Link>
-          )}
+          {user &&
+            (access.can_organize ||
+              (user.id === r.author_id && access.can_publish)) && (
+              <Link className="text-link" href={`${path}/edit`}>
+                تعديل المصدر
+              </Link>
+            )}
         </div>
       </article>
       <section>

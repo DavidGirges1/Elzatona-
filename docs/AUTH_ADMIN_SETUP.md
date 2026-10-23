@@ -73,7 +73,7 @@ Enable Google in Supabase, configure the authorized domain/consent screen and te
 
 ## Provision the first administrator
 
-1. Create your own account at `/test/signup` with a unique username and a strong password. Verify the email through your own inbox. Never use a shared default password.
+1. Create your own account at `/test/signup` with a unique username and a strong password. Verify the email through your own inbox. Never use a shared default password. If SMTP is not ready, the project owner can instead use Supabase Dashboard → Authentication → Users → Add user, create their own password and individually confirm that owner account. Do not disable email confirmation globally for students. The provisioning SQL below assigns the chosen username to that trusted owner account.
 2. Open **Supabase SQL Editor**, as the project owner. Run this with your actual verified email and chosen lowercase username (3–30 ASCII characters, starts with a letter):
 
 ```sql
@@ -98,3 +98,5 @@ delete from public.analytics_events where created_at < now() - interval '90 days
 ```
 
 After retaining 90 days, total views refer to retained events. Choose a different documented retention period if required. Raw analytics, account states, private emails and audit records are only exposed to the authorized roles. Request budgets are protected by RLS with no client policies by design.
+
+The follow-up `20261023022342_admin_metric_consistency.sql` keeps student grouping consistent across universities and excludes admins. `20261023023558_pdf_academic_authorization.sql` rechecks the author’s current academic eligibility at privileged PDF finalization, including a faculty/university being disabled after upload. Both are required after the identity migration.

@@ -77,3 +77,13 @@ Automated checks: Arabic `lang`/RTL root, expected headings, no horizontal overf
 ## Remaining visual gate
 
 Run connected screenshots with permissioned pilot data; inspect long mixed Arabic/English titles, topic filters, first-viewport resource CTA, real validation errors, upload retry and moderator screens. Test an Android phone and a WhatsApp deep link. Obtain founder/student review; no final visual approval or observed task-completion time is claimed.
+
+## Expanded identity/admin/landing review — 23 October 2026
+
+Thirty actual local production screenshots backed by the hosted Supabase project are saved as `academic-{landing,login,signup,onboarding,home,discovery,course,resource,submission,admin}-{mobile-390,tablet-768,desktop-1440}.png`. The landing screenshots were subsequently refreshed against the real deployed domain. `academic-landing-mobile-360.png` verifies the narrower reduced-motion view. QA names/content in populated screenshots are explicitly temporary and have been removed from the database.
+
+Visual inspection preserved Alexandria/Tajawal, dark teal-blue actions and the established sky/lavender/sunshine accents. Student surfaces remain simple; admin controls use a separate denser layout. The interactive product illustration is labeled explanatory, with no fabricated counts. Arabic/English names and inputs use bidi isolation/LTR controls.
+
+Scroll-reveal screenshots were captured after actual scrolling and completion of transitions; reduced-motion and keyboard arrow navigation are checked. Full-page screenshots initially captured offscreen reveal sections as blank; those captures were replaced after proper scrolling. Radio selection cards were checked for complete clickable coverage. No horizontal document overflow was detected at 360/390/768/1440 widths. Tables and mobile admin navigation intentionally scroll inside their own bounded regions.
+
+Browser checks: 56 local production passes, plus 27 successful deployed-domain checks. Real WhatsApp on a physical Android, actual system font scaling, first-inbox verification and Google consent remain manual gates. The enlarged-text automation increases base type; it does not establish complete real-device accessibility certification.

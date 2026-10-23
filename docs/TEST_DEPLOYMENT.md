@@ -1,3 +1,5 @@
+> Historical deployment configuration. The owner now authorizes the official root-domain platform; follow [PRODUCTION_DOMAIN.md](PRODUCTION_DOMAIN.md). The instructions below describe the prior `/test` arrangement.
+
 # Coming Soon at /, platform at /test
 
 The owner requested deployment to the existing `elzatona` Vercel project, repository `DavidGirges1/Elzatona-`, while preserving the public Coming Soon page. This replaces the earlier separate-staging-only instruction within this explicit scope. No domain/DNS transfer is required.

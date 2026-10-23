@@ -10,7 +10,7 @@ const people: Person[] = enabled
 const state: Record<string, string> = enabled
   ? JSON.parse(readFileSync(process.env.TEST_HOSTED_STATE_FILE!, "utf8"))
   : {};
-const at = (p: string) => `/test${p === "/" ? "" : p}`;
+const at = (p: string) => p;
 async function session(context: BrowserContext, p: Person) {
   const cookies: { name: string; value: string }[] = [];
   const db = createServerClient(
@@ -114,7 +114,7 @@ test.describe("Academic identity and admin — real hosted backend", () => {
   }) => {
     await session(context, people[1]);
     await page.goto(at("/admin/users"));
-    await expect(page).toHaveURL(/\/test\/admin\/login\?error=access/);
+    await expect(page).toHaveURL(/\/admin\/login\?error=access/);
     await expect(
       page.getByRole("heading", { name: "إدارة الزتونة." }),
     ).toBeVisible();
@@ -158,7 +158,7 @@ test.describe("Academic identity and admin — real hosted backend", () => {
     await page
       .getByRole("button", { name: "تسجيل الدخول", exact: true })
       .click();
-    await expect(page).toHaveURL(/\/test\/dashboard$/);
+    await expect(page).toHaveURL(/\/dashboard$/);
     await expect(
       page.getByRole("heading", { name: "موادي", exact: true }),
     ).toBeVisible();
@@ -177,7 +177,7 @@ test.describe("Academic identity and admin — real hosted backend", () => {
     await page.locator("input[name=username]").fill(people[2].username);
     await page.locator("input[name=password]").fill(people[2].password);
     await page.getByRole("button", { name: "دخول الإدارة" }).click();
-    await expect(page).toHaveURL(/\/test\/admin$/);
+    await expect(page).toHaveURL(/\/admin$/);
     await page.getByRole("button", { name: "الزيارات", exact: true }).click();
     await expect(
       page.getByRole("button", { name: "الزيارات", exact: true }),
@@ -232,14 +232,14 @@ test.describe("Academic identity and admin — real hosted backend", () => {
     await page
       .getByRole("button", { name: "تسجيل الدخول", exact: true })
       .click();
-    await expect(page).toHaveURL(/\/test\/onboarding/);
+    await expect(page).toHaveURL(/\/onboarding/);
     await expect(page.locator("h1")).toHaveText("إنت في سنة كام؟");
     await page.locator('input[name=academic_year][value="2"]').check();
     await page.getByRole("button", { name: "جاهز · افتح موادي" }).click();
     await expect(
       page.getByRole("heading", { name: "موادك، على مقاسك." }),
     ).toBeVisible();
-    await expect(page).toHaveURL(/\/test\/dashboard$/, { timeout: 12000 });
+    await expect(page).toHaveURL(/\/dashboard$/, { timeout: 12000 });
     await page.goto(at("/onboarding?edit=1"));
     await page.getByRole("radio", { name: /جامعة بني سويف/ }).check();
     await page.getByRole("button", { name: "كمّل", exact: true }).click();
@@ -249,7 +249,7 @@ test.describe("Academic identity and admin — real hosted backend", () => {
     await expect(page.locator("input[name=academic_year]")).toHaveCount(4);
     await page.locator('input[name=academic_year][value="1"]').check();
     await page.getByRole("button", { name: "جاهز · افتح موادي" }).click();
-    await expect(page).toHaveURL(/\/test\/dashboard$/, { timeout: 12000 });
+    await expect(page).toHaveURL(/\/dashboard$/, { timeout: 12000 });
     await expect(
       page.getByRole("heading", { name: "مواد سنتك لسه بتتجهز" }),
     ).toBeVisible();

@@ -2,13 +2,13 @@ import { describe, it, expect } from "vitest";
 import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 import { appPath } from "../src/lib/paths";
-describe("Unlisted test mount", () => {
+describe("Official root-domain routing", () => {
   it.each([
-    ["/", "/test"],
-    ["/courses", "/test/courses"],
-    ["/auth/callback?next=%2Fsaved", "/test/auth/callback?next=%2Fsaved"],
-    ["/api/resources/id/open", "/test/api/resources/id/open"],
-  ])("prefixes native URL %s", (path, expected) =>
+    ["/", "/"],
+    ["/courses", "/courses"],
+    ["/auth/callback?next=%2Fsaved", "/auth/callback?next=%2Fsaved"],
+    ["/api/resources/id/open", "/api/resources/id/open"],
+  ])("keeps native URL at the root: %s", (path, expected) =>
     expect(appPath(path)).toBe(expected),
   );
   it("preserves the exact owner-authored Coming Soon HTML from GitHub", () => {

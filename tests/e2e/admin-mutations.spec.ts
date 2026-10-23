@@ -6,7 +6,7 @@ const enabled = !!process.env.TEST_AUTH_ACCOUNTS_FILE;
 const people = enabled
   ? JSON.parse(readFileSync(process.env.TEST_AUTH_ACCOUNTS_FILE!, "utf8"))
   : [];
-const at = (p: string) => "/test" + p;
+const at = (p: string) => "/" + p;
 async function session(context: BrowserContext, position: number) {
   const values: { name: string; value: string }[] = [];
   const db = createServerClient(
@@ -124,7 +124,7 @@ test("admin manages catalog; new options drive onboarding; student uploads and m
   await expect(sp.getByRole("radio")).toHaveCount(7);
   await sp.locator('input[name=academic_year][value="7"]').check();
   await sp.getByRole("button", { name: "جاهز · افتح موادي" }).click();
-  await expect(sp).toHaveURL(/\/test\/dashboard$/, { timeout: 15000 });
+  await expect(sp).toHaveURL(/\/dashboard$/, { timeout: 15000 });
   await expect(sp.locator(".course-tile")).toContainText(courseTitle);
   await sp.goto(at(`/courses/${slug}/submit`));
   await sp.locator("input[name=title]").fill(`ملف اختبار واجهة ${suffix}`);
@@ -191,7 +191,7 @@ test("admin manages catalog; new options drive onboarding; student uploads and m
   await dialog.getByRole("button", { name: "تأكيد القرار" }).click();
   await expect(dialog.getByRole("status")).toContainText("اتحفظ القرار");
   await sp.goto(at("/dashboard"));
-  await expect(sp).toHaveURL(/\/test\/suspended$/);
+  await expect(sp).toHaveURL(/\/suspended$/);
   expect(
     (await student.rpc("follow_course", { p_course: randomCourseId() })).error,
   ).not.toBeNull();

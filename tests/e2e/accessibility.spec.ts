@@ -8,12 +8,7 @@ test("360px public screens, reduced motion and keyboard product preview", async 
   );
   await page.setViewportSize({ width: 360, height: 800 });
   await page.emulateMedia({ reducedMotion: "reduce" });
-  for (const path of [
-    "/test",
-    "/test/login",
-    "/test/signup",
-    "/test/courses",
-  ]) {
+  for (const path of ["/", "/login", "/signup", "/courses"]) {
     await page.goto(path);
     await expect(page.locator("h1")).toBeVisible();
     expect(
@@ -23,14 +18,14 @@ test("360px public screens, reduced motion and keyboard product preview", async 
     ).toBe(true);
     await expect(page.locator('a[href*="/admin"]')).toHaveCount(0);
   }
-  await page.goto("/test");
+  await page.goto("/");
   const tab = page.getByRole("tab", { name: "ملخصات" });
   await tab.focus();
   await page.keyboard.press("ArrowLeft");
   await expect(page.getByRole("tab", { name: "فيديوهات" })).toBeFocused();
   await expect(page.getByRole("tabpanel")).toContainText("الشرح اللي يوصّل");
   await page.screenshot({
-    path: "docs/screenshots/academic-landing-mobile-360.png",
+    path: "docs/screenshots/official-landing-mobile-360.png",
     fullPage: true,
     animations: "disabled",
   });

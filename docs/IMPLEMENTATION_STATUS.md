@@ -1,8 +1,21 @@
 # Elzatona implementation status
 
-Updated **23 October 2026 UTC**. Current phase: **expanded platform deployed and verified at https://elzatona.tech/test; owner email/Google and pilot content setup remain**.
+Updated **23 October 2026**. Current phase: **moving the platform to the official root domain at the owner’s explicit request; external Auth setup remains**.
 
-Owner confirmed: **keep Coming Soon at `/`; all new development under `/test`**. `/test` is an unlisted public URL, not access control. Original instructions, design pack, uploaded ZIP and the full new request are retained under `docs/owner-instructions`, `docs/original-design-pack`, `docs/specification` and `docs/original-attachments`.
+Earlier owner instruction to keep Coming Soon at `/` and develop under `/test` is now **superseded**: the owner explicitly requests replacing Coming Soon with the actual platform at `/`. The earlier `/test` URL was public, not access control. Original instructions, design pack, uploaded ZIP and the full new request are retained under `docs/owner-instructions`, `docs/original-design-pack`, `docs/specification` and `docs/original-attachments`.
+
+## Official root-domain cutover — current milestone
+
+The owner explicitly authorizes the Vercel/Supabase plugins to move the platform to **https://elzatona.tech/**. No new product feature, database migration/reset or account cleanup is part of this cutover. The verified owner administrator and existing catalog are retained.
+
+- Root routing implemented: empty build-time base path, removed Coming Soon rewrites, consistent Next/native/action/asset URLs, temporary 307 redirects from `/test/:path*` preserving queries and request methods. Original Coming Soon HTML remains unchanged for rollback. Public indexing is enabled; Auth/admin/account/API routes retain noindex headers and crawler exclusions.
+- Vercel plugin updated and re-read `NEXT_PUBLIC_BASE_PATH` as an empty string for production/preview/development, and retained `NEXT_PUBLIC_APP_URL=https://elzatona.tech` for production/preview. Supabase URL/public key and managed function settings are retained.
+- Supabase plugin confirms project **ACTIVE_HEALTHY**. Actual public Auth settings: Google **disabled**, email **enabled**, confirmation **required**. Available MCP tools cannot update Auth URL configuration, Google secrets or SMTP, and no Management API credential is configured. Exact owner-only dashboard steps are in [PRODUCTION_DOMAIN.md](PRODUCTION_DOMAIN.md). No Google consent, real-inbox delivery or full new-user signup journey is claimed by this routing verification.
+- Checks passed: **156 tests in 8 files (7.29 seconds)**, including existing embedded migration/RLS coverage; strict TypeScript; ESLint with zero errors/warnings; formatting; complete Node 24 production build. No schema changes were made.
+- Local production-browser verification against the hosted backend: **40 passed, 2 intentionally skipped duplicate 360px cases, 1.1 minutes**. Covers 390/768/1440px plus a 360px accessibility pass, root landing/assets, actual hosted course list/course page/native search, legacy path/query preservation, invalid confirmation/unsafe callback handling, guest/admin/attachment permission gates, robots/noindex rules, dedicated verification screen, background pause, scroll reveals, keyboard focus, reduced motion, and JavaScript-disabled visibility. No write fixtures or temporary users were created. Current screenshots include `official-landing-*.png`.
+- Publication and domain checks follow the GitHub → existing Vercel project workflow; the final deployment result is recorded separately after it is available.
+
+The sections below retain detailed evidence from the preceding `/test` milestones. Their old deployment URLs describe that historical verification, not the new canonical route.
 
 ## Current functionality and verification boundaries
 

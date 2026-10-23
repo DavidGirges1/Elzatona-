@@ -1,16 +1,4 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "framework": "nextjs",
-  "rewrites": [
-    { "source": "/", "destination": "/test/coming-soon.html" },
-    { "source": "/robots.txt", "destination": "/test/robots.txt" }
-  ],
-  "headers": [
-    {
-      "source": "/test/:path*",
-      "headers": [
-        { "key": "X-Robots-Tag", "value": "noindex, nofollow, noarchive" }
-      ]
-    }
-  ]
+  "framework": "nextjs"
 }

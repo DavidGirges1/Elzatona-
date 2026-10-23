@@ -7,7 +7,7 @@ const connected = Boolean(
   process.env.TEST_ALLOW_WRITES === "1",
 );
 const at = (path: string) =>
-  (process.env.NEXT_PUBLIC_BASE_PATH ?? "/test") + (path === "/" ? "" : path);
+  (process.env.NEXT_PUBLIC_BASE_PATH ?? "/") + (path === "/" ? "" : path);
 type Fixture = Awaited<ReturnType<typeof fixtures>>;
 let f: Fixture;
 async function login(

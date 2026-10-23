@@ -6,11 +6,9 @@ The authoritative product/design documents are in `docs/specification/`; the eig
 
 Next.js App Router, strict TypeScript, React server components/Server Actions, Tailwind semantic tokens and customized shadcn components. Arabic is the default locale and RTL layout; Alexandria/Tajawal are compiled by next/font. No mock data fallback, AI tutor or social feed is used.
 
-Vercel hosts the Next application. During the owner’s testing period, build-time `NEXT_PUBLIC_BASE_PATH=/test` mounts the entire platform under `/test`. Next Link/router/Server Action redirects receive the prefix automatically; `src/lib/paths.ts` prefixes native anchors, GET search, Open Graph URLs and Route Handler redirects/callbacks. `vercel.json` rewrites `/` to the unchanged owner-authored `public/coming-soon.html`, and `/robots.txt` to the disallow rule. No Coming Soon navigation points to `/test`. The test app has noindex/nofollow metadata and headers.
+Vercel hosts the Next application at the official domain root, `https://elzatona.tech/`. Build-time `NEXT_PUBLIC_BASE_PATH` is intentionally empty. Next Link/router/Server Action redirects use root paths; `src/lib/paths.ts` keeps native anchors, GET search, Open Graph URLs and Route Handler redirects/callbacks consistent. `vercel.json` no longer rewrites `/` to Coming Soon. Next temporarily redirects old `/test/:path*` links to root equivalents, retaining query strings and request methods.
 
-The root Coming Soon document matches Git blob `992a73d57e087f5c84c716225bd6f6a23b37c57a` from the original repository. Its unchanged original `index.html` remains in Git. The root rewrite is a Vercel platform feature; local `next dev` is opened at `/test`.
-
-`/test` is an unlisted public URL, not a password. Repository source is public and can reveal it. Developers must not put confidential data there on the assumption that the path is secret. Actual community mutations require Auth and database authorization.
+The original Coming Soon document remains unchanged in source for rollback (Git blob `992a73d57e087f5c84c716225bd6f6a23b37c57a`). Public pages allow indexing; account/admin/Auth/API routes retain crawler exclusions/noindex headers. These are not security boundaries: community mutations require Auth and database authorization. See [PRODUCTION_DOMAIN.md](PRODUCTION_DOMAIN.md) for exact external Auth setup and rollback.
 
 ## Data, Auth and authorization
 
@@ -20,7 +18,7 @@ Core tables: universities, courses, topics, profiles, user_roles, user_courses, 
 
 SQL RPCs implement bounded mutations: follow courses, contribute/edit own resources, toggle votes/saves, ask/reply, report, update profile, moderate and curate. Explicit EXECUTE grants expose only the intended caller surface. Internal actor/finalization helpers are not browser-callable. Moderator privileges come from a trusted role table, never user-editable OAuth metadata.
 
-Google OAuth: app `/test/auth/login` → Supabase Auth → Google → `https://osakdzaxqvlcrfpwrjul.supabase.co/auth/v1/callback` → app `/test/auth/callback` → safe original context. Google remains disabled until the owner privately supplies the OAuth Web client credentials in Supabase. The app exposes a truthful unavailable state. QA password sessions are not proof of Google signup.
+Google OAuth: app `/auth/login` → Supabase Auth → Google → `https://osakdzaxqvlcrfpwrjul.supabase.co/auth/v1/callback` → app `/auth/callback` → safe original context. Google remains disabled until the owner privately supplies the OAuth Web client credentials in Supabase. The app exposes a truthful unavailable state. QA password sessions are not proof of Google signup.
 
 ## Resource and Storage boundary
 
@@ -50,4 +48,4 @@ Admin UI → dedicated username/password Server Action → managed `admin-sessio
 
 Management uses validated RPCs and audit records. Disabling catalog options invalidates academic readiness without deleting student history. Removing a configured year referenced by students or courses is blocked by foreign keys. Content removal uses hiding; unpublished PDFs cannot be promoted unless server byte verification has completed. Admins can obtain short-lived attachment URLs for review after independent role verification.
 
-`/test/api/analytics` validates origin/body and passes an event nonce/category/tab-session UUID to a throttled deduplicating RPC. The server associates only an existing authenticated user ID. Overview reads aggregate real registrations, page events and content actions; no fabricated growth metrics. Maintenance retention and known bot/test traffic limitations are explicit in setup.
+`/api/analytics` validates origin/body and passes an event nonce/category/tab-session UUID to a throttled deduplicating RPC. The server associates only an existing authenticated user ID. Overview reads aggregate real registrations, page events and content actions; no fabricated growth metrics. Maintenance retention and known bot/test traffic limitations are explicit in setup.

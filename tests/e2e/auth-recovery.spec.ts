@@ -37,12 +37,12 @@ test("authorized password change signs out and requires the new password", async
       sameSite: "Lax" as const,
     })),
   );
-  await page.goto("/test/reset-password");
+  await page.goto("/reset-password");
   const password = p.password + "42";
   await page.locator("input[name=password]").fill(password);
   await page.locator("input[name=confirm_password]").fill(password);
   await page.getByRole("button", { name: "احفظ كلمة المرور الجديدة" }).click();
-  await expect(page).toHaveURL(/\/test\/login\?changed=1$/);
+  await expect(page).toHaveURL(/\/login\?changed=1$/);
   const verify = createClient(url, key, {
     auth: { persistSession: false, autoRefreshToken: false },
   });

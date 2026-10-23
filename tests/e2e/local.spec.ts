@@ -23,7 +23,7 @@ for (const [name, path, heading] of [
     );
     const errors: string[] = [];
     page.on("pageerror", (e) => errors.push(e.message));
-    await page.goto(`/test${path === "/" ? "" : path}`);
+    await page.goto(`${path === "/" ? "" : path}`);
     await expect(
       page.getByRole("heading", { name: heading, exact: true }),
     ).toBeVisible();
@@ -42,7 +42,7 @@ for (const [name, path, heading] of [
   });
 test("Guest saved resource action preserves auth return", async ({ page }) => {
   test.skip(!localOnly);
-  await page.goto("/test/saved");
+  await page.goto("/saved");
   await expect(page).toHaveURL(/login\?next=\/saved/);
   await expect(
     page.getByRole("heading", { name: "أهلًا بيك من تاني." }),
@@ -51,12 +51,12 @@ test("Guest saved resource action preserves auth return", async ({ page }) => {
 test("Invalid OAuth callback retains a safe relative destination", async ({
   page,
 }) => {
-  await page.goto("/test/auth/callback?next=https%3A%2F%2Fevil.example");
+  await page.goto("/auth/callback?next=https%3A%2F%2Fevil.example");
   await expect(page).toHaveURL(/\/login\?error=callback&next=%2F$/);
 });
 test("390 and 360 layouts support 200% text", async ({ page }) => {
   await page.setViewportSize({ width: 360, height: 800 });
-  await page.goto("/test");
+  await page.goto("/");
   await page.addStyleTag({
     content: "body{font-size:32px} h1{font-size:50px} h2{font-size:40px}",
   });

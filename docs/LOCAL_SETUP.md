@@ -1,6 +1,6 @@
 > For the new email/password, onboarding and admin flows, also follow [AUTH_ADMIN_SETUP.md](AUTH_ADMIN_SETUP.md).
 
-> Current owner-requested routing is `/test`, with Coming Soon at `/` on Vercel. See [TEST_DEPLOYMENT.md](TEST_DEPLOYMENT.md) for current callbacks and deployment. The setup steps below remain applicable.
+> The owner now requests the platform at `/`. See [PRODUCTION_DOMAIN.md](PRODUCTION_DOMAIN.md) for current callbacks; the earlier `/test` deployment document is historical.
 
 # Run Elzatona on your own computer
 
@@ -52,7 +52,7 @@ npm run dev
 
 Keep that terminal open. In your browser, open:
 
-**http://localhost:3000/test**
+**http://localhost:3000**
 
 Edit files under `src/`; Next.js reloads as you save. Stop the server with **Ctrl+C**. The first start may download the Arabic fonts; an internet connection is required for package installation and initial font compilation.
 
@@ -73,7 +73,7 @@ npm run build
 npm start
 ```
 
-Open http://localhost:3000/test again. `npm start` requires a successful build. Do not copy `.next` from a different computer; build it locally. This is a normal Next.js/Vercel project; the Docker build used during verification was only a workaround for the managed environment's restricted shell.
+Open http://localhost:3000 again. `npm start` requires a successful build. Do not copy `.next` from a different computer; build it locally. This is a normal Next.js/Vercel project; the Docker build used during verification was only a workaround for the managed environment's restricted shell.
 
 ## 7. Connect your real Supabase project
 
@@ -117,7 +117,7 @@ Review the dry run before applying. All five files in `supabase/migrations/` are
 1. Create a Google Cloud OAuth Web application and configure its consent screen/test users.
 2. In Google, set the authorized redirect URI to `https://YOUR_PROJECT_REF.supabase.co/auth/v1/callback`.
 3. In Supabase Authentication → Providers, enable Google and enter that Google client ID/secret.
-4. In Supabase Authentication → URL Configuration, add `http://localhost:3000/test/auth/callback` to the redirect allowlist. Use the appropriate app origin for Site URL (localhost for an exclusively local dev project; fixed staging origin for a shared staging project).
+4. In Supabase Authentication → URL Configuration, add `http://localhost:3000/auth/callback` to the redirect allowlist. Use the appropriate app origin for Site URL (localhost for an exclusively local dev project; fixed staging origin for a shared staging project).
 5. Restart `npm run dev` after changing `.env.local`. Test with a genuine Google account.
 
 Google's callback points to **Supabase**; the app callback allowlisted in Supabase points to **Next.js**. They are different URLs. The app has no compulsory university/enrollment onboarding wizard: sign in, return to context, then explicitly follow a course.

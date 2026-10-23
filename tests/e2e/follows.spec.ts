@@ -51,14 +51,14 @@ test("unfollowing the last course shows contextual suggestions without silently 
       sameSite: "Lax" as const,
     })),
   );
-  await page.goto(`/test/courses/${state.slug}`);
+  await page.goto(`/courses/${state.slug}`);
   await page
     .getByRole("button", { name: "ضمن موادي · إزالة", exact: true })
     .click();
   await expect(
     page.getByRole("button", { name: "ضيف لموادي", exact: true }),
   ).toBeVisible();
-  await page.goto("/test/dashboard");
+  await page.goto("/dashboard");
   await expect(
     page.getByRole("heading", { name: "لسه مضفتش موادك" }),
   ).toBeVisible();
@@ -68,12 +68,12 @@ test("unfollowing the last course shows contextual suggestions without silently 
   await expect(
     page.getByRole("heading", { name: "مواد جامعتك وسنتك" }),
   ).toBeVisible();
-  await page.goto(`/test/courses/${state.slug}`);
+  await page.goto(`/courses/${state.slug}`);
   await page.getByRole("button", { name: "ضيف لموادي", exact: true }).click();
   await expect(
     page.getByRole("button", { name: "ضمن موادي · إزالة", exact: true }),
   ).toBeVisible();
-  await page.goto("/test/dashboard");
+  await page.goto("/dashboard");
   await expect(
     page.getByRole("heading", { name: "لسه مضفتش موادك" }),
   ).toHaveCount(0);

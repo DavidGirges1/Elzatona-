@@ -14,8 +14,8 @@ const state = enabled
   ? JSON.parse(readFileSync(process.env.TEST_PILOT_STATE_FILE!, "utf8"))
   : {};
 const base = process.env.TEST_APP_URL || "http://localhost:3000";
-const mount = process.env.NEXT_PUBLIC_BASE_PATH ?? "/test";
-const at = (path: string) => mount + (path === "/" ? "" : path);
+const mount = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
+const at = (path: string) => mount + (path === "/" ? "" : path) || "/";
 async function login(context: BrowserContext, person: Person) {
   const cookies: Array<{ name: string; value: string }> = [];
   const db = createServerClient(

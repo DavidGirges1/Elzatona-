@@ -1,6 +1,6 @@
 # Authentication, academic catalog and admin setup
 
-The public root `/` remains the original Coming Soon page. The new landing is `/test`, student home `/test/dashboard`, and the internal login `/test/admin/login`. `/test` is unlisted, not a password or secret security boundary.
+The official platform now runs at `/`, student home is `/dashboard`, and administrator login is `/admin/login`. Old `/...` links redirect to equivalent root routes. See [PRODUCTION_DOMAIN.md](PRODUCTION_DOMAIN.md).
 
 ## Environment
 
@@ -10,7 +10,7 @@ Use `.env.example`; set public values from Supabase → Project Settings → API
 NEXT_PUBLIC_SUPABASE_URL=https://YOUR_PROJECT.supabase.co
 NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=YOUR_PUBLIC_KEY
 NEXT_PUBLIC_APP_URL=http://localhost:3000
-NEXT_PUBLIC_BASE_PATH=/test
+NEXT_PUBLIC_BASE_PATH=
 SUPABASE_STORAGE_FUNCTION=resource-files
 SUPABASE_ADMIN_FUNCTION=admin-session
 ```
@@ -42,11 +42,11 @@ Configure a verified SMTP sender under Authentication → Email → SMTP Setting
 
 Authentication → URL Configuration:
 
-- Site URL: `https://elzatona.tech/test`
-- Redirect allowlist: `https://elzatona.tech/test/auth/callback` and `http://localhost:3000/test/auth/callback`
+- Site URL: `https://elzatona.tech`
+- Redirect allowlist: `https://elzatona.tech/auth/callback` and `http://localhost:3000/auth/callback`
 - Add individual staging/preview callback URLs only when used; avoid broad production wildcards.
 
-Default confirmation/recovery emails use Supabase's confirmation endpoint, which returns a PKCE code to `/test/auth/callback`. Complete it in the browser that initiated the request. For cross-device email links use the SSR token-hash route and configure the respective Supabase email templates:
+Default confirmation/recovery emails use Supabase's confirmation endpoint, which returns a PKCE code to `/auth/callback`. Complete it in the browser that initiated the request. For cross-device email links use the SSR token-hash route and configure the respective Supabase email templates:
 
 ```html
 <!-- Confirm signup -->
@@ -61,7 +61,7 @@ Default confirmation/recovery emails use Supabase's confirmation endpoint, which
 >
 ```
 
-`SiteURL` includes `/test` once. Use a local Site URL when testing these custom templates in an isolated local project. Password resets sign out all sessions before requiring fresh login. Supabase refresh-token revocation does not erase already issued JWTs until expiry; application mutations also recheck live account status in the database.
+`SiteURL` is `https://elzatona.tech`, without `/test` or a trailing slash. Use a local Site URL when testing these custom templates in an isolated local project. Password resets sign out all sessions before requiring fresh login. Supabase refresh-token revocation does not erase already issued JWTs until expiry; application mutations also recheck live account status in the database.
 
 ## Google (external owner setup)
 
@@ -73,14 +73,14 @@ Enable Google in Supabase, configure the authorized domain/consent screen and te
 
 ## Provision the first administrator
 
-1. Create your own account at `/test/signup` with a unique username and a strong password. Verify the email through your own inbox. Never use a shared default password. If SMTP is not ready, the project owner can instead use Supabase Dashboard → Authentication → Users → Add user, create their own password and individually confirm that owner account. Do not disable email confirmation globally for students. The provisioning SQL below assigns the chosen username to that trusted owner account.
+1. Create your own account at `/signup` with a unique username and a strong password. Verify the email through your own inbox. Never use a shared default password. If SMTP is not ready, the project owner can instead use Supabase Dashboard → Authentication → Users → Add user, create their own password and individually confirm that owner account. Do not disable email confirmation globally for students. The provisioning SQL below assigns the chosen username to that trusted owner account.
 2. Open **Supabase SQL Editor**, as the project owner. Run this with your actual verified email and chosen lowercase username (3–30 ASCII characters, starts with a letter):
 
 ```sql
 select public.provision_admin('YOUR_VERIFIED_EMAIL', 'YOUR_ADMIN_USERNAME');
 ```
 
-3. Sign out of the student account, then open `/test/admin/login` and use that username and the **same Supabase Auth password**. There is no second password database.
+3. Sign out of the student account, then open `/admin/login` and use that username and the **same Supabase Auth password**. There is no second password database.
 4. Verify the new role can access overview/users and that a separate student account cannot. Provisioning is logged; the RPC is denied to browser `anon` and `authenticated` roles.
 5. Set correct course contexts in Admin → Courses; review seeded faculties/year configurations against the real university curriculum. Add actual permissioned course materials.
 

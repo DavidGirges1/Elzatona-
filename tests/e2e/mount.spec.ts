@@ -1,15 +1,17 @@
 import { test, expect } from "@playwright/test";
-const mount = process.env.NEXT_PUBLIC_BASE_PATH ?? "/test";
-const at = (path: string) => mount + (path === "/" ? "" : path);
-test("test mount keeps links, native search and assets inside the platform", async ({
+const mount = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
+const at = (path: string) => mount + (path === "/" ? "" : path) || "/";
+test("root routing keeps links, native search and assets inside the platform", async ({
   page,
 }) => {
   await page.goto(at("/"));
   await expect(page.locator("h1")).toBeVisible();
-  await expect(page.locator("meta[name=robots]")).toHaveAttribute(
-    "content",
-    "noindex, nofollow",
-  );
+  if (mount)
+    await expect(page.locator("meta[name=robots]")).toHaveAttribute(
+      "content",
+      "noindex, nofollow",
+    );
+  else await expect(page.locator("meta[name=robots]")).toHaveCount(0);
   await expect(page.locator("a.wordmark").first()).toHaveAttribute(
     "href",
     mount || "/",

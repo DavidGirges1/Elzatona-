@@ -8,13 +8,13 @@ test("dedicated verification page handles a pending address without putting it i
     {
       name: "ez-pending-email",
       value: "student@example.org",
-      url: base + "/test",
+      url: base + "/",
       httpOnly: true,
       sameSite: "Lax",
       secure: base.startsWith("https:"),
     },
   ]);
-  await page.goto("/test/verify-email");
+  await page.goto("/verify-email");
   await expect(page.locator("h1")).toContainText("بصّة على بريدك");
   await expect(
     page.getByText("student@example.org", { exact: true }),
@@ -22,7 +22,7 @@ test("dedicated verification page handles a pending address without putting it i
   expect(page.url()).not.toContain("example.org");
   await expect(
     page.getByRole("link", { name: "أكدت بريدي · تسجيل الدخول" }),
-  ).toHaveAttribute("href", "/test/login");
+  ).toHaveAttribute("href", "/login");
   await expect(page.locator(".verification-card .notice")).toHaveCount(0);
   expect(
     await page.evaluate(
@@ -38,19 +38,19 @@ test("dedicated verification page handles a pending address without putting it i
 test("verification page is useful without a pending cookie", async ({
   page,
 }) => {
-  await page.goto("/test/verify-email");
+  await page.goto("/verify-email");
   await expect(page.locator("h1")).toBeVisible();
   await expect(page.locator(".verification-address")).toHaveCount(0);
   await page
     .getByRole("link", { name: "كتبت البريد غلط؟ ارجع للتسجيل" })
     .click();
-  await expect(page).toHaveURL(/\/test\/signup$/);
+  await expect(page).toHaveURL(/\/signup$/);
 });
 test("landing background pauses and sections reveal on scroll", async ({
   page,
 }, info) => {
   await page.emulateMedia({ reducedMotion: "no-preference" });
-  await page.goto("/test");
+  await page.goto("/");
   const shape = page.locator(".landing-atmosphere span").first();
   await expect(shape).toHaveCSS("animation-play-state", "running");
   await page.getByRole("button", { name: "إيقاف حركة الخلفية" }).click();
@@ -81,7 +81,7 @@ test("reduced motion stops decoration and keeps every section visible", async ({
   page,
 }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
-  await page.goto("/test");
+  await page.goto("/");
   await expect(page.locator(".landing-atmosphere span").first()).toHaveCSS(
     "animation-name",
     "none",
@@ -95,7 +95,7 @@ test("reduced motion stops decoration and keeps every section visible", async ({
 
 test("keyboard focus reveals sections immediately", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "no-preference" });
-  await page.goto("/test");
+  await page.goto("/");
   for (let i = 0; i < 24; i++) {
     await page.keyboard.press("Tab");
     expect(
@@ -115,7 +115,7 @@ test("landing content remains visible without JavaScript", async ({
   const context = await browser.newContext({ javaScriptEnabled: false });
   const page = await context.newPage();
   try {
-    await page.goto(base + "/test");
+    await page.goto(base + "/");
     expect(
       await page
         .locator("[data-reveal]")

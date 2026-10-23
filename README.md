@@ -2,7 +2,7 @@
 
 Arabic-first academic resources, built with Next.js and Supabase.
 
-**Current test mode:** Coming Soon stays at `/` on Vercel; the actual app opens at `/test`. `/test` is unlisted, not password-protected.
+**Official domain:** the platform runs at `https://elzatona.tech/`. Old `/test/...` links redirect to their root equivalents. The original Coming Soon document is retained as a rollback reference.
 
 ```bash
 npm ci
@@ -10,9 +10,9 @@ npm ci
 npm run dev
 ```
 
-Open **http://localhost:3000/test**. No server secret is needed with the deployed managed file function. Email/password login is primary; configure verified email delivery in Supabase. Google is secondary and requires its provider configuration.
+Open **http://localhost:3000**. No server secret is needed with the deployed managed file function. Email/password login is primary; configure verified email delivery in Supabase. Google is secondary and requires its provider configuration.
 
-- [Test deployment, callbacks and launch reversal](docs/TEST_DEPLOYMENT.md)
+- [Official-domain deployment and remaining Auth setup](docs/PRODUCTION_DOMAIN.md)
 - [Authentication, academic catalog and initial admin setup](docs/AUTH_ADMIN_SETUP.md)
 - [Accepted scope and execution plan](docs/AUTH_ADMIN_PLAN.md)
 - [System design](docs/SYSTEM_DESIGN.md)

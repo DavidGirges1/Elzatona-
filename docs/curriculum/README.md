@@ -54,3 +54,17 @@ Applied additive migrations:
 No project secret key is needed by the website. The add function accepts course IDs only and derives the user from the session. Other students' course lists remain private. Anonymous/incomplete/suspended users cannot add courses.
 
 Hosted tests require operator-provisioned **temporary QA accounts**, explicit `TEST_ALLOW_WRITES=1`, `TEST_AUTH_ACCOUNTS_FILE`, and `TEST_CURRICULUM_STATE_FILE`. Run `tests/curriculum-hosted.mjs`, then `tests/e2e/curriculum.spec.ts` at the configured preview/domain. Never use real students' accounts. Tests intentionally create labeled temporary resources and files; remove only those fixtures after testing. Embedded PostgreSQL checks are separate from actual Supabase Auth/Storage/browser checks.
+
+## Verification and live release — 23 October 2026
+
+Application commit `436e8a00ac61cc283cb32e985155d2b184bb8236` is served at [elzatona.tech/courses](https://elzatona.tech/courses). The connected GitHub/Vercel deployment reports success. Vercel MCP team access is currently unavailable; the release result was verified through GitHub status and actual-domain browser/HTTP checks.
+
+- 177 automated tests / 10 files passed, including a fresh 12-migration database and RLS regressions.
+- Strict TypeScript, lint, formatting, complete production build and original-PDF column audit passed.
+- 20 direct hosted Supabase checks passed, including the full catalog comparison and real Auth/Storage/permission journeys.
+- 21 local production browser checks passed at 390/768/1440px (1.9 minutes), plus 24 regression checks with 6 intentionally skipped loading-fixture checks.
+- Actual domain: 15 curriculum checks and 33 regression checks passed; 6 loading-fixture checks intentionally skipped. The live mobile journey included adding several courses, refresh persistence, removing one, contributing to other years, and opening new links/PDFs as a guest.
+- Three temporary QA accounts and their contributions/interactions were removed after testing; all 14 QA PDF objects were removed through the Storage API. Queries confirm zero remaining objects under their exact user prefixes. Non-QA content, the owner account, the 122 imported courses and original Cairo records remain.
+- No Google consent, real-inbox delivery, current-semester schedule or first-student usability study is claimed by this milestone.
+
+The security advisor still flags intentionally callable guarded RPCs and deny-all internal tables, plus the pre-existing [disabled leaked-password protection](https://supabase.com/docs/guides/auth/password-security#password-strength-and-leaked-password-protection). The new batch function is authenticated-only and passes denied-access tests; the curriculum table has RLS and explicit read-only grants. Guidance for [authenticated SECURITY DEFINER warnings](https://supabase.com/docs/guides/database/database-linter?lint=0029_authenticated_security_definer_function_executable) explains the advisor category; functions remain narrow, validate the active actor, and do not accept an arbitrary student ID.

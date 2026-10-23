@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { BrandName, BrandMark } from "@/components/brand";
 import { House, Search, Bookmark, UserRound, ArrowUpLeft } from "lucide-react";
 import { ar } from "@/i18n/ar-EG";
 export function Shell({ children }: { children: React.ReactNode }) {
@@ -9,7 +10,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
       </a>
       <aside className="rail">
         <Link href="/dashboard" className="brand-symbol" aria-label={ar.brand}>
-          ز
+          <BrandMark rail />
         </Link>
         <nav aria-label="التنقل الرئيسي">
           <Link href="/dashboard">
@@ -33,7 +34,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
       <div className="workspace">
         <header className="topbar">
           <Link href="/dashboard" className="wordmark">
-            {ar.brand}
+            <BrandName />
           </Link>
           <span className="top-caption">من الطلبة، للطلبة</span>
           <nav className="mobile-links" aria-label="التنقل السريع">

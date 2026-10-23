@@ -44,3 +44,6 @@ next-env.d.ts
 /playwright-report/
 /test-results/
 /supabase/.temp/
+
+# Temporary local loading-state verification route; never deploy.
+/src/app/qa-loading-check/

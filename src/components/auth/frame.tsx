@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { BrandName } from "@/components/brand";
 import { ArrowRight, ShieldCheck } from "lucide-react";
 export function AuthFrame({
   children,
@@ -11,7 +12,7 @@ export function AuthFrame({
     <div className="auth-page">
       <header className="auth-header">
         <Link className="wordmark" href="/">
-          الزتونة.
+          <BrandName />
         </Link>
         <Link href="/" className="text-link">
           <ArrowRight size={16} />

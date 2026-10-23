@@ -2346,3 +2346,97 @@ input[type="checkbox"] {
     animation: none;
   }
 }
+
+/* Owner-supplied dotLottie artwork; preserve its colors and timing. */
+.page-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60svh;
+  padding: 40px 16px;
+  gap: 16px;
+  color: var(--ez-ink-muted);
+  text-align: center;
+}
+.page-loading p {
+  margin: 0;
+  font-size: 16px;
+}
+.page-loading-visual {
+  position: relative;
+  width: 160px;
+  max-width: 100%;
+  aspect-ratio: 4 / 3;
+  pointer-events: none;
+}
+.page-loading-static,
+.page-loading-motion {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.page-loading-motion {
+  display: none;
+}
+@supports (offset-path: path("M0 0 L1 1")) {
+  .page-loading-motion {
+    display: block;
+  }
+  .page-loading-static {
+    visibility: hidden;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .page-loading-motion {
+    display: none;
+  }
+  .page-loading-static {
+    visibility: visible;
+  }
+}
+
+/* Original owner-supplied olive artwork; CSS accounts for its transparent margins. */
+.brand-lockup {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+.brand-mark {
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+.brand-mark .brand-image {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 125%;
+  height: 125%;
+  max-width: none;
+  object-fit: contain;
+  transform: translate(-50%, -50%);
+}
+.brand-mark-rail {
+  width: 48px;
+  height: 48px;
+}
+.brand-symbol {
+  background: transparent;
+}
+.brand-lockup-compact .brand-mark {
+  width: 28px;
+  height: 28px;
+}
+@media (max-width: 767px) {
+  .brand-lockup:not(.brand-lockup-compact) .brand-mark {
+    width: 36px;
+    height: 36px;
+  }
+}

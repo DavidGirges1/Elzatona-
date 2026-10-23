@@ -36,9 +36,19 @@ test("auth gates and callback failures retain the mount and safe destination", a
   );
   expect(invalid.status()).toBe(307);
   expect(new URL(invalid.headers().location).pathname).toBe(at("/login"));
-  const noProvider = await request.get(at("/auth/login?next=%2Fsaved"), {
+  const oauth = await request.get(at("/auth/login?next=%2Fsaved"), {
     maxRedirects: 0,
   });
-  expect(noProvider.status()).toBe(307);
-  expect(new URL(noProvider.headers().location).pathname).toBe(at("/login"));
+  expect(oauth.status()).toBe(307);
+  const destination = new URL(oauth.headers().location);
+  if (destination.pathname === at("/login")) {
+    expect(destination.searchParams.get("error")).toBe("provider");
+  } else {
+    expect(destination.origin).toBe(process.env.NEXT_PUBLIC_SUPABASE_URL);
+    expect(destination.pathname).toBe("/auth/v1/authorize");
+    expect(destination.searchParams.get("provider")).toBe("google");
+    const callback = new URL(destination.searchParams.get("redirect_to")!);
+    expect(callback.pathname).toBe(at("/auth/callback"));
+    expect(callback.searchParams.get("next")).toBe("/saved");
+  }
 });

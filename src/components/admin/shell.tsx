@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { BrandName } from "@/components/brand";
 import {
   LayoutDashboard,
   Building2,
@@ -29,7 +30,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
     <div className="admin-shell">
       <aside className="admin-sidebar">
         <Link href="/admin" className="wordmark">
-          الزتونة.
+          <BrandName />
         </Link>
         <span className="admin-tag">مساحة الإدارة</span>
         <nav aria-label="إدارة المنصة">

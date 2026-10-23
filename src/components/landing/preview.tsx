@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { BrandName } from "@/components/brand";
 import {
   FileText,
   Play,
@@ -37,7 +38,9 @@ export function ProductPreview() {
   return (
     <div className="product-preview">
       <div className="preview-top">
-        <span className="wordmark">الزتونة.</span>
+        <span className="wordmark">
+          <BrandName compact />
+        </span>
         <span className="small muted">فكرة عن ترتيب المصادر</span>
       </div>
       <div className="preview-path">

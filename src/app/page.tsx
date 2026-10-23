@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { BrandName } from "@/components/brand";
 import {
   ArrowLeft,
   ArrowDown,
@@ -36,7 +37,7 @@ export default function Landing() {
           className="wordmark"
           aria-label="الزتونة، الصفحة الرئيسية"
         >
-          الزتونة.
+          <BrandName />
         </Link>
         <nav aria-label="التنقل الرئيسي">
           <MotionToggle />
@@ -237,7 +238,7 @@ export default function Landing() {
       <footer className="landing-footer landing-container">
         <div>
           <Link href="/" className="wordmark">
-            الزتونة.
+            <BrandName />
           </Link>
           <p>مصادر موادك، من غير دوشة.</p>
         </div>

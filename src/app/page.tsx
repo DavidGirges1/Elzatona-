@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { ProductPreview } from "@/components/landing/preview";
 import { Reveals } from "@/components/landing/reveal";
+import { MotionToggle } from "@/components/landing/motion-toggle";
 export const metadata = {
   title: "كل ماتريالزك في مكان واحد.",
   description:
@@ -24,6 +25,11 @@ export default function Landing() {
   return (
     <div className="landing">
       <Reveals />
+      <div className="landing-atmosphere" aria-hidden="true">
+        <span />
+        <span />
+        <span />
+      </div>
       <header className="landing-nav landing-container">
         <Link
           href="/"
@@ -33,6 +39,7 @@ export default function Landing() {
           الزتونة.
         </Link>
         <nav aria-label="التنقل الرئيسي">
+          <MotionToggle />
           <a className="landing-how" href="#how">
             بتشتغل إزاي؟
           </a>
@@ -78,7 +85,7 @@ export default function Landing() {
         <section className="problem-section landing-container" data-reveal>
           <div className="section-kicker">أكيد عارف المشوار ده</div>
           <div className="problem-grid">
-            <h2>
+            <h2 data-reveal="right">
               «حد معاه لينك
               <br />
               المحاضرة؟»
@@ -172,7 +179,14 @@ export default function Landing() {
                 body: "معاك ملخص أو لينك شرح كويس؟ ضيفه في مادته ووفّر على غيرك وقت التدوير.",
               },
             ].map((v) => (
-              <article className="how-step" key={v.n}>
+              <article
+                className="how-step"
+                key={v.n}
+                data-reveal
+                data-reveal-order={
+                  v.n === "٠٢" ? "1" : v.n === "٠٣" ? "2" : "0"
+                }
+              >
                 <div className={`resource-icon ${v.tone}`}>
                   <v.Icon size={24} />
                 </div>
@@ -184,7 +198,7 @@ export default function Landing() {
           </div>
         </section>
         <section className="community-section landing-container" data-reveal>
-          <div className="community-mark" aria-hidden="true">
+          <div className="community-mark" aria-hidden="true" data-reveal="left">
             <HeartHandshake size={56} strokeWidth={1.5} />
             <span className="community-small lavender">
               <Bookmark size={23} />

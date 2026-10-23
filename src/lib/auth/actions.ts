@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { createClient, configured, currentUser } from "@/lib/supabase/server";
 import { appPath } from "@/lib/paths";
 import { afterStudentLogin } from "./session";
+import { rememberPendingEmail } from "./pending-verification";
 import {
   signupSchema,
   loginSchema,
@@ -70,10 +71,8 @@ export async function signup(
             : "إنشاء الحساب ماكملش. راجع البيانات أو جرّب تسجيل الدخول لو عندك حساب.",
     };
   if (data.session) redirect("/onboarding");
-  return {
-    success:
-      "راجع بريدك الإلكتروني واضغط لينك تأكيد الحساب. بعد التأكيد هنكمل اختيار جامعتك وكليتك.",
-  };
+  await rememberPendingEmail(p.data.email);
+  redirect("/verify-email");
 }
 export async function forgotPassword(
   _state: AuthState,

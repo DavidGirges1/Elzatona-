@@ -8,6 +8,7 @@ import {
   Layers,
   Search,
   ArrowUp,
+  ArrowDown,
   Library,
 } from "lucide-react";
 import { ar } from "@/i18n/ar-EG";
@@ -106,7 +107,7 @@ export function ResourceRow({
         </p>
       </div>
       <span className="score" aria-label={`${resource.score} صافي الأصوات`}>
-        <ArrowUp size={16} />
+        {resource.score < 0 ? <ArrowDown size={16} /> : <ArrowUp size={16} />}
         {new Intl.NumberFormat("ar-EG").format(resource.score)}
       </span>
       <ArrowUpLeft className="row-arrow" size={19} />

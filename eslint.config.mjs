@@ -19,6 +19,7 @@ const eslintConfig = defineConfig([
     ".next/**",
     "out/**",
     "build/**",
+    "public/pdf/**", // Generated, pinned PDF.js vendor assets.
     "next-env.d.ts",
     "playwright-report/**",
     "test-results/**",

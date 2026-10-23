@@ -15,7 +15,9 @@
     "format:check": "prettier --check src scripts tests supabase/tests docs *.ts *.json README.md",
     "check:env": "node scripts/check-env.mjs",
     "test:integration": "node tests/live-supabase.mjs",
-    "verify": "npm run typecheck && npm run lint && npm test && npm run build"
+    "verify": "npm run typecheck && npm run lint && npm test && npm run build",
+    "predev": "node scripts/copy-pdf-worker.mjs",
+    "prebuild": "node scripts/copy-pdf-worker.mjs"
   },
   "dependencies": {
     "@radix-ui/react-slot": "^1.5.0",
@@ -25,6 +27,7 @@
     "clsx": "^2.1.1",
     "lucide-react": "^1.61.0",
     "next": "16.4.2",
+    "pdfjs-dist": "6.4.299",
     "react": "19.3.0",
     "react-dom": "19.3.0",
     "tailwind-merge": "^3.7.0",

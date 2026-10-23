@@ -47,3 +47,6 @@ next-env.d.ts
 
 # Temporary local loading-state verification route; never deploy.
 /src/app/qa-loading-check/
+
+# PDF worker is copied from the pinned dependency before dev/build.
+/public/pdf/

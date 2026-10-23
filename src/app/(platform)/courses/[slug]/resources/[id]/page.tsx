@@ -1,10 +1,12 @@
 import Link from "next/link";
 import { appPath } from "@/lib/paths";
+import { MaterialPreview } from "@/components/material-preview";
+import { ResourceVote } from "@/components/resource-vote";
 import { notFound } from "next/navigation";
-import { ExternalLink, ArrowRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { getResource, getResources, getDiscussions } from "@/lib/data";
 import { createClient, currentUser } from "@/lib/supabase/server";
-import { vote, save } from "@/lib/actions";
+import { save } from "@/lib/actions";
 import { ActionForm, Submit, Share } from "@/components/forms";
 import { ResourceRow, TypeBadge } from "@/components/content";
 export async function generateMetadata({
@@ -81,7 +83,7 @@ export default async function ResourcePage({
           وصل البلاغ للمراجعة. شكرًا إنك بتساعدنا.
         </p>
       )}
-      <article className="panel">
+      <article className="panel resource-detail-panel">
         <TypeBadge type={r.type} />
         <h1>
           <bdi>{r.title}</bdi>
@@ -98,74 +100,48 @@ export default async function ResourcePage({
         </p>
         {r.description && <p className="description">{r.description}</p>}
         {r.is_ai_assisted && <p className="notice">المحتوى معمول بمساعدة AI</p>}
-        <p className="source-domain">
-          {r.source_kind === "pdf" ? (
-            "ملف PDF · الوصول برابط مؤقت"
-          ) : (
-            <bdi dir="ltr">
-              {r.external_url ? new URL(r.external_url).hostname : ""}
-            </bdi>
-          )}
-        </p>
-        <a
-          className="button primary"
-          href={appPath(`/api/resources/${id}/open`)}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          {r.source_kind === "pdf" ? "افتح الـ PDF" : "افتح المصدر"}
-          <ExternalLink size={18} />
-        </a>
-        <div className="actions">
+        <MaterialPreview
+          id={id}
+          title={r.title}
+          kind={r.source_kind}
+          url={r.external_url}
+        />
+        <div className="resource-feedback">
+          <ResourceVote
+            id={id}
+            path={path}
+            score={r.score}
+            value={myVote}
+            signedIn={Boolean(user)}
+            own={user?.id === r.author_id}
+          />
           {user ? (
-            <>
-              <ActionForm action={save.bind(null, id, path)}>
-                <Submit variant="outline">
-                  {saved ? "محفوظ · إزالة" : "احفظ"}
-                </Submit>
-              </ActionForm>
-              {user.id !== r.author_id && (
-                <>
-                  <ActionForm action={vote.bind(null, id, 1, path)}>
-                    <Submit variant="outline">
-                      {myVote === 1 ? "↑ مفيد · إلغاء" : "↑ مفيد"}
-                    </Submit>
-                  </ActionForm>
-                  <ActionForm action={vote.bind(null, id, -1, path)}>
-                    <Submit variant="outline">
-                      {myVote === -1 ? "↓ مش مفيد · إلغاء" : "↓ مش مفيد"}
-                    </Submit>
-                  </ActionForm>
-                </>
-              )}
-            </>
+            <ActionForm action={save.bind(null, id, path)}>
+              <Submit variant="outline">
+                {saved ? "محفوظ · إزالة" : "احفظ"}
+              </Submit>
+            </ActionForm>
           ) : (
-            <>
-              <Link
-                className="button secondary"
-                href={`/login?next=${encodeURIComponent(path)}&intent=save`}
-              >
-                احفظ
-              </Link>
-              <Link
-                className="button secondary"
-                href={`/login?next=${encodeURIComponent(path)}&intent=vote`}
-              >
-                مفيد ↑
-              </Link>
-              <Link
-                className="button secondary"
-                href={`/login?next=${encodeURIComponent(path)}&intent=vote`}
-              >
-                مش مفيد ↓
-              </Link>
-            </>
+            <Link
+              className="button secondary"
+              href={`/login?next=${encodeURIComponent(path)}&intent=save`}
+            >
+              احفظ
+            </Link>
           )}
-          <span className="muted">
-            صافي الأصوات: {new Intl.NumberFormat("ar-EG").format(r.score)}
-          </span>
+          <details className="resource-share">
+            <summary className="button secondary">شارك</summary>
+            <div className="share-options">
+              <Share title={r.title} />
+            </div>
+          </details>
+          <a
+            className="text-link resource-question-link"
+            href="#resource-questions"
+          >
+            اسأل عن المصدر
+          </a>
         </div>
-        <Share title={r.title} />
         <div className="section-head">
           <Link className="text-link" href={`${path}/report`}>
             بلّغ عن مشكلة
@@ -193,7 +169,7 @@ export default async function ResourcePage({
           شوف باقي مصادر المادة
         </Link>
       </section>
-      <section>
+      <section id="resource-questions">
         <div className="section-head">
           <h2>أسئلة عن المصدر ده</h2>
           <Link href={`/courses/${slug}/ask?resource=${id}`}>اسأل دفعتك</Link>

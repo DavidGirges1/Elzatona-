@@ -2221,6 +2221,9 @@ input[type="checkbox"] {
   opacity: 1;
   transform: none;
 }
+.reveal-ready:focus-within {
+  transition: none;
+}
 .hero-product {
   animation-delay: 100ms;
   animation-fill-mode: backwards;

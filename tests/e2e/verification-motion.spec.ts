@@ -92,3 +92,38 @@ test("reduced motion stops decoration and keeps every section visible", async ({
   for (const section of await page.locator("[data-reveal]").all())
     await expect(section).toHaveCSS("opacity", "1");
 });
+
+test("keyboard focus reveals sections immediately", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  await page.goto("/test");
+  for (let i = 0; i < 24; i++) {
+    await page.keyboard.press("Tab");
+    expect(
+      await page.evaluate(() => {
+        const active = document.activeElement;
+        return Array.from(document.querySelectorAll("[data-reveal]"))
+          .filter((node) => active && node.contains(active))
+          .every((node) => getComputedStyle(node).opacity === "1");
+      }),
+    ).toBe(true);
+  }
+});
+
+test("landing content remains visible without JavaScript", async ({
+  browser,
+}) => {
+  const context = await browser.newContext({ javaScriptEnabled: false });
+  const page = await context.newPage();
+  try {
+    await page.goto(base + "/test");
+    expect(
+      await page
+        .locator("[data-reveal]")
+        .evaluateAll((nodes) =>
+          nodes.every((node) => getComputedStyle(node).opacity === "1"),
+        ),
+    ).toBe(true);
+  } finally {
+    await context.close();
+  }
+});

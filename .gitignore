@@ -1,7 +1,6 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
-# ==========================================
-# Dependencies
-# ==========================================
+# dependencies
 /node_modules
 /.pnp
 .pnp.*
@@ -11,86 +10,37 @@
 !.yarn/releases
 !.yarn/versions
 
-# ==========================================
-# Next.js
-# ==========================================
+# testing
+/coverage
+
+# next.js
 /.next/
 /out/
-/build/
-/dist/
 
-# ==========================================
-# Production
-# ==========================================
-/.vercel
-/.netlify
+# production
+/build
 
-# ==========================================
-# Environment Variables & Secrets
-# ==========================================
-.env
-.env.*
-!.env.example
-!.env.*.example
+# misc
+.DS_Store
+*.pem
 
-# ==========================================
-# TypeScript
-# ==========================================
-*.tsbuildinfo
-next-env.d.ts
-
-# ==========================================
-# Testing & Coverage
-# ==========================================
-/coverage/
-/playwright-report/
-/test-results/
-
-# ==========================================
-# Logs
-# ==========================================
-*.log
+# debug
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-pnpm-debug.log*
+.pnpm-debug.log*
 
-# ==========================================
-# OS Generated Files
-# ==========================================
-.DS_Store
-Thumbs.db
-Desktop.ini
+# env files (can opt-in for committing if needed)
+.env*
 
-# ==========================================
-# IDE / Editor
-# ==========================================
-.idea/
-.vscode/*
-!.vscode/extensions.json
-!.vscode/settings.json
-*.swp
-*.swo
+# vercel
+.vercel
 
-# ==========================================
-# Temporary Files
-# ==========================================
-*.tmp
-*.temp
-.cache/
-.tmp/
+# typescript
+*.tsbuildinfo
+next-env.d.ts
 
-# ==========================================
-# Local Database Files (if applicable)
-# ==========================================
-*.db
-*.db-journal
-*.sqlite
-*.sqlite3
-
-# ==========================================
-# Miscellaneous
-# ==========================================
-*.pem
-*.key
-*.crt
+!.env.example
+/playwright-report/
+/test-results/
+/supabase/.temp/

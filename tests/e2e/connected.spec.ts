@@ -6,6 +6,8 @@ const connected = Boolean(
   process.env.SUPABASE_SECRET_KEY &&
   process.env.TEST_ALLOW_WRITES === "1",
 );
+const at = (path: string) =>
+  (process.env.NEXT_PUBLIC_BASE_PATH ?? "/test") + (path === "/" ? "" : path);
 type Fixture = Awaited<ReturnType<typeof fixtures>>;
 let f: Fixture;
 async function login(
@@ -51,7 +53,7 @@ test.describe("Connected real Supabase journeys", () => {
     expect(result.error).toBeNull();
   });
   for (const [name, route, authenticated] of [
-    ["home", () => "/ ", true],
+    ["home", () => "/dashboard", true],
     ["discovery", () => "/courses", false],
     ["course", () => `/courses/${f.slug}`, false],
     ["resource", () => `/courses/${f.slug}/resources/${f.resource}`, false],
@@ -60,7 +62,7 @@ test.describe("Connected real Supabase journeys", () => {
   ] as const)
     test(`screenshot ${name}`, async ({ page, context }, info) => {
       if (authenticated) await login(context, f.people[0]);
-      await page.goto(route().trim());
+      await page.goto(at(route().trim()));
       await expect(page.locator("h1")).toBeVisible();
       await page.evaluate(() => document.fonts.ready);
       expect(await page.locator("html").getAttribute("dir")).toBe("rtl");
@@ -79,15 +81,18 @@ test.describe("Connected real Supabase journeys", () => {
     request,
   }) => {
     const path = `/courses/${f.slug}/resources/${f.resource}`;
-    await page.goto(path);
+    await page.goto(at(path));
     await expect(
       page.getByRole("heading", {
         name: "شرح Binary Trees — مصدر تجريبي للمراجعة",
       }),
     ).toBeVisible();
-    const response = await request.get(`/api/resources/${f.resource}/open`, {
-      maxRedirects: 0,
-    });
+    const response = await request.get(
+      at(`/api/resources/${f.resource}/open`),
+      {
+        maxRedirects: 0,
+      },
+    );
     expect(response.status()).toBe(302);
     expect(response.headers().location).toContain("developer.mozilla.org");
     await expect(
@@ -100,16 +105,16 @@ test.describe("Connected real Supabase journeys", () => {
     browser,
   }) => {
     await login(context, f.people[1]);
-    await page.goto(`/courses/${f.slug}`);
+    await page.goto(at(`/courses/${f.slug}`));
     await page.getByRole("button", { name: "ضيف لموادي", exact: true }).click();
     await expect(
       page.getByRole("button", { name: "ضمن موادي · إزالة" }),
     ).toBeVisible();
-    await page.goto("/");
+    await page.goto(at("/dashboard"));
     await expect(
       page.getByRole("heading", { name: "موادي", exact: true }),
     ).toBeVisible();
-    await page.goto(`/courses/${f.slug}/submit`);
+    await page.goto(at(`/courses/${f.slug}/submit`));
     await page
       .getByLabel("عنوان المصدر")
       .fill("شرح من طالبة التجربة · browser");
@@ -137,7 +142,7 @@ test.describe("Connected real Supabase journeys", () => {
     browser,
   }) => {
     await login(context, f.people[1]);
-    await page.goto(`/courses/${f.slug}/resources/${f.resource}`);
+    await page.goto(at(`/courses/${f.slug}/resources/${f.resource}`));
     await page.getByRole("button", { name: "↑ مفيد", exact: true }).click();
     await expect(
       page.getByRole("button", { name: "↑ مفيد · إلغاء" }),
@@ -162,7 +167,7 @@ test.describe("Connected real Supabase journeys", () => {
       p.getByText("رد حقيقي محفوظ من الطالب التاني.", { exact: true }),
     ).toBeVisible();
     await a.close();
-    await page.goto(`/courses/${f.slug}/resources/${f.resource}/report`);
+    await page.goto(at(`/courses/${f.slug}/resources/${f.resource}/report`));
     await page
       .getByLabel("تفاصيل تساعدنا نراجع")
       .fill("بلاغ تجريبي لمراجعة رحلة المشرف.");
@@ -171,7 +176,7 @@ test.describe("Connected real Supabase journeys", () => {
     const mod = await browser.newContext();
     await login(mod, f.people[2]);
     const mp = await mod.newPage();
-    await mp.goto("/admin/reports");
+    await mp.goto(at("/admin/reports"));
     const card = mp
       .locator("article")
       .filter({ hasText: "بلاغ تجريبي لمراجعة رحلة المشرف." });
@@ -183,7 +188,7 @@ test.describe("Connected real Supabase journeys", () => {
     await mod.close();
     const guest = await browser.newContext();
     const gp = await guest.newPage();
-    await gp.goto(`/courses/${f.slug}/resources/${f.resource}`);
+    await gp.goto(at(`/courses/${f.slug}/resources/${f.resource}`));
     await expect(
       gp.getByRole("heading", { name: "الصفحة دي مش موجودة" }),
     ).toBeVisible();
@@ -195,7 +200,7 @@ test.describe("Connected real Supabase journeys", () => {
     request,
   }) => {
     await login(context, f.people[1]);
-    await page.goto(`/courses/${f.slug}/submit`);
+    await page.goto(at(`/courses/${f.slug}/submit`));
     await page.getByLabel("عنوان المصدر").fill("ملف PDF من رحلة المتصفح");
     await page.locator("input[name=file]").setInputFiles({
       name: "elzatona-qa.pdf",
@@ -208,7 +213,7 @@ test.describe("Connected real Supabase journeys", () => {
     await page.getByRole("button", { name: "ضيف المصدر", exact: true }).click();
     await expect(page).toHaveURL(/\/resources\/[0-9a-f-]+$/);
     const id = page.url().split("/").at(-1);
-    const result = await request.get(`/api/resources/${id}/open`, {
+    const result = await request.get(at(`/api/resources/${id}/open`), {
       maxRedirects: 0,
     });
     expect(result.status()).toBe(302);

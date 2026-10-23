@@ -43,7 +43,7 @@ export default async function CoursePage({
   if (!course) notFound();
   const s = await searchParams;
   const path = `/courses/${slug}`;
-  const page = Math.max(1, Math.min(Number(s.page) || 1, 1000));
+  const page = Math.max(1, Math.min(Math.trunc(Number(s.page)) || 1, 1000));
   const [topics, resources, highlights, discussions, ids, user] =
     await Promise.all([
       getTopics(course.id),

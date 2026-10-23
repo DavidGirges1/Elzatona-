@@ -30,7 +30,10 @@ test.describe("Published domain contract", () => {
     const response = await page.goto("/test");
     expect(response?.status()).toBe(200);
     expect(response?.headers()["x-robots-tag"]).toContain("noindex");
-    await expect(page.locator("h1")).toHaveText("موادك، من غير دوشة.");
+    await expect(page.locator("h1")).toHaveText(
+      /كل ماتريالزك\s*في مكان واحد\./,
+    );
+    await page.getByRole("link", { name: "اكتشف المواد", exact: true }).click();
     await expect(
       page.getByRole("heading", { name: "هياكل البيانات", exact: true }),
     ).toBeVisible();

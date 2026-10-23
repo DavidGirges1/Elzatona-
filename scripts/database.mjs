@@ -3,7 +3,7 @@ import { readdir, readFile, writeFile } from "node:fs/promises";
 export async function database() {
   const db = new PGlite();
   await db.exec(`create role service_role nologin bypassrls;grant usage on schema public to service_role;create role anon nologin;create role authenticated nologin;create schema auth;create schema storage;
- create table auth.users(id uuid primary key,email text,raw_user_meta_data jsonb default '{}');
+ create table auth.users(id uuid primary key,email text,raw_user_meta_data jsonb default '{}',created_at timestamptz default now(),email_confirmed_at timestamptz default now());
  create function auth.uid() returns uuid language sql stable as $$select nullif(current_setting('request.jwt.claim.sub',true),'')::uuid$$;
  grant usage on schema auth,public,storage to anon,authenticated;grant execute on function auth.uid() to anon,authenticated;
  create table storage.buckets(id text primary key,name text,public boolean,file_size_limit bigint,allowed_mime_types text[]);
@@ -60,6 +60,8 @@ export async function generateTypes(db) {
     23: "number",
     25: "string",
     2950: "string",
+    1007: "number[]",
+    3802: "Json",
   };
   const functions = funcs
     .filter(
@@ -76,7 +78,7 @@ export async function generateTypes(db) {
       const argsText = args
         .map(
           (n, i) =>
-            `${n}${i >= args.length - f.pronargdefaults ? "?" : ""}: ${oidMap[f.argtypes[i]] || "unknown"}${["p_topic", "p_resource"].includes(n) ? " | null" : ""}`,
+            `${n}${i >= args.length - f.pronargdefaults ? "?" : ""}: ${oidMap[f.argtypes[i]] || "unknown"}${["p_topic", "p_resource", "p_id", "p_faculty", "p_university", "p_year", "p_semester"].includes(n) ? " | null" : ""}`,
         )
         .join("; ");
       const ret =
@@ -85,6 +87,7 @@ export async function generateTypes(db) {
           boolean: "boolean",
           text: "string",
           void: "undefined",
+          jsonb: "Json",
         }[f.rettype] || "unknown";
       return `    ${f.proname}: { Args: ${argsText ? `{${argsText}}` : "Record<string, never>"}; Returns: ${ret} };`;
     })

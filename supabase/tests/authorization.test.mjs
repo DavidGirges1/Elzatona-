@@ -16,12 +16,15 @@ async function as(user, sql) {
 }
 async function admin(sql) {
   await db.exec("reset role");
-  return db.query(sql);
+  return (await db.exec(sql)).at(-1);
 }
 beforeAll(async () => {
   db = await database();
   await db.exec(
     `insert into auth.users(id) values('${A}'),('${B}'),('${M}');insert into public.universities(id,slug,name) values('${C}','demo','جامعة تجريبية');insert into public.courses(id,university_id,slug,code,title,department) values('${C}','${C}','ds','CS1','هياكل البيانات','تجريبي'),('${D}','${C}','db','CS2','قواعد البيانات','تجريبي');insert into public.topics(id,course_id,title) values('${T}','${D}','SQL');insert into public.user_roles(user_id,role) values('${M}','moderator');`,
+  );
+  await admin(
+    `update public.profiles set username_claimed=true where id in('${A}','${B}','${M}');update public.student_academics set university_id=(select id from public.universities where slug='capital-university'),faculty_id=(select id from public.faculties where slug='computers'),academic_year=1,completed_at=now() where user_id in('${A}','${B}','${M}');`,
   );
   const x = await as(
     A,
@@ -291,7 +294,9 @@ describe("actual PostgreSQL grants, RPCs and RLS (embedded auth/storage schemas)
 
   it("cascade account deletion updates resource vote totals", async () => {
     const u = "10000000-0000-4000-8000-000000000009";
-    await admin(`insert into auth.users(id) values('${u}')`);
+    await admin(
+      `insert into auth.users(id) values('${u}');update public.profiles set username_claimed=true where id='${u}';update public.student_academics set university_id=(select id from public.universities where slug='capital-university'),faculty_id=(select id from public.faculties where slug='computers'),academic_year=1,completed_at=now() where user_id='${u}'`,
+    );
     const x = await as(
       A,
       `select public.submit_resource('${C}',null,'account delete vote','','notes','https://example.org/delete-vote',true,false) as id`,

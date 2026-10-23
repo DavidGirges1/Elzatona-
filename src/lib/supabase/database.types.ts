@@ -9,6 +9,82 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      academic_years: {
+        Row: {
+          university_id: string;
+          faculty_id: string;
+          year: number;
+        };
+        Insert: {
+          university_id: string;
+          faculty_id: string;
+          year: number;
+        };
+        Update: Partial<
+          Database["public"]["Tables"]["academic_years"]["Insert"]
+        >;
+        Relationships: [];
+      };
+      account_states: {
+        Row: {
+          user_id: string;
+          status: string;
+          reason: string;
+          updated_at: string;
+        };
+        Insert: {
+          user_id: string;
+          status?: string;
+          reason?: string;
+          updated_at?: string;
+        };
+        Update: Partial<
+          Database["public"]["Tables"]["account_states"]["Insert"]
+        >;
+        Relationships: [];
+      };
+      admin_audit_log: {
+        Row: {
+          id: number;
+          actor_id: string | null;
+          action: string;
+          target_id: string | null;
+          details: Json;
+          created_at: string;
+        };
+        Insert: {
+          id?: number;
+          actor_id?: string | null;
+          action: string;
+          target_id?: string | null;
+          details?: Json;
+          created_at?: string;
+        };
+        Update: Partial<
+          Database["public"]["Tables"]["admin_audit_log"]["Insert"]
+        >;
+        Relationships: [];
+      };
+      analytics_events: {
+        Row: {
+          id: string;
+          user_id: string | null;
+          visitor_id: string;
+          page: string;
+          created_at: string;
+        };
+        Insert: {
+          id: string;
+          user_id?: string | null;
+          visitor_id: string;
+          page: string;
+          created_at?: string;
+        };
+        Update: Partial<
+          Database["public"]["Tables"]["analytics_events"]["Insert"]
+        >;
+        Relationships: [];
+      };
       course_highlights: {
         Row: {
           id: string;
@@ -48,6 +124,8 @@ export type Database = {
           year_level: number | null;
           is_active: boolean;
           created_at: string;
+          faculty_id: string | null;
+          semester: number | null;
         };
         Insert: {
           id?: string;
@@ -63,6 +141,8 @@ export type Database = {
           year_level?: number | null;
           is_active?: boolean;
           created_at?: string;
+          faculty_id?: string | null;
+          semester?: number | null;
         };
         Update: Partial<Database["public"]["Tables"]["courses"]["Insert"]>;
         Relationships: [];
@@ -115,6 +195,24 @@ export type Database = {
           updated_at?: string;
         };
         Update: Partial<Database["public"]["Tables"]["discussions"]["Insert"]>;
+        Relationships: [];
+      };
+      faculties: {
+        Row: {
+          id: string;
+          slug: string;
+          name: string;
+          name_ar: string;
+          is_active: boolean;
+        };
+        Insert: {
+          id?: string;
+          slug: string;
+          name: string;
+          name_ar: string;
+          is_active?: boolean;
+        };
+        Update: Partial<Database["public"]["Tables"]["faculties"]["Insert"]>;
         Relationships: [];
       };
       moderation_actions: {
@@ -188,6 +286,9 @@ export type Database = {
           avatar_url: string | null;
           created_at: string;
           updated_at: string;
+          full_name: string;
+          username: string;
+          username_claimed: boolean;
         };
         Insert: {
           id: string;
@@ -195,6 +296,9 @@ export type Database = {
           avatar_url?: string | null;
           created_at?: string;
           updated_at?: string;
+          full_name: string;
+          username: string;
+          username_claimed?: boolean;
         };
         Update: Partial<Database["public"]["Tables"]["profiles"]["Insert"]>;
         Relationships: [];
@@ -223,6 +327,22 @@ export type Database = {
           created_at?: string;
         };
         Update: Partial<Database["public"]["Tables"]["reports"]["Insert"]>;
+        Relationships: [];
+      };
+      request_budgets: {
+        Row: {
+          key: string;
+          bucket: string;
+          count: number;
+        };
+        Insert: {
+          key: string;
+          bucket: string;
+          count: number;
+        };
+        Update: Partial<
+          Database["public"]["Tables"]["request_budgets"]["Insert"]
+        >;
         Relationships: [];
       };
       resource_saves: {
@@ -281,6 +401,7 @@ export type Database = {
           score: number | null;
           created_at: string;
           updated_at: string;
+          file_verified_at: string | null;
         };
         Insert: {
           id?: string;
@@ -303,8 +424,31 @@ export type Database = {
           score?: number | null;
           created_at?: string;
           updated_at?: string;
+          file_verified_at?: string | null;
         };
         Update: Partial<Database["public"]["Tables"]["resources"]["Insert"]>;
+        Relationships: [];
+      };
+      student_academics: {
+        Row: {
+          user_id: string;
+          university_id: string | null;
+          faculty_id: string | null;
+          academic_year: number | null;
+          completed_at: string | null;
+          updated_at: string;
+        };
+        Insert: {
+          user_id: string;
+          university_id?: string | null;
+          faculty_id?: string | null;
+          academic_year?: number | null;
+          completed_at?: string | null;
+          updated_at?: string;
+        };
+        Update: Partial<
+          Database["public"]["Tables"]["student_academics"]["Insert"]
+        >;
         Relationships: [];
       };
       topics: {
@@ -334,6 +478,9 @@ export type Database = {
           name: string;
           name_ar: string | null;
           created_at: string;
+          description: string;
+          is_active: boolean;
+          onboarding_enabled: boolean;
         };
         Insert: {
           id?: string;
@@ -341,8 +488,27 @@ export type Database = {
           name: string;
           name_ar?: string | null;
           created_at?: string;
+          description?: string;
+          is_active?: boolean;
+          onboarding_enabled?: boolean;
         };
         Update: Partial<Database["public"]["Tables"]["universities"]["Insert"]>;
+        Relationships: [];
+      };
+      university_faculties: {
+        Row: {
+          university_id: string;
+          faculty_id: string;
+          is_active: boolean;
+        };
+        Insert: {
+          university_id: string;
+          faculty_id: string;
+          is_active?: boolean;
+        };
+        Update: Partial<
+          Database["public"]["Tables"]["university_faculties"]["Insert"]
+        >;
         Relationships: [];
       };
       user_courses: {
@@ -399,7 +565,11 @@ export type Database = {
       };
     };
     Functions: {
+      assert_admin: { Args: Record<string, never>; Returns: string };
       toggle_save: { Args: { p_resource: string | null }; Returns: undefined };
+      academic_ready: { Args: Record<string, never>; Returns: boolean };
+      can_contribute: { Args: Record<string, never>; Returns: boolean };
+      username_available: { Args: { p_username: string }; Returns: boolean };
       ask_question: {
         Args: {
           p_course: string;
@@ -422,7 +592,6 @@ export type Database = {
         };
         Returns: undefined;
       };
-      is_moderator: { Args: Record<string, never>; Returns: boolean };
       follow_course: { Args: { p_course: string }; Returns: undefined };
       submit_resource: {
         Args: {
@@ -441,6 +610,7 @@ export type Database = {
         Args: { p_resource: string | null; p_value: number };
         Returns: undefined;
       };
+      is_moderator: { Args: Record<string, never>; Returns: boolean };
       report_content: {
         Args: {
           p_kind: string;
@@ -463,8 +633,8 @@ export type Database = {
         };
         Returns: undefined;
       };
-      update_profile: { Args: { p_name: string }; Returns: undefined };
       record_open: { Args: { p_resource: string | null }; Returns: undefined };
+      update_profile: { Args: { p_name: string }; Returns: undefined };
       prepare_pdf: {
         Args: {
           p_course: string;
@@ -477,10 +647,104 @@ export type Database = {
         };
         Returns: string;
       };
-      finalize_pdf: { Args: { p_resource: string | null }; Returns: undefined };
+      provision_admin: {
+        Args: { p_email: string; p_username: string };
+        Returns: string;
+      };
       finalize_pdf_checked: {
         Args: { p_resource: string | null; p_author: string };
         Returns: undefined;
+      };
+      admin_overview: { Args: Record<string, never>; Returns: Json };
+      finalize_pdf: { Args: { p_resource: string | null }; Returns: undefined };
+      account_active: { Args: Record<string, never>; Returns: boolean };
+      is_admin: { Args: Record<string, never>; Returns: boolean };
+      track_page_view: {
+        Args: { p_id: string | null; p_page: string; p_visitor: string };
+        Returns: undefined;
+      };
+      claim_username: { Args: { p_username: string }; Returns: undefined };
+      student_context: { Args: Record<string, never>; Returns: Json };
+      set_academic_context: {
+        Args: {
+          p_university: string | null;
+          p_faculty?: string | null;
+          p_year?: number | null;
+        };
+        Returns: undefined;
+      };
+      admin_save_university: {
+        Args: {
+          p_id: string | null;
+          p_slug: string;
+          p_name: string;
+          p_name_ar: string;
+          p_description: string;
+          p_active: boolean;
+          p_onboarding?: boolean;
+        };
+        Returns: string;
+      };
+      admin_save_faculty: {
+        Args: {
+          p_id: string | null;
+          p_university: string | null;
+          p_slug: string;
+          p_name: string;
+          p_name_ar: string;
+          p_years: number[];
+          p_active: boolean;
+        };
+        Returns: string;
+      };
+      admin_save_course: {
+        Args: {
+          p_id: string | null;
+          p_university: string | null;
+          p_faculty: string | null;
+          p_year: number | null;
+          p_semester: number | null;
+          p_slug: string;
+          p_code: string;
+          p_title: string;
+          p_title_ar: string;
+          p_description: string;
+          p_active: boolean;
+        };
+        Returns: string;
+      };
+      admin_set_account_status: {
+        Args: {
+          p_user: string;
+          p_status: string;
+          p_reason: string;
+          p_confirm: boolean;
+        };
+        Returns: undefined;
+      };
+      admin_manage_resource: {
+        Args: {
+          p_resource: string | null;
+          p_title: string;
+          p_status: string;
+          p_reason: string;
+          p_confirm: boolean;
+        };
+        Returns: undefined;
+      };
+      admin_users: {
+        Args: {
+          p_query?: string;
+          p_university?: string | null;
+          p_faculty?: string | null;
+          p_year?: number | null;
+          p_page?: number;
+        };
+        Returns: Json;
+      };
+      admin_login_identity: {
+        Args: { p_username: string; p_key: string };
+        Returns: string;
       };
     };
     Enums: Record<string, never>;

@@ -158,3 +158,30 @@ it("failed publication never reports success", async () => {
   x.services.finalize.mockResolvedValue(false);
   expect((await x.request()).status).toBe(409);
 });
+it("anonymous admin-review request rejected before record lookup", async () => {
+  const x = setup({ status: "hidden" });
+  expect((await x.request("review", null)).status).toBe(401);
+  expect(x.services.sign).not.toHaveBeenCalled();
+});
+it("student cannot use admin-review action", async () => {
+  const x = setup({ status: "hidden" });
+  expect((await x.request("review")).status).toBe(403);
+  expect(x.services.resource).not.toHaveBeenCalled();
+});
+it("verified administrator may review hidden PDF without republishing it", async () => {
+  const x = setup({ status: "hidden", course_active: false });
+  const handle = fileHandler({
+    ...x.services,
+    isAdmin: vi.fn().mockResolvedValue(true),
+  });
+  const r = await handle(
+    new Request("https://function.invalid", {
+      method: "POST",
+      headers: { authorization: "Bearer valid-admin" },
+      body: JSON.stringify({ action: "review", resource_id: id }),
+    }),
+  );
+  expect(r.status).toBe(200);
+  expect(x.services.sign).toHaveBeenCalled();
+  expect(x.services.finalize).not.toHaveBeenCalled();
+});

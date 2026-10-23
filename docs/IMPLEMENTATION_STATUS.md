@@ -1,96 +1,82 @@
 # Elzatona implementation status
 
-Updated: **23 October 2026 (UTC)**. Current phase: **deployed developer testing at `/test`**. Product feature expansion remains frozen.
+Updated **23 October 2026 UTC**. Current phase: **expanded authentication, academic onboarding and administration verified locally against real Supabase; GitHub/Vercel rollout in progress**.
 
-## Current result
+Owner confirmed: **keep Coming Soon at `/`; all new development under `/test`**. `/test` is an unlisted public URL, not access control. Original instructions, design pack, uploaded ZIP and the full new request are retained under `docs/owner-instructions`, `docs/original-design-pack`, `docs/specification` and `docs/original-attachments`.
 
-- **Public Coming Soon:** https://elzatona.tech/ — HTTP 200, **58,478 bytes**, verified byte-for-byte against original Git blob `992a73d57e087f5c84c716225bd6f6a23b37c57a`. Its content was not redesigned or linked to the test app.
-- **Actual platform:** https://elzatona.tech/test — live Next.js app using the owner's real Supabase project. Nested courses, assets, GET search, auth gates, contribution actions and resource URLs use `/test`.
-- **GitHub:** https://github.com/DavidGirges1/Elzatona- — full source pushed to `main` and `codex/elzatona-test-mvp`, preserving history. Initial integration commit: `3ade4ce2676996e8577d9a300b09c85fe3d83eb2`. Original specifications, all eight design-pack files, attached ZIP, owner instructions, system design, tests, migrations and screenshots are included. No secret environment files, QA passwords, dependencies or build caches are committed.
-- **Vercel:** project `elzatona` / `prj_6HrPeMdc7tbZeOukBkCvklzhEDkb`; production deployment `dpl_4Zr5PMbEyZUZ1z9y1xeL42MWUVTK` returned **READY**, built from the integration commit and assigned `elzatona.tech`. Its build ran approximately **59 seconds**. Source `vercel.json` selects Next.js and rewrites the root to the original static landing file.
-- **Not launch-ready or ready for an ordinary student pilot yet.** Google signup/login is disabled in Supabase; real Google consent and first-account flows remain blocked. Developers can browse the unlisted app now. Further checks and owner steps are listed below.
+## Current functionality and verification boundaries
 
-`/test` is an **unlisted public URL**, not a password or confidentiality boundary. It is absent from Coming Soon links and excluded from indexing via metadata, robots.txt and headers. The repository is public and reveals the path. Existing Auth/RLS restrictions still protect community writes and private state.
+| Area                                                            | Implemented | Embedded/local verification                                                             | Actual hosted Supabase                                                                   | New Vercel deployment           |
+| --------------------------------------------------------------- | ----------- | --------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- | ------------------------------- |
+| Arabic landing, RTL, existing typography/tokens, reduced motion | Yes         | Screenshots/keyboard/360–1440px                                                         | Live-backed catalog links                                                                | Pending rollout                 |
+| Email/password login, sessions, logout                          | Yes         | Real browser login                                                                      | Confirmed temporary Auth accounts                                                        | Pending rollout                 |
+| Signup/full name/unique username/live validation                | Yes         | Validation + trigger + browser availability checks                                      | Auth rejects reserved example.com test address; **real-inbox confirmation not verified** | Pending rollout                 |
+| Password reset/change                                           | Yes         | Authenticated reset form updates real password, signs out; old password fails/new works | Actual password update verified; **recovery email/token delivery unverified**            | Pending rollout                 |
+| Google secondary icon + PKCE callbacks                          | Yes         | Truthful disabled state/safe callback failure                                           | Provider reports **disabled**                                                            | Cannot claim Google login works |
+| Resumable university → faculty → year onboarding                | Yes         | Browser completion, resume and edit                                                     | Actual persisted contexts and valid configuration                                        | Pending rollout                 |
+| Course matching and explicit saved courses                      | Yes         | Contextual empty state/follow-unfollow browser tests                                    | Database context predicates and private follows                                          | Pending rollout                 |
+| Separate admin username/password login                          | Yes         | Real browser login and console pages                                                    | Managed function + Auth + verified role                                                  | Pending rollout                 |
+| University/faculty/year/course management                       | Yes         | Actual forms create options; new seventh year appears in onboarding                     | Normalized constraints, audit and real rows                                              | Pending rollout                 |
+| Users search/filter/pagination/suspend/reactivate               | Yes         | Search, confirmation, suspension/reactivation browser journey                           | Live account status blocks existing sessions                                             | Pending rollout                 |
+| Resource contribution/votes/reports/moderation                  | Yes         | Complete student → other student → admin browser journey                                | Actual rows and denied ownership changes                                                 | Pending rollout                 |
+| Private PDF upload/publication/download/admin review            | Yes         | Real file through form; guest downloads exact bytes; admin hide/review                  | Actual Storage/functions/RLS; 60-second signed attachments                               | Pending rollout                 |
+| Actual metrics, interactive chart and private audit             | Yes         | Console renders, chart switches, real event counts                                      | Coarse page events, admin-only aggregates/audit                                          | Pending rollout                 |
 
-## Connected configuration
+**Not launch-ready.** Suitable for developer review after rollout; ordinary student invitations still require verified email delivery and initial admin/content setup. Google remains a separate external configuration task. No default admin password exists.
 
-Supabase project **Elzatona**, ref `osakdzaxqvlcrfpwrjul`, URL `https://osakdzaxqvlcrfpwrjul.supabase.co`, active PostgreSQL 17. Vercel previously had no environment variables. Added and rechecked:
+## Exact checks completed
 
-| Key                                       | Scope                            |
-| ----------------------------------------- | -------------------------------- |
-| NEXT_PUBLIC_SUPABASE_URL                  | Production, Preview, Development |
-| NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY      | Production, Preview, Development |
-| NEXT_PUBLIC_APP_URL=https://elzatona.tech | Production, Preview              |
-| NEXT_PUBLIC_BASE_PATH=/test               | Production, Preview, Development |
-| SUPABASE_STORAGE_FUNCTION=resource-files  | Production, Preview, Development |
+- `npm run typecheck`: passed, strict TypeScript.
+- `npm run lint`: passed, zero errors/warnings.
+- `npm test`: **152 passed, 7 files, 5.80 seconds**. Includes fresh application of **8 migrations** against embedded PostgreSQL, existing resource/community/Storage RLS protections, username rules, academic foreign keys, role spoofing/admin denial, private user emails, suspension, analytics deduplication and current academic checks at privileged PDF finalization.
+- Complete Node 24 production build: passed. Standard Next.js App Router output; no TypeScript error suppression. Docker is only this environment's listener/proxy workaround.
+- Hosted API suite: **18/18 passed** in `tests/academic-hosted.mjs`: password sessions, partial context persistence, invalid years, private admin RPC denial, managed username login, bad credentials, actual course matching, link publication, PDF upload/download/hide/admin review, suspension/reactivation, metrics with an incomplete academic year.
+- Browser suite `academic.spec.ts` + `mount.spec.ts`: **50 passed, 4 intentionally skipped duplicate write journeys, 1.8 minutes**, against the owner's hosted backend through the local production app. Thirty real screenshots at **390/768/1440px**, JavaScript errors checked, RTL and overflow checked.
+- Full admin-create → dynamic onboarding (including year 7) → course → real PDF form upload → guest exact-byte download → other-student vote → report → admin hide → suspension/reactivation browser journey: **1 passed, 43.6 seconds**.
+- Authenticated password-change browser journey: **1 passed, 4.5 seconds**. This verifies a password update, **not email delivery**.
+- Last-course unfollow/refollow browser regression: **1 passed, 9.2 seconds**. Zero follows shows contextual suggestions, not silently re-followed courses.
+- 360px/reduced-motion/keyboard preview, safe callback failure and enlarged text checks: **3 passed, 7 unconfigured-only tests skipped, 9.7 seconds**. Enlarged base text is browser emulation; no actual Android system-font or WhatsApp-device test is claimed.
+- Total successful local production-browser checks across these runs: **56**. Skipped tests are explicit, not counted as passes.
+- Hosted catalog audit: **24 public tables, zero without RLS**.
 
-The first two are the real project’s public connection values. No server/service key was exported from Supabase or put in Vercel. The managed `resource-files` function remains **ACTIVE version 1** inside Supabase and uses its built-in privileged credentials. Local ignored `.env.local` uses the same backend and localhost app origin; actual local app URL is **http://localhost:3000/test**. Vercel environment changes are included in the deployed build.
+Earlier exploratory failures were fixed: missing `/test` on an API authorization redirect (now explicit 401/403), live password-confirmation validation with other fields empty, saved-course last-unfollow behavior and consistent admin student distributions. QA harness issues (global session signout, outdated button labels, direct external request without proxy, non-void test cookie callbacks) were corrected. The passing results above are the later runs. Exploratory failures are not claimed as successful checks.
 
-## Implemented and verified
+## Hosted migration/function record
 
-| Area                                        | Implemented | Local / embedded checks                                     | Real Supabase                                 | Deployed domain                                                                                                        |
-| ------------------------------------------- | ----------- | ----------------------------------------------------------- | --------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
-| Arabic RTL shell, fonts, semantic palette   | Yes         | Layout, contrast, screenshots at 390/768/1440               | Real course data                              | Public-browser navigation/layout pass                                                                                  |
-| Course discovery and public resource pages  | Yes         | Input and rendering checks                                  | Published visibility passes                   | Guest deep link/source-open pass                                                                                       |
-| Follow courses and موادي                    | Yes         | SQL privacy/state + browser                                 | Real Auth/RPC state                           | Signed-in mobile page/action pass                                                                                      |
-| Link contribution, another student reads it | Yes         | Zod, ownership, Server Actions                              | Public/other-student reads pass               | Actual form submission/read pass                                                                                       |
-| Votes, saves, questions/replies             | Yes         | SQL and connected browser                                   | State/privacy/permission failures pass        | Vote/question/reply browser flow pass; saves covered by hosted API                                                     |
-| Reports/moderation and highlights           | Yes         | SQL role/visibility tests                                   | Student denial and moderator hide pass        | Resource report/review/hide flow pass; highlight UI not tested                                                         |
-| Private PDF upload/publication/download     | Yes         | Handler and local browser checks                            | Actual Storage bytes/authorization tests pass | Actual form uploaded and published; anonymous app open returned 302 and Storage returned 200 with exact uploaded bytes |
-| Google OAuth routes/profile                 | Yes         | Safe context, disabled-provider and callback-failure checks | Provider confirmed false                      | Unavailable state and safe gates pass; **Google signup not tested**                                                    |
+Existing project: **Elzatona**, `osakdzaxqvlcrfpwrjul`, PostgreSQL 17. No reset or destructive schema replacement was performed. The old three courses/seventeen topics remain; their academic attribution is not invented.
 
-No mock database fallback or artificial production engagement was added.
+| Source migration                                 | Actual hosted version                         |
+| ------------------------------------------------ | --------------------------------------------- |
+| `20261023013635_academic_identity_and_admin.sql` | `20261023021121`                              |
+| `20261023022342_admin_metric_consistency.sql`    | `20261023022501`                              |
+| `20261023023558_pdf_academic_authorization.sql`  | Applied via MCP; see hosted migration history |
 
-## Exact tests and limits
+Earlier core/storage files were imported under hosted `20261022223225`/`20261022223257`; other earlier hardening migrations retain their documented versions. Do not blindly reset or `db push` the existing shared project. On a new project, apply source migrations in filename order.
 
-| Check                                              | Final observed result                     | Scope                                                                                                                                                                                                              |
-| -------------------------------------------------- | ----------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `npm run typecheck`                                | Exit 0                                    | Strict application and test TypeScript                                                                                                                                                                             |
-| `npm run lint`                                     | Exit 0, no errors/warnings                | Source, tests and tooling                                                                                                                                                                                          |
-| `npm test`                                         | **97 passed, 0 failed, 5 files**          | Validation, fresh embedded PostgreSQL migrations/RLS/grants, contrast, managed file handler and routing                                                                                                            |
-| Five migrations on fresh embedded PostgreSQL       | Passed inside SQL suite                   | Simulated Auth/Storage schemas; no full local Supabase reset claim                                                                                                                                                 |
-| Local production build                             | Exit 0; compilation 8.3s, TypeScript 4.1s | Full Node 24 build; supported Webpack/compiler API; checks enabled                                                                                                                                                 |
-| Vercel builds                                      | Two previews and production **READY**     | Real Git source and real configured environment                                                                                                                                                                    |
-| `tests/hosted-connection.mjs`                      | **19 passed, 0 failed**                   | Actual hosted Auth, PostgREST, Storage and file function; temporary password-session fixtures                                                                                                                      |
-| Local `/test` connected browser suite              | **27 passed, 0 failed**, 1.7m             | Actual Next.js against real Supabase, all three widths                                                                                                                                                             |
-| Local `/test` routing browser suite                | **6 passed, 0 failed**                    | Search, links, assets, auth gates/callbacks, all widths                                                                                                                                                            |
-| Published domain + routing browser suite           | **15 passed, 0 failed**, 29.5s            | Exact root HTML, absent /test advertising, real courses, assets/navigation/search, noindex, auth gates/callback errors, bare routes 404; all widths                                                                |
-| Published mobile connected suite                   | **8 passed, 1 timed out**, 49.6s          | Signed-in pages, guest resource open, link submission, second-student read, votes, questions/replies and moderator review passed. PDF action was still saving at the 5s URL assertion, then published successfully |
-| Follow-up deployed PDF HTTP check                  | **Passed**                                | Real anonymously accessed Next route 302 → private Storage signed URL 200; downloaded all 142 uploaded bytes exactly                                                                                               |
-| Final full mobile browser rerun                    | **Interrupted by user**                   | Timeout allowance was increased to 20 seconds; no passing rerun is claimed                                                                                                                                         |
-| Vercel runtime error scan / protected-preview HTTP | **Blocked: 403**                          | Plugin’s team/log/protection endpoints deny access; no claim of clean runtime logs                                                                                                                                 |
+- `admin-session`: **ACTIVE v1**, authenticates username/password through Supabase Auth and a confirmed live admin role.
+- `resource-files`: **ACTIVE v2**, public published-only open, authenticated owner finalization, confirmed active admin review. JWT gateway verification is intentionally disabled because each protected action verifies identity inside the handler; public opening requires no signup.
+- No project secret/service key was exported into the app or Vercel. Functions use Supabase-managed credentials.
+- Seeded onboarding options: Capital University and Beni Suef University; configurable common faculties/years. Actual university curricula need owner review. No fake course/resource content is seeded for students.
 
-The PDF test fixture is an actual minimal PDF transfer, not a real student study document or a check of a full PDF renderer. The actual Vercel upload path and final published bytes were verified; the complete browser upload assertion still needs its uninterrupted rerun.
+## Configuration, security and remaining owner work
 
-Initial remote browser attempts failed because the managed proxy CA was not trusted by Chromium’s writable NSS store. Installed the provided public CA, kept TLS verification enabled and supplied the narrow NSS filesystem permission. The final public-browser run above passed. No application TLS setting or Vercel protection was weakened. Generated Playwright trace/report JavaScript and the historical static review archive initially entered the broad lint target. Added explicit generated/reference-artifact ignores; application and test files remain linted. An initial local mobile follow assertion also exceeded 5 seconds; resetting only the test student’s follow state and allowing 15 seconds produced the complete passing local rerun.
+See [AUTH_ADMIN_SETUP.md](AUTH_ADMIN_SETUP.md) for exact steps, redirects, SMTP, Google and initial admin SQL. [AUTH_ADMIN_PLAN.md](AUTH_ADMIN_PLAN.md) records scope decisions; [SYSTEM_DESIGN.md](SYSTEM_DESIGN.md) records architecture.
 
-Earlier full local Supabase startup failed on Docker disk capacity; no full local-stack reset is certified. A separate admin-key disposable-project suite remains available but was not used to certify the owner-project run. Test Auth password sessions do not verify Google consent/account creation.
+1. Configure a verified SMTP sender, then test signup → actual inbox → verification → onboarding and forgotten password → actual inbox → reset. Supabase Email is enabled and autoconfirm is false; a reserved example.com probe was rejected with `email_address_invalid`, which does **not** establish deliverability to a real student.
+2. Configure Google Cloud OAuth client and enable Supabase Google if desired. The current MCP has no Auth-provider configuration endpoint and cannot create Google secrets. Put them in Supabase settings, never chat/source. Exact callback: `https://osakdzaxqvlcrfpwrjul.supabase.co/auth/v1/callback`.
+3. Verify Supabase redirect allowlist includes `https://elzatona.tech/test/auth/callback` and `http://localhost:3000/test/auth/callback`; Site URL should be `https://elzatona.tech/test`. Cross-device email token-hash templates are documented.
+4. Create/verify your own account, run owner-only `provision_admin` in Supabase SQL Editor, then use `/test/admin/login`. No permanent administrator has been fabricated for you.
+5. Review faculty/year configuration; assign correct contexts to real pilot courses and add permissioned content before student tests.
+6. Enable Supabase leaked-password protection where available. Security advisors flag it disabled. Other advisor warnings are deliberate guarded SECURITY DEFINER RPC exposure; four RLS/no-policy tables are intentionally browser-inaccessible internal stores. No direct writable private tables are opened to silence warnings.
+7. Set documented analytics/budget retention maintenance, publish a takedown contact, and assign moderation ownership. Analytics includes internal QA and bots; page views are not unique students.
+8. Test on an actual budget Android and a WhatsApp-shared link, including real email/Google consent where configured. Arrange 5–10 student usability tests only after signup delivery and meaningful course content are confirmed.
 
-## Architecture and security
+Local preview: **http://localhost:3000/test** while the preview container is running. Root Coming Soon is preserved by the Vercel rewrite; bare root on the local Next server need not serve it. Screenshots are in [docs/screenshots](screenshots/), prefixed `academic-`.
 
-- All 16 public tables have RLS; resource_cards is a security-invoker view. User writes authenticate on the server and enforce ownership/roles in restricted SQL RPCs.
-- Fixed existing course/topic IDs rejected by overly strict RFC UUID validation. Canonical PostgreSQL GUID shapes now pass while malformed IDs remain rejected; authorization was not relaxed.
-- Private course-pdfs bucket: PDF MIME only, 3 MiB maximum, author/pending insert policy, no public listing/overwrite. Actual MIME-spoof, oversize and cross-author failures passed.
-- Managed finalization verifies the actual Auth user, author/pending state, active course and stored PDF bytes before the privileged RPC. Anonymous open signs only published PDFs in active courses for 60 seconds. Existing signed URLs can survive moderation until expiry.
-- Signature validation is not malware scanning; stale pending-object cleanup is not scheduled.
-- Hosted security advisor reports intentional no-policy private-table notices and SECURITY DEFINER exposure warnings for the restricted RPC surface. Internal actor/finalization helpers are not browser-callable. RLS was not disabled to clear notices. See [Supabase database linter](https://supabase.com/docs/guides/database/database-linter).
-- Auth reports [leaked-password protection disabled](https://supabase.com/docs/guides/auth/password-security#password-strength-and-leaked-password-protection). The UI exposes Google only; temporary password sessions are QA fixtures. Configure password protection before exposing password login to students.
-- Existing hosted migration names correspond to capabilities but imported core/storage versions differ from local filenames. Do not reset or blindly replay migrations in the shared project; follow SUPABASE_SETUP.md.
+## Deployment and cleanup gate
 
-## Remaining owner and verification steps
+The last previously verified live deployment was `dpl_GNnYMj64VzPwc7uaCM44gRczYDkE`, commit `070953087c52255af63eb2bace00c5f67cc52e8d`. The expanded code is prepared for the same authorized GitHub/Vercel project, retaining the original root file hash `992a73d57e087f5c84c716225bd6f6a23b37c57a` (**58,478 bytes**). New domain verification will be recorded after rollout.
 
-1. In Google Cloud create/configure an OAuth Web client and privately enter its ID/secret under Supabase Authentication → Providers → Google. Google’s redirect is **https://osakdzaxqvlcrfpwrjul.supabase.co/auth/v1/callback**. The available Supabase MCP does not configure Auth providers or create Google Cloud secrets.
-2. In Supabase URL Configuration allow **https://elzatona.tech/test/auth/callback** and optionally **http://localhost:3000/test/auth/callback**. Keep NEXT_PUBLIC_APP_URL as the origin, without /test. Complete Google signup with two genuine accounts, cancelled consent and a safe context return.
-3. Finish the uninterrupted deployed PDF browser assertion and actual Android/WhatsApp/slow-network upload recovery. Own-edit/profile/highlight UI, discussion/reply report UI, concurrent voting and a complete accessibility audit remain unverified.
-4. Confirm the authorized university/courses/resources; supply a real takedown/contact channel and moderation owner before inviting students.
-5. If protected-preview inspection/runtime logs are needed, authorize the Vercel connection for team ai-hackathon6/project elzatona. Project-scoped list/deploy/env/status operations work, but the log and protection endpoints returned 403. No authenticated Vercel CLI is available in this environment.
+Temporary, clearly labeled QA accounts/content are still retained for final deployment tests. They must be signed out and removed, including actual Storage objects, before handoff. No QA passwords/session files/traces are committed.
 
-Screenshots: docs/screenshots/hosted-* contain real backend-populated captures at 390/768/1440; the mobile ones were also captured from the deployed domain. Temporary test content is labeled and removed after verification; its URLs do not remain live. No final founder/student visual approval is claimed. See VISUAL_QA.md.
-
-Full system design: SYSTEM_DESIGN.md. Current routing, callbacks and launch reversal: TEST_DEPLOYMENT.md. Local instructions: LOCAL_SETUP.md. Original specifications and owner requests are retained alongside these documents.
-
-The earlier chatgpt.site review and source ZIP are historical, unconfigured captures/exports. The current source of truth and downloadable source are now the GitHub repository. To launch at `/`, follow TEST_DEPLOYMENT.md; do not reset Supabase. Original Coming Soon-only rollback: deployment dpl_G744TBBFTTiNfFEEocVWppKe5djm, commit fbbc4f32d816b79bf4e52e0ea8b54f08eab37861.
-
-## Final fixture cleanup
-
-Removed **9 temporary objects through the Storage API**, verified all three QA folders empty, and globally signed out all QA sessions before deleting test-authored content/accounts. Final hosted checks: **0 QA users, 0 QA sessions, 0 QA resources and 0 QA Storage objects**. The original catalog remains **1 university, 3 courses, 17 topics**. Removed local QA credential/state files and the temporary browser CA trust entry. No owner account or catalog data was removed.
+Previous milestone evidence is archived at [archive/IMPLEMENTATION_STATUS_pre_auth.md](archive/IMPLEMENTATION_STATUS_pre_auth.md).

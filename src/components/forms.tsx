@@ -2,7 +2,7 @@
 import { useActionState } from "react";
 import { useFormStatus } from "react-dom";
 import { Button } from "@/components/ui/button";
-export type ActionState = { error?: string };
+export type ActionState = { error?: string; success?: string };
 export type FormAction = (
   state: ActionState,
   data: FormData,
@@ -34,6 +34,11 @@ export function ActionForm({
   return (
     <form action={formAction} className={className}>
       {children}
+      {state.success && (
+        <p className="notice" role="status">
+          {state.success}
+        </p>
+      )}
       {state.error && (
         <p className="form-error" role="alert">
           {state.error}

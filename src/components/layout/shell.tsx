@@ -8,11 +8,11 @@ export function Shell({ children }: { children: React.ReactNode }) {
         انتقل للمحتوى
       </a>
       <aside className="rail">
-        <Link href="/" className="brand-symbol" aria-label={ar.brand}>
+        <Link href="/dashboard" className="brand-symbol" aria-label={ar.brand}>
           ز
         </Link>
         <nav aria-label="التنقل الرئيسي">
-          <Link href="/">
+          <Link href="/dashboard">
             <House />
             <span>{ar.home}</span>
           </Link>
@@ -32,7 +32,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
       </aside>
       <div className="workspace">
         <header className="topbar">
-          <Link href="/" className="wordmark">
+          <Link href="/dashboard" className="wordmark">
             {ar.brand}
           </Link>
           <span className="top-caption">من الطلبة، للطلبة</span>

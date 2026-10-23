@@ -1,5 +1,6 @@
 import "server-only";
 import { cache } from "react";
+import { studentContext } from "@/lib/auth/session";
 import { createClient, configured, currentUser } from "@/lib/supabase/server";
 import type { Database } from "@/lib/supabase/database.types";
 import { resourceTypes } from "@/lib/validation";
@@ -23,12 +24,21 @@ export const getCourse = cache(async (slug: string) => {
 export async function getCourses(query = "") {
   if (!configured()) return [];
   const db = await createClient();
-  const { data, error } = await db
+  let queryBuilder = db
     .from("courses")
     .select("*")
     .eq("is_active", true)
     .order("title")
     .limit(100);
+  if (await currentUser()) {
+    const context = await studentContext();
+    if (!context?.ready) return [];
+    queryBuilder = queryBuilder
+      .eq("university_id", context.university_id!)
+      .eq("faculty_id", context.faculty_id!)
+      .eq("year_level", context.academic_year!);
+  }
+  const { data, error } = await queryBuilder;
   if (error) throw error;
   const q = query.toLocaleLowerCase();
   return (data || []).filter((c) =>

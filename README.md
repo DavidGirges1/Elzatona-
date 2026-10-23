@@ -10,9 +10,11 @@ npm ci
 npm run dev
 ```
 
-Open **http://localhost:3000/test**. No server secret is needed with the deployed managed file function. Google requires provider configuration in Supabase.
+Open **http://localhost:3000/test**. No server secret is needed with the deployed managed file function. Email/password login is primary; configure verified email delivery in Supabase. Google is secondary and requires its provider configuration.
 
 - [Test deployment, callbacks and launch reversal](docs/TEST_DEPLOYMENT.md)
+- [Authentication, academic catalog and initial admin setup](docs/AUTH_ADMIN_SETUP.md)
+- [Accepted scope and execution plan](docs/AUTH_ADMIN_PLAN.md)
 - [System design](docs/SYSTEM_DESIGN.md)
 - [Implementation and exact test results](docs/IMPLEMENTATION_STATUS.md)
 - [Local setup](docs/LOCAL_SETUP.md)

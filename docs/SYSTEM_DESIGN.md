@@ -37,3 +37,17 @@ Vitest covers validation, fresh embedded migrations/RLS/grants, design-token con
 The existing hosted migration names map to local capabilities but have imported core/storage timestamp differences. Do not reset, replay or repair the shared database without a reviewed reconciliation.
 
 For launch routing reversal: see TEST_DEPLOYMENT.md. Deployment rollback never resets database content.
+
+## October 23 extension: identity, academic context and administration
+
+See [accepted scope](AUTH_ADMIN_PLAN.md) and [setup/provisioning](AUTH_ADMIN_SETUP.md).
+
+Student UI → Server Action (Zod + verified Supabase user) → guarded Postgres RPC → normalized tables/RLS → revalidated server rendering. `student_context()` provides only the caller's persisted context. Partial onboarding saves after each step; finishing requires an offered university-faculty-year tuple and a claimed username. Course discovery queries include database `university_id`, `faculty_id` and `year_level` predicates for signed-in students. Public resource links remain globally readable under the existing published-content policies.
+
+New tables: `faculties`, `university_faculties`, `academic_years`, `student_academics`, `account_states`, `admin_audit_log`, `analytics_events`, `request_budgets`. Profiles gain full names and canonical unique usernames; courses gain faculty/semester constraints; PDFs gain a server-controlled verification timestamp.
+
+Admin UI → dedicated username/password Server Action → managed `admin-session` function → private rate-limited username-to-identity RPC → Supabase Auth password verification → confirmed live admin role check → SSR cookies. No custom password store or client-side privileged lookup. All console pages are under a separate guarded layout; actions and database RPCs independently recheck privileges. Private emails are returned only by guarded, paginated `admin_users()`.
+
+Management uses validated RPCs and audit records. Disabling catalog options invalidates academic readiness without deleting student history. Removing a configured year referenced by students or courses is blocked by foreign keys. Content removal uses hiding; unpublished PDFs cannot be promoted unless server byte verification has completed. Admins can obtain short-lived attachment URLs for review after independent role verification.
+
+`/test/api/analytics` validates origin/body and passes an event nonce/category/tab-session UUID to a throttled deduplicating RPC. The server associates only an existing authenticated user ID. Overview reads aggregate real registrations, page events and content actions; no fabricated growth metrics. Maintenance retention and known bot/test traffic limitations are explicit in setup.

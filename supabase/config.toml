@@ -417,3 +417,7 @@ enabled = true
 [functions.resource-files]
 # The handler verifies user JWTs itself for finalize; published reads are public.
 verify_jwt = false
+
+# Username/password authentication is verified by the function against Supabase Auth.
+[functions.admin-session]
+verify_jwt = false

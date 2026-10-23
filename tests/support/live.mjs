@@ -32,7 +32,7 @@ export async function fixtures() {
       email,
       password,
       email_confirm: true,
-      user_metadata: { full_name: name },
+      user_metadata: { full_name: name, username: `qa_${run}_${index}` },
     });
     if (error) throw error;
     const db = client();
@@ -41,6 +41,7 @@ export async function fixtures() {
     people.push({ id: data.user.id, email, password, name, db });
   }
   const university = randomUUID();
+  const faculty = randomUUID();
   const course = randomUUID();
   const otherCourse = randomUUID();
   const topic = randomUUID();
@@ -52,10 +53,37 @@ export async function fixtures() {
     name_ar: "جامعة تجريبية · بيانات اختبار",
   });
   if (result.error) throw result.error;
+  result = await admin
+    .from("faculties")
+    .insert({
+      id: faculty,
+      slug: `qa-faculty-${run}`,
+      name: "QA Faculty",
+      name_ar: "كلية اختبار",
+    });
+  if (result.error) throw result.error;
+  result = await admin
+    .from("university_faculties")
+    .insert({ university_id: university, faculty_id: faculty });
+  if (result.error) throw result.error;
+  result = await admin
+    .from("academic_years")
+    .insert({ university_id: university, faculty_id: faculty, year: 1 });
+  if (result.error) throw result.error;
+  for (const person of people) {
+    const r = await person.db.rpc("set_academic_context", {
+      p_university: university,
+      p_faculty: faculty,
+      p_year: 1,
+    });
+    if (r.error) throw r.error;
+  }
   result = await admin.from("courses").insert([
     {
       id: course,
       university_id: university,
+      faculty_id: faculty,
+      year_level: 1,
       slug,
       code: `QA-${run}`,
       title: "هياكل البيانات",
@@ -68,6 +96,8 @@ export async function fixtures() {
     {
       id: otherCourse,
       university_id: university,
+      faculty_id: faculty,
+      year_level: 1,
       slug: `qa-db-${run}`,
       code: `QB-${run}`,
       title: "قواعد البيانات",
@@ -87,7 +117,7 @@ export async function fixtures() {
   if (result.error) throw result.error;
   result = await admin
     .from("user_roles")
-    .insert({ user_id: people[2].id, role: "moderator" });
+    .insert({ user_id: people[2].id, role: "admin" });
   if (result.error) throw result.error;
   const { data: resource, error } = await people[0].db.rpc("submit_resource", {
     p_course: course,
@@ -112,6 +142,7 @@ export async function fixtures() {
     admin,
     people,
     university,
+    faculty,
     course,
     otherCourse,
     topic,

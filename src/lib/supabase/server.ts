@@ -1,4 +1,5 @@
 import "server-only";
+import { cache } from "react";
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import type { Database } from "./database.types";
@@ -29,10 +30,10 @@ export async function createClient() {
     },
   );
 }
-export async function currentUser() {
+export const currentUser = cache(async function currentUser() {
   if (!configured()) return null;
   const db = await createClient();
   const { data, error } = await db.auth.getUser();
   if (error) return null;
   return data.user;
-}
+});

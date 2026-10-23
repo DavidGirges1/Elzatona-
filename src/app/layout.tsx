@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
+import { Analytics } from "@/components/analytics";
 import { basePath } from "@/lib/paths";
 import { Alexandria, Tajawal } from "next/font/google";
-import { Shell } from "@/components/layout/shell";
 import "./globals.css";
 const headings = Alexandria({
   subsets: ["arabic", "latin"],
@@ -32,7 +32,8 @@ export default function RootLayout({
   return (
     <html lang="ar" dir="rtl">
       <body className={`${headings.variable} ${body.variable}`}>
-        <Shell>{children}</Shell>
+        {children}
+        <Analytics />
       </body>
     </html>
   );

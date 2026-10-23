@@ -9,7 +9,28 @@ export async function GET(request: NextRequest) {
   if (code && configured()) {
     const db = await createClient();
     const { error } = await db.auth.exchangeCodeForSession(code);
-    if (!error) return NextResponse.redirect(new URL(appPath(next), origin));
+    if (!error) {
+      if (next === "/reset-password")
+        return NextResponse.redirect(new URL(appPath(next), origin));
+      const { data: context } = await db.rpc("student_context");
+      const ready =
+        context &&
+        typeof context === "object" &&
+        !Array.isArray(context) &&
+        context.ready === true;
+      return NextResponse.redirect(
+        new URL(
+          appPath(
+            ready
+              ? next === "/"
+                ? "/dashboard"
+                : next
+              : `/onboarding?next=${encodeURIComponent(next === "/" ? "/dashboard" : next)}`,
+          ),
+          origin,
+        ),
+      );
+    }
   }
   return NextResponse.redirect(
     new URL(

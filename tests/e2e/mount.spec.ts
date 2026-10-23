@@ -10,10 +10,11 @@ test("test mount keeps links, native search and assets inside the platform", asy
     "content",
     "noindex, nofollow",
   );
-  await expect(page.locator("a.wordmark")).toHaveAttribute(
+  await expect(page.locator("a.wordmark").first()).toHaveAttribute(
     "href",
     mount || "/",
   );
+  await page.goto(at("/courses"));
   await page
     .getByRole("textbox", { name: "بتدوّر على ملخص، امتحان، أو شرح؟" })
     .fill("هياكل");

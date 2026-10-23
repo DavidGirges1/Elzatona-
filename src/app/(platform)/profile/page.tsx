@@ -13,9 +13,8 @@ export default async function Profile({
   const user = await currentUser();
   if (!user) redirect("/login?next=/profile");
   const db = await createClient();
-  const [p, m, pending, s] = await Promise.all([
+  const [p, pending, s] = await Promise.all([
     db.from("profiles").select("*").eq("id", user.id).single(),
-    db.rpc("is_moderator"),
     db
       .from("resources")
       .select("*")
@@ -51,20 +50,17 @@ export default async function Profile({
         </label>
         <Submit>احفظ الاسم</Submit>
       </ActionForm>
+      <section className="panel">
+        <h2>بياناتك الدراسية</h2>
+        <p className="muted">جامعتك وكليتك وسنتك بتحدد المواد اللي بتظهرلك.</p>
+        <Link className="button secondary" href="/onboarding?edit=1">
+          تعديل الجامعة والكلية والسنة
+        </Link>
+      </section>
       <div className="actions">
         <Link className="button secondary" href={`/u/${user.id}`}>
           صفحتك العامة
         </Link>
-        {m.data && (
-          <>
-            <Link className="button secondary" href="/admin/reports">
-              مراجعة البلاغات
-            </Link>
-            <Link className="button secondary" href="/admin/highlights">
-              اختيارات المواد
-            </Link>
-          </>
-        )}
         <form action={signOut}>
           <button className="button ghost">تسجيل الخروج</button>
         </form>

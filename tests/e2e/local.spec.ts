@@ -1,9 +1,9 @@
 import { test, expect } from "@playwright/test";
 const localOnly = !process.env.NEXT_PUBLIC_SUPABASE_URL;
 for (const [name, path, heading] of [
-  ["home", "/", "موادك، من غير دوشة."],
+  ["home", "/", /كل ماتريالزك\s*في مكان واحد\./],
   ["discovery", "/courses", "اكتشف المواد"],
-  ["login", "/login", "سجّل دخولك وشارك دفعتك"],
+  ["login", "/login", "أهلًا بيك من تاني."],
   ["course-unavailable", "/courses/qa-unconfigured", "الصفحة دي مش موجودة"],
   [
     "resource-unavailable",
@@ -13,7 +13,7 @@ for (const [name, path, heading] of [
   [
     "submission-auth-gate",
     "/courses/qa-unconfigured/submit",
-    "سجّل دخولك وشارك دفعتك",
+    "أهلًا بيك من تاني.",
   ],
 ])
   test(`${name}: actual unconfigured screen`, async ({ page }, info) => {
@@ -23,7 +23,7 @@ for (const [name, path, heading] of [
     );
     const errors: string[] = [];
     page.on("pageerror", (e) => errors.push(e.message));
-    await page.goto(path);
+    await page.goto(`/test${path === "/" ? "" : path}`);
     await expect(
       page.getByRole("heading", { name: heading, exact: true }),
     ).toBeVisible();
@@ -42,21 +42,21 @@ for (const [name, path, heading] of [
   });
 test("Guest saved resource action preserves auth return", async ({ page }) => {
   test.skip(!localOnly);
-  await page.goto("/saved");
+  await page.goto("/test/saved");
   await expect(page).toHaveURL(/login\?next=\/saved/);
   await expect(
-    page.getByRole("heading", { name: "سجّل دخولك عشان تحفظ المصدر" }),
+    page.getByRole("heading", { name: "أهلًا بيك من تاني." }),
   ).toBeVisible();
 });
 test("Invalid OAuth callback retains a safe relative destination", async ({
   page,
 }) => {
-  await page.goto("/auth/callback?next=https%3A%2F%2Fevil.example");
+  await page.goto("/test/auth/callback?next=https%3A%2F%2Fevil.example");
   await expect(page).toHaveURL(/\/login\?error=callback&next=%2F$/);
 });
 test("390 and 360 layouts support 200% text", async ({ page }) => {
   await page.setViewportSize({ width: 360, height: 800 });
-  await page.goto("/");
+  await page.goto("/test");
   await page.addStyleTag({
     content: "body{font-size:32px} h1{font-size:50px} h2{font-size:40px}",
   });

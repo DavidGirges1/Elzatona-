@@ -5,13 +5,13 @@ import { minimalPdf } from "../support/live.mjs";
 
 type Person = { id: string; email: string; password: string };
 const enabled = Boolean(
-  process.env.TEST_AUTH_ACCOUNTS_FILE && process.env.TEST_HOSTED_STATE_FILE,
+  process.env.TEST_AUTH_ACCOUNTS_FILE && process.env.TEST_PILOT_STATE_FILE,
 );
 const people: Person[] = enabled
   ? JSON.parse(readFileSync(process.env.TEST_AUTH_ACCOUNTS_FILE!, "utf8"))
   : [];
 const state = enabled
-  ? JSON.parse(readFileSync(process.env.TEST_HOSTED_STATE_FILE!, "utf8"))
+  ? JSON.parse(readFileSync(process.env.TEST_PILOT_STATE_FILE!, "utf8"))
   : {};
 const base = process.env.TEST_APP_URL || "http://localhost:3000";
 const mount = process.env.NEXT_PUBLIC_BASE_PATH ?? "/test";
@@ -48,7 +48,7 @@ test.describe("Hosted Supabase through actual Next.js app", () => {
     "Requires temporary QA accounts and recorded hosted state; no mock backend.",
   );
   for (const [name, path, auth] of [
-    ["home", "/", true],
+    ["home", "/dashboard", true],
     ["discovery", "/courses", false],
     ["course", "/courses/data-structures", false],
     ["resource", `/courses/data-structures/resources/${state.resource}`, false],
@@ -74,7 +74,7 @@ test.describe("Hosted Supabase through actual Next.js app", () => {
         await expect(page.locator("h1")).toHaveText("اختبار ربط مؤقت · لينك");
       if (name === "login") {
         await expect(
-          page.getByText("تسجيل الدخول لسه مش متاح.", { exact: false }),
+          page.getByText("Google مش متاح حاليًا", { exact: false }),
         ).toBeVisible();
         await expect(
           page.getByRole("link", { name: "كمّل بحساب Google" }),
@@ -134,7 +134,7 @@ test.describe("Hosted Supabase through actual Next.js app", () => {
     await expect(
       page.getByRole("button", { name: "ضمن موادي · إزالة" }),
     ).toBeVisible({ timeout: 15000 });
-    await page.goto(at("/"));
+    await page.goto(at("/dashboard"));
     await expect(
       page.getByRole("heading", { name: "موادي", exact: true }),
     ).toBeVisible();

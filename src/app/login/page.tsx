@@ -1,55 +1,44 @@
 import Link from "next/link";
-import { appPath } from "@/lib/paths";
-import { currentUser } from "@/lib/supabase/server";
+import { AuthFrame } from "@/components/auth/frame";
+import { LoginForm, GoogleOption } from "@/components/auth/forms";
 import { googleEnabled } from "@/lib/supabase/providers";
+import { currentUser } from "@/lib/supabase/server";
+import { afterStudentLogin } from "@/lib/auth/session";
 import { safeNext } from "@/lib/validation";
-import { redirect } from "next/navigation";
-export const metadata = { title: "دخول" };
+export const metadata = { title: "تسجيل الدخول" };
 export default async function Login({
   searchParams,
 }: {
-  searchParams: Promise<{ next?: string; intent?: string; error?: string }>;
+  searchParams: Promise<{ next?: string; error?: string; changed?: string }>;
 }) {
   const s = await searchParams;
-  const next = safeNext(s.next);
-  if (await currentUser()) redirect(next);
-  const googleAvailable = await googleEnabled();
-  const reasons: Record<string, string> = {
-    save: "سجّل دخولك عشان تحفظ المصدر",
-    vote: "سجّل دخولك عشان تصوّت",
-    follow: "سجّل دخولك عشان تختار موادك",
-  };
+  const next = safeNext(s.next || "/dashboard");
+  if (await currentUser()) await afterStudentLogin(next);
   return (
-    <section className="panel login-card">
-      <p className="eyebrow">أهلًا بيك في الزتونة</p>
-      <h1>{reasons[s.intent || ""] || "سجّل دخولك وشارك دفعتك"}</h1>
-      <p className="muted">
-        مصادر المواد مفتوحة للجميع. الدخول مطلوب للمشاركة والحفظ، وبعده هترجع
-        لنفس الصفحة.
-      </p>
-      {s.error && googleAvailable && (
-        <p className="form-error">الدخول ماكملش. جرّب تاني أو ارجع للمادة.</p>
-      )}
-      {googleAvailable ? (
-        <a
-          className="button primary"
-          href={appPath(`/auth/login?next=${encodeURIComponent(next)}`)}
-        >
-          كمّل بحساب Google
-        </a>
-      ) : (
-        <p className="notice">
-          تسجيل الدخول لسه مش متاح. تقدر تتصفح أي مصادر منشورة من غير حساب.
+    <AuthFrame>
+      <section className="auth-card">
+        <p className="eyebrow">رجعت، ونورت الزتونة</p>
+        <h1>أهلًا بيك من تاني.</h1>
+        <p className="muted">موادك ومصادرك، مستنيينك.</p>
+        {s.error && (
+          <p className="form-error" role="alert">
+            لينك الدخول ماكملش أو انتهت صلاحيته. جرّب تسجيل الدخول.
+          </p>
+        )}
+        {s.changed && (
+          <p className="notice" role="status">
+            كلمة المرور اتغيرت. سجّل دخولك بالكلمة الجديدة.
+          </p>
+        )}
+        <LoginForm next={next} />
+        <GoogleOption available={await googleEnabled()} next={next} />
+        <p className="auth-switch">
+          لسه جديد؟{" "}
+          <Link href="/signup" className="text-link">
+            اعمل حسابك
+          </Link>
         </p>
-      )}
-      <p style={{ marginTop: 20 }}>
-        <Link href={next} className="text-link">
-          ارجع للتصفح
-        </Link>
-      </p>
-      <p className="muted">
-        اسمك هيظهر مع مشاركاتك. بريدك الإلكتروني مش بيظهر للطلبة.
-      </p>
-    </section>
+      </section>
+    </AuthFrame>
   );
 }

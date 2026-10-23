@@ -27,3 +27,7 @@ Google consent and inbox receipt require owner participation. Neither is claimed
 ## Rollback
 
 Vercel's previous deployment remains available in deployment history. Restoring the `/test` deployment also requires restoring `NEXT_PUBLIC_BASE_PATH=/test` for subsequent builds; environment changes alone do not alter an already built deployment. Restore appropriate Supabase Site URL/callback settings if rolling back. Do not reset Supabase or remove the owner account.
+
+## Verified deployment
+
+Application commit `e1da8d02fc0b3c12494ce213b8929bf886d8bf00`, Vercel deployment `dpl_5zVLgHqTtcG8pQTAycDmxMShCoeH`, **READY** on `https://elzatona.tech/`. Production-domain browser checks: **49 passed, 2 intentionally skipped duplicate viewport cases, 1.5 minutes**. This verifies the cutover and existing guest/security behavior; Google consent and real email delivery still require the owner-only steps above. No Auth URL/provider/SMTP setting was changed through the MCP.

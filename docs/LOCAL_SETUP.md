@@ -182,8 +182,8 @@ On Windows you may use `py -m http.server 8080 --directory review-preview/dist`.
 
 ## 11. Staging deployment
 
-Follow `app/docs/STAGING.md` to create a **separate** Vercel project and staging hostname. Do not attach `elzatona.tech` or replace the existing Coming Soon project. A shareable static review URL is not proof that the real Next.js/Supabase application is deployed.
+The owner has authorized and deployed the existing project with Coming Soon at `/` and the platform at `/test`. Follow `app/docs/TEST_DEPLOYMENT.md` for current configuration and reversal; a separate project remains an option for future destructive staging tests. A shareable static review URL is not proof that the real Next.js/Supabase application is deployed.
 
 ## Current limits
 
-Hosted Supabase Auth/API/RLS/real file-transfer checks now pass; Google signup and the actual Vercel deployment remain unverified. Google setup, actual authorized pilot content, an actual Android/WhatsApp journey, a takedown contact and moderation ownership are still needed before inviting real students. The latest status and exact verification results are in `app/docs/IMPLEMENTATION_STATUS.md`.
+Hosted Supabase Auth/API/RLS/real file-transfer checks now pass; The actual Vercel app is deployed at https://elzatona.tech/test; Google signup remains disabled/unverified. Google setup, actual authorized pilot content, an actual Android/WhatsApp journey, a takedown contact and moderation ownership are still needed before inviting real students. The latest status and exact verification results are in `app/docs/IMPLEMENTATION_STATUS.md`.

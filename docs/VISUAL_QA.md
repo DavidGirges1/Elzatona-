@@ -1,3 +1,11 @@
+# Published-domain update — 23 October 2026
+
+The owner’s actual app is now deployed at **https://elzatona.tech/test**. The root continues to return the exact original Coming Soon page. The published domain/routing suite passed **15 browser checks at 390/768/1440**. Six mobile page captures in `screenshots/hosted-*-mobile-390.png` were refreshed from the deployed app using temporary QA content; all six were visible and passed RTL/no-overflow checks. The remaining tablet/desktop populated captures are from the local actual app against the same hosted backend. Temporary content is removed after verification, and no founder approval is implied.
+
+The deployed authenticated contribution/vote/discussion/moderation flow passed. The PDF form uploaded/published but its 5-second browser assertion timed out; a separate live app → signed Storage check verified exact downloaded bytes. The interrupted browser rerun is not counted as passing. Full details are in IMPLEMENTATION_STATUS.md.
+
+The earlier visual reviews below are historical and document local/unconfigured states.
+
 # Actual connected visual review — 23 October 2026
 
 The actual production Next.js app now renders against the owner’s Elzatona Supabase project. Captures use existing courses and temporary QA contributions (clearly labeled as tests); the temporary content is removed after verification. No query mocks or sample fallback data were introduced. Local preview: `http://localhost:3000`. This is not the owner’s Vercel deployment.

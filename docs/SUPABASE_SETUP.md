@@ -1,6 +1,6 @@
 # Connect your staging Supabase project
 
-The owner-authorized **Elzatona** project (`osakdzaxqvlcrfpwrjul`, PostgreSQL 17) is connected locally. Its public API, Auth sessions, RLS, private Storage and managed file function have been tested with temporary QA identities. Google login and the Vercel app deployment are still unverified. Never reset this shared project or blindly replay its existing migrations. Use a separate disposable project for destructive test suites.
+The owner-authorized **Elzatona** project (`osakdzaxqvlcrfpwrjul`, PostgreSQL 17) is connected locally. Its public API, Auth sessions, RLS, private Storage and managed file function have been tested with temporary QA identities. The app is deployed at https://elzatona.tech/test; Google signup remains disabled/unverified. Never reset this shared project or blindly replay its existing migrations. Use a separate disposable project for destructive test suites.
 
 ## 1. Credentials
 
@@ -69,7 +69,7 @@ The configured PostgreSQL major version is 17; match it to your hosted project. 
 6. Test in a fresh browser: open a resource, click save, sign in with Google, return to the exact resource, then explicitly click save. The callback must not automatically vote/save/follow.
 7. Repeat with a second Google account. Test a cancelled consent flow and an expired callback.
 
-**Current result (23 October):** `/auth/v1/settings` reports `external.google=false`. The available Supabase MCP exposes no Auth-provider configuration tool and cannot create a Google Cloud OAuth application/client secret. An account owner must enter the Google client ID/secret privately in Supabase. The app now checks provider availability and shows an Arabic unavailable state instead of sending students to a disabled provider. `https://elzatona.tech/` is confirmed to serve the existing Coming Soon page, so it must not be used as the MVP auth origin yet.
+**Current result (23 October):** `/auth/v1/settings` reports `external.google=false`. The available Supabase MCP exposes no Auth-provider configuration tool and cannot create a Google Cloud OAuth application/client secret. An account owner must enter the Google client ID/secret privately in Supabase. The app now checks provider availability and shows an Arabic unavailable state instead of sending students to a disabled provider. `https://elzatona.tech/` still serves Coming Soon; the app lives at `/test`. Use `https://elzatona.tech` as the app origin and allow `https://elzatona.tech/test/auth/callback` (plus `http://localhost:3000/test/auth/callback` for local work). See TEST_DEPLOYMENT.md.
 
 The product has no multi-step enrollment onboarding. The intended first-use flow is Google sign-in → return to context → explicitly choose/follow a course. Account creation via Google and this complete browser flow remain unverified until the provider is configured.
 

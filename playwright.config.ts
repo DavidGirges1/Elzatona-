@@ -9,9 +9,19 @@ export default defineConfig({
   use: {
     baseURL: process.env.TEST_APP_URL || "http://localhost:3000",
     locale: "ar-EG",
+    proxy:
+      process.env.TEST_APP_URL?.startsWith("https://") &&
+      process.env.HTTPS_PROXY
+        ? { server: process.env.HTTPS_PROXY, bypass: "localhost,127.0.0.1" }
+        : undefined,
     trace: "retain-on-failure",
     screenshot: "only-on-failure",
     launchOptions: {
+      proxy:
+        process.env.TEST_APP_URL?.startsWith("https://") &&
+        process.env.HTTPS_PROXY
+          ? { server: process.env.HTTPS_PROXY, bypass: "localhost,127.0.0.1" }
+          : undefined,
       executablePath:
         process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH ||
         (existsSync("/usr/bin/chromium") ? "/usr/bin/chromium" : undefined),

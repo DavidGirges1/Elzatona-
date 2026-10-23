@@ -150,7 +150,9 @@ test.describe("Hosted Supabase through actual Next.js app", () => {
       .getByLabel("عندي حق مشاركة المصدر، ومفيهوش بيانات خاصة.")
       .check();
     await page.getByRole("button", { name: "ضيف المصدر", exact: true }).click();
-    await expect(page).toHaveURL(/\/resources\/[0-9a-f-]+$/);
+    await expect(page).toHaveURL(/\/resources\/[0-9a-f-]+$/, {
+      timeout: 20000,
+    });
     const url = page.url();
     const a = await browser.newContext();
     await login(a, people[0]);
@@ -221,7 +223,9 @@ test.describe("Hosted Supabase through actual Next.js app", () => {
       .getByLabel("عندي حق مشاركة المصدر، ومفيهوش بيانات خاصة.")
       .check();
     await page.getByRole("button", { name: "ضيف المصدر", exact: true }).click();
-    await expect(page).toHaveURL(/\/resources\/[0-9a-f-]+$/);
+    await expect(page).toHaveURL(/\/resources\/[0-9a-f-]+$/, {
+      timeout: 20000,
+    });
     const id = page.url().split("/").at(-1);
     const r = await request.get(at(`/api/resources/${id}/open`), {
       maxRedirects: 0,

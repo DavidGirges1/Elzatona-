@@ -6,7 +6,7 @@ test.describe("Published official domain contract", () => {
     const response = await page.goto("/");
     expect(response?.status()).toBe(200);
     await expect(page.locator("h1")).toHaveText(
-      /كل ماتريالزك\s*في مكان واحد\./,
+      /كل ماتريالاتك\s*في مكان واحد\./,
     );
     await expect(page.locator("html")).toHaveAttribute("dir", "rtl");
     await expect(page.locator('a[href^="/test"]')).toHaveCount(0);

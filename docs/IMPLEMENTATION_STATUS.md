@@ -119,3 +119,7 @@ Previous milestone evidence is archived at [archive/IMPLEMENTATION_STATUS_pre_au
 - The shared Auth header’s `ارجع للتصفح` link now targets `/`, so login, signup and other student Auth screens return to the official landing page. The administrator header already returned to `/` and retains that destination.
 - The Google sign-in icon now uses the four standard Google brand colors instead of inheriting gray text. These colors belong to the third-party identity mark; the surrounding Elzatona palette, 44px control and accessible label are retained. The SVG is inline and decorative, with no external asset dependency.
 - Strict TypeScript and targeted ESLint passed. This is a small presentational/navigation correction; no database, credentials, provider settings or authentication behavior changes. The deployment build and live browser verification are checked after publication.
+
+## Landing wording — 23 October 2026
+
+- Updated the landing headline and page metadata from `ماتريالزك` to the owner-requested `ماتريالاتك`; existing headline assertions use the same wording. No layout, Auth or backend changes. Exact source occurrences were checked; the Vercel production build and live heading/metadata are verified after publication.

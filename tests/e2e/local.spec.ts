@@ -1,7 +1,7 @@
 import { test, expect } from "@playwright/test";
 const localOnly = !process.env.NEXT_PUBLIC_SUPABASE_URL;
 for (const [name, path, heading] of [
-  ["home", "/", /كل ماتريالزك\s*في مكان واحد\./],
+  ["home", "/", /كل ماتريالاتك\s*في مكان واحد\./],
   ["discovery", "/courses", "اكتشف المواد"],
   ["login", "/login", "أهلًا بيك من تاني."],
   ["course-unavailable", "/courses/qa-unconfigured", "الصفحة دي مش موجودة"],

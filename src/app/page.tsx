@@ -17,7 +17,7 @@ import { ProductPreview } from "@/components/landing/preview";
 import { Reveals } from "@/components/landing/reveal";
 import { MotionToggle } from "@/components/landing/motion-toggle";
 export const metadata = {
-  title: "كل ماتريالزك في مكان واحد.",
+  title: "كل ماتريالاتك في مكان واحد.",
   description:
     "مصادر موادك من غير دوشة. اختار جامعتك وكليتك وسنتك، ووصل للملخصات والشرح وشارك اللي فادك مع دفعتك.",
 };
@@ -56,7 +56,7 @@ export default function Landing() {
               من الطلبة، للطلبة.
             </p>
             <h1>
-              كل ماتريالزك
+              كل ماتريالاتك
               <br />
               <span>في مكان واحد.</span>
             </h1>

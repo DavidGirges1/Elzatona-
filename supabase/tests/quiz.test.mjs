@@ -346,3 +346,11 @@ it("database rejects reserved imported question and option identifiers", async (
     await expect(as(B, save(d))).rejects.toThrow("reserved");
   }
 });
+
+it("exact short answers normalize leading/trailing tabs, newlines and PDF nonbreaking spaces", async () => {
+  for (const text of ["\thello\nworld\r", "\u00a0Hello\u2003World\u00a0"])
+    expect(
+      (await as(null, grade([{ id: "ex", answer: text }]))).rows[0].result[0]
+        .status,
+    ).toBe("correct");
+});

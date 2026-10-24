@@ -166,3 +166,15 @@ it.each(["__proto__", "constructor", "toString"])(
     expect(quizDraftSchema.safeParse(d).success).toBe(false);
   },
 );
+
+it("author preview normalizes tabs, newlines and nonbreaking PDF whitespace", () => {
+  const d = copy();
+  const q = d.questions[2];
+  if (q.type !== "written") throw Error();
+  q.grading = "exact";
+  q.acceptedAnswers = ["Hello World"];
+  for (const text of ["\thello\nworld\r", "\u00a0Hello\u2003World\u00a0"])
+    expect(previewGrade(d, [{ id: q.id, answer: text }])[0].status).toBe(
+      "correct",
+    );
+});

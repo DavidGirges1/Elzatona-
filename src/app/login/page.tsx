@@ -30,8 +30,8 @@ export default async function Login({
             كلمة المرور اتغيرت. سجّل دخولك بالكلمة الجديدة.
           </p>
         )}
-        <LoginForm next={next} />
         <GoogleOption available={await googleEnabled()} next={next} />
+        <LoginForm next={next} />
         <p className="auth-switch">
           لسه جديد؟{" "}
           <Link href="/signup" className="text-link">

@@ -798,7 +798,12 @@ input[type="checkbox"] {
   position: relative;
 }
 .password-control input {
-  padding-inline-end: 52px !important;
+  padding-right: 52px !important;
+  padding-left: 16px !important;
+}
+.password-control .icon-button {
+  inset-inline-end: auto;
+  right: 4px;
 }
 .icon-button {
   display: grid;

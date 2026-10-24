@@ -16,7 +16,6 @@ import {
 } from "lucide-react";
 import { ProductPreview } from "@/components/landing/preview";
 import { Reveals } from "@/components/landing/reveal";
-import { MotionToggle } from "@/components/landing/motion-toggle";
 export const metadata = {
   title: "كل ماتريالاتك في مكان واحد.",
   description:
@@ -40,7 +39,6 @@ export default function Landing() {
           <BrandName />
         </Link>
         <nav aria-label="التنقل الرئيسي">
-          <MotionToggle />
           <a className="landing-how" href="#how">
             بتشتغل إزاي؟
           </a>

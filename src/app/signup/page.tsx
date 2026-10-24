@@ -13,8 +13,8 @@ export default async function Page() {
         <p className="eyebrow">من الطلبة، للطلبة</p>
         <h1>مكانك وسط دفعتك.</h1>
         <p className="muted">اعمل حسابك، وبعدها اختار جامعتك وكليتك.</p>
-        <SignupForm />
         <GoogleOption available={await googleEnabled()} next="/onboarding" />
+        <SignupForm />
         <p className="auth-switch">
           عندك حساب؟{" "}
           <Link className="text-link" href="/login">

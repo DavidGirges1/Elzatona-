@@ -275,3 +275,9 @@ Previous milestone evidence is archived at [archive/IMPLEMENTATION_STATUS_pre_au
 - Clean local production-browser run: **43 passed, 8 intentionally skipped, 1.3 minutes**. Six skips are fixture-only cases (already verified in dev); two are duplicate 360px cases. Covers root/legacy links, hosted course discovery, Auth gates, enabled Google initiation, brand assets, desktop/tablet rail, reduced-motion loading, existing verification page and landing motion. No temporary test route appears in the production source or build.
 
 - Deployed application commit **`8125ac55b1e37a5a01a7ee3d7cd664e473146272`**; Vercel **`dpl_3z5MqAu97uizwGtkhwb4jiuXJp39`**, **READY**, approximately **48-second build**, official `elzatona.tech` alias confirmed. Final production-domain browser run: **52 passed, 8 intentionally skipped, 1.5 minutes** at 390/768/1440px plus the 360px accessibility pass. The six fixture-only skips are covered by the earlier 9/9 local pending-boundary run; no claim is made of deploying that test route. SHA-256 checks of the actual domain downloads match both original uploaded assets, and `/qa-loading-check` returns **404**. Mobile login/loading and desktop right-rail screenshots were visually reviewed. The final evidence update changes documentation only.
+
+## Authentication layout follow-up
+
+Removed the landing navigation motion toggle; Google appears before manual fields in login/signup. Password visibility controls sit on the physical right, including confirmation fields, with matching input padding. Existing reduced-motion accessibility support remains.
+
+Verification: TypeScript, lint and production build passed; Chromium at 390px verified Google precedes manual fields on both pages, every password toggle is on the right and reveals the input, and the landing pause control is absent.

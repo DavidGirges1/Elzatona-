@@ -106,7 +106,7 @@ export function GoogleOption({
 }) {
   return (
     <div className="google-option">
-      <span>أو كمّل بحسابك على</span>
+      <span>كمّل بحسابك على</span>
       {available ? (
         <a
           className="google-icon"

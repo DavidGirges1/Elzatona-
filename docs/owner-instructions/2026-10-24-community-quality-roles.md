@@ -13,3 +13,9 @@
 > go ahead and implement this concept
 
 Implementation assumptions and role boundaries are recorded in [COMMUNITY_ROLES.md](../COMMUNITY_ROLES.md) and [DECISIONS.md](../DECISIONS.md); verified evidence is recorded in [IMPLEMENTATION_STATUS.md](../IMPLEMENTATION_STATUS.md).
+
+## Owner clarification — self-approval
+
+> Class leaders can also approve their own submissions.
+
+The initial prohibition was an implementation assumption, corrected by this explicit owner instruction. Course assignments still bound the permission.

@@ -251,8 +251,25 @@ ok(
   }),
 );
 const own = save(ok(await material(leader.db, c.id, "QA leader own material")));
-denied(await review(leader.db, own, 1));
-ok(await review(manager.db, own, 1));
+eq(
+  ok(await leader.db.rpc("can_review_material", { p_resource: own })),
+  true,
+);
+ok(await review(leader.db, own, 1));
+eq(
+  ok(
+    await guest.from("resources").select("status").eq("id", own).single(),
+  ).status,
+  "published",
+);
+const ownOutside = save(
+  ok(await material(leader.db, d.id, "QA leader out-of-scope own material")),
+);
+eq(
+  ok(await leader.db.rpc("can_review_material", { p_resource: ownOutside })),
+  false,
+);
+denied(await review(leader.db, ownOutside, 1));
 const other = save(
   ok(await material(student.db, d.id, "QA other course material")),
 );

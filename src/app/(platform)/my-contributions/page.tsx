@@ -18,13 +18,18 @@ export default async function MyContributions({
   const db = await createClient();
   const s = await searchParams;
   const page = Math.min(1000, Math.max(1, Math.trunc(Number(s.page)) || 1));
-  const resources = await db
-    .from("resources")
-    .select("*")
-    .eq("author_id", user.id)
-    .order("updated_at", { ascending: false })
-    .order("id")
-    .range((page - 1) * 20, page * 20);
+  const [resources, reviewScope] = await Promise.all([
+    db
+      .from("resources")
+      .select("*")
+      .eq("author_id", user.id)
+      .order("updated_at", { ascending: false })
+      .order("id")
+      .range((page - 1) * 20, page * 20),
+    db.rpc("review_scope"),
+  ]);
+  if (reviewScope.error) throw reviewScope.error;
+  const reviewCourses = reviewScope.data as string[];
   if (resources.error) throw resources.error;
   const rows = resources.data.slice(0, 20);
   const ids = rows.map((r) => r.id);
@@ -97,6 +102,12 @@ export default async function MyContributions({
                 )}
                 {r.status === "pending" && c && (
                   <>
+                    {r.review_state === "submitted" &&
+                      reviewCourses.includes(r.course_id) && (
+                        <Link className="button" href={`/review/${r.id}`}>
+                          راجع الإضافة
+                        </Link>
+                      )}
                     {r.source_kind === "quiz" ? (
                       <Link
                         className="button secondary"

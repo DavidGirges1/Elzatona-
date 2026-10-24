@@ -17,11 +17,7 @@ export default async function ReviewQueue({
   const access = await materialAccess();
   if (!access.can_review) redirect("/dashboard");
   const db = await createClient();
-  const [s, scope, admin] = await Promise.all([
-    searchParams,
-    db.rpc("review_scope"),
-    db.rpc("is_admin"),
-  ]);
+  const [s, scope] = await Promise.all([searchParams, db.rpc("review_scope")]);
   if (scope.error) throw scope.error;
   const ids = scope.data as string[];
   const selected = idSchema.safeParse(s.course);
@@ -36,12 +32,11 @@ export default async function ReviewQueue({
         .order("code")
     : { data: [], error: null };
   if (courses.error) throw courses.error;
-  let query = db
+  const query = db
     .from("resources")
     .select("*")
     .eq("status", "pending")
     .eq("review_state", "submitted");
-  if (!admin.data) query = query.neq("author_id", user.id);
   const result = ids.length
     ? await query
         .in("course_id", course ? [course] : ids)

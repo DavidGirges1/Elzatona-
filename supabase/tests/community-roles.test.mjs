@@ -156,11 +156,78 @@ it("leader can approve a link and complete quiz for guest access", async () => {
     (await as(null, `select public.read_quiz('${Q}') x`)).rows[0].x.questions,
   ).toHaveLength(1);
 });
-it("leader cannot self-approve their own submitted materials", async () => {
+it("leader can approve their own submitted link and the decision is audited", async () => {
   const id = (await as(L, submit(C, "https://example.org/leader-own"))).rows[0]
     .id;
+  expect(
+    (await as(L, `select public.can_review_material('${id}') x`)).rows[0].x,
+  ).toBe(true);
+  expect(
+    (await as(null, `select id from resources where id='${id}'`)).rows,
+  ).toEqual([]);
+  await as(L, review(id));
+  expect(
+    (await as(null, `select status from resources where id='${id}'`)).rows[0]
+      .status,
+  ).toBe("published");
+  expect(
+    (
+      await as(
+        L,
+        `select reviewer_id,decision from resource_reviews where resource_id='${id}'`,
+      )
+    ).rows[0],
+  ).toMatchObject({ reviewer_id: L, decision: "approved" });
+});
+it("self-review does not extend a leader's assigned courses", async () => {
+  const id = (
+    await as(L, submit(D, "https://example.org/leader-outside-scope"))
+  ).rows[0].id;
+  expect(
+    (await as(L, `select public.can_review_material('${id}') x`)).rows[0].x,
+  ).toBe(false);
   await expect(as(L, review(id))).rejects.toThrow("not authorized");
-  await as(M, review(id));
+});
+it("leader cannot self-review after role or course scope is revoked", async () => {
+  const id = (await as(L, submit(C, "https://example.org/leader-revoked")))
+    .rows[0].id;
+  await assign(L, "class_leader", [D]);
+  await expect(as(L, review(id))).rejects.toThrow("not authorized");
+  await assign(L, "student");
+  await expect(as(L, review(id))).rejects.toThrow("not authorized");
+});
+it("self-review preserves stale-version checks", async () => {
+  const id = (await as(L, submit(C, "https://example.org/leader-version")))
+    .rows[0].id;
+  await as(
+    L,
+    `select public.edit_proposed_resource('${id}','Updated leader material','',null,'https://example.org/leader-version')`,
+  );
+  await expect(as(L, review(id, 1))).rejects.toThrow("submission changed");
+  await as(L, review(id, 2));
+});
+it("leader can approve their own submitted quiz but cannot publish a private draft", async () => {
+  const id = (await as(L, quiz("null", false))).rows[0].id;
+  await expect(as(L, review(id))).rejects.toThrow("not authorized");
+  await as(L, quiz(`'${id}'`, true));
+  const version = (
+    await as(L, `select submission_version from resources where id='${id}'`)
+  ).rows[0].submission_version;
+  await as(L, review(id, version));
+  expect(
+    (await as(null, `select public.read_quiz('${id}') x`)).rows[0].x.questions,
+  ).toHaveLength(1);
+});
+it("leader can approve their own PDF only after verified submission", async () => {
+  const id = (
+    await as(
+      L,
+      `select public.prepare_pdf('${C}',null,'Leader own PDF','','notes',true,false) id`,
+    )
+  ).rows[0].id;
+  await expect(as(L, review(id))).rejects.toThrow("not authorized");
+  await owner(`select public.finalize_pdf_checked('${id}','${L}')`);
+  await as(L, review(id));
   expect(
     (await as(null, `select status from resources where id='${id}'`)).rows[0]
       .status,

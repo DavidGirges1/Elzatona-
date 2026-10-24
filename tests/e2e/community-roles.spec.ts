@@ -459,3 +459,46 @@ test("ordinary PDF and quiz need approval; trusted material publishes directly a
     await guestContext.close();
   }
 });
+
+
+test("class leader can explicitly approve their own queued material", async ({
+  page,
+  context,
+  browser,
+}, info) => {
+  await login(context, 2);
+  const guestContext = await browser.newContext({
+    viewport: page.viewportSize()!,
+    locale: "ar-EG",
+  });
+  try {
+    const guest = await guestContext.newPage();
+    const title = `QA self approval ${info.project.name} ${randomUUID().slice(0, 8)}`;
+    await startLink(page, title);
+    await expect(page).toHaveURL(/\/my-contributions\?submitted=/);
+    const id = new URL(page.url()).searchParams.get("submitted")!;
+    const card = page.locator("article").filter({
+      has: page.getByRole("heading", { name: title, exact: true }),
+    });
+    await expect(
+      card.getByRole("link", { name: "راجع الإضافة", exact: true }),
+    ).toBeVisible();
+    await bounds(page);
+    await guest.goto(`/courses/${state.slug}/resources/${id}`);
+    await expect(
+      guest.getByRole("heading", { name: "الصفحة دي مش موجودة" }),
+    ).toBeVisible();
+    await page.goto(`/review?course=${state.course}`);
+    await page
+      .getByRole("link")
+      .filter({ has: page.getByRole("heading", { name: title, exact: true }) })
+      .click();
+    await decision(page, "approved", "I checked my own source and confirm its quality.");
+    await guest.goto(`/courses/${state.slug}/resources/${id}`);
+    await expect(
+      guest.getByRole("heading", { name: title, exact: true }),
+    ).toBeVisible();
+  } finally {
+    await guestContext.close();
+  }
+});

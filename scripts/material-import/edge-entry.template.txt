@@ -1,0 +1,30 @@
+// Deployment injects the locally generated exact-file configuration; no raw capability is stored here.
+// @ts-nocheck -- Supabase Deno entrypoint, deployed independently from Next.js.
+import { createClient } from "npm:@supabase/supabase-js@2.118.0";
+import { importHandler } from "./handler.ts";
+import config from "./config.json" with { type: "json" };
+const secrets = JSON.parse(Deno.env.get("SUPABASE_SECRET_KEYS") || "{}");
+const key = secrets.default || Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+if (!key) throw Error("Managed service configuration missing");
+const db = createClient(Deno.env.get("SUPABASE_URL"), key, {auth:{persistSession:false,autoRefreshToken:false}});
+Deno.serve(importHandler(config, {
+  async readyOwner() {
+    const [r,a,u,s]=await Promise.all([
+      db.from("user_roles").select("role").eq("user_id",config.ownerId).maybeSingle(),
+      db.from("account_states").select("status").eq("user_id",config.ownerId).maybeSingle(),
+      db.auth.admin.getUserById(config.ownerId),
+      db.from("student_academics").select("completed_at").eq("user_id",config.ownerId).maybeSingle(),
+    ]);
+    return !r.error&&!a.error&&!u.error&&!s.error&&r.data?.role==="admin"&&a.data?.status==="active"&&!!u.data.user?.email_confirmed_at&&!!s.data?.completed_at;
+  },
+  async resource(id) {
+    const {data:r,error}=await db.from("resources").select("id,author_id,course_id,topic_id,source_kind,storage_path,status,review_state,file_verified_at").eq("id",id).maybeSingle();
+    if(error||!r)return null;
+    const {data:c}=await db.from("courses").select("is_active,university_id").eq("id",r.course_id).maybeSingle();
+    const {data:u}=c?await db.from("universities").select("is_active").eq("id",c.university_id).maybeSingle():{data:null};
+    return {...r,course_active:c?.is_active===true&&u?.is_active===true};
+  },
+  async upload(path,bytes) { const {error}=await db.storage.from("course-pdfs").upload(path,bytes,{contentType:"application/pdf",upsert:false});return !error; },
+  async download(path) { const {data,error}=await db.storage.from("course-pdfs").download(path);return error||!data?null:new Uint8Array(await data.arrayBuffer()); },
+  async finalize(id) {const {error}=await db.rpc("finalize_pdf_checked",{p_resource:id,p_author:config.ownerId});return !error;},
+}));

@@ -1,8 +1,17 @@
 # Elzatona implementation status
 
-Updated **24 October 2026**. Current phase: **four-layer quality control deployed and verified on https://elzatona.tech/**.
+Updated **24 October 2026**. Current phase: **core community and first semester materials deployed on https://elzatona.tech/**.
 
 Earlier owner instruction to keep Coming Soon at `/` and develop under `/test` is now **superseded**: the owner explicitly requests replacing Coming Soon with the actual platform at `/`. The earlier `/test` URL was public, not access control. Original instructions, design pack, uploaded ZIP and the full new request are retained under `docs/owner-instructions`, `docs/original-design-pack`, `docs/specification` and `docs/original-attachments`.
+
+## Semester materials import — completed and verified live
+
+The owner provided a public Drive folder after the ZIP exceeded attachment transfer limits. **All 64 supplied PDFs are now published** in the real Supabase project: **AI 310: 27; CS 471: 11; IS 312: 10; IS 365: 6; AI 320: 4; AI 330: 6**. Created **35** course topics, preserved study/solve/type organization and whole-course resources, and credited the existing administrator contributor. **1,673 pages**; no duplicate hashes, invalid PDFs, fake links or native quizzes. The report's migration manifest was absent; a verified ledger was reconstructed. The three reportedly oversized files were not in the supplied ZIP.
+
+- **Actual backend verification:** uploaded all original bytes to private Storage through an expiring exact-file/hashed-capability operator function, with current admin/context checks and existing verified finalization. **64/64 guest metadata, byte-length and SHA-256 checks passed.** Raw public-bucket access denied. Wrong capability/altered bytes denied; replay and preparation re-run are idempotent. The temporary endpoint is retired to HTTP **410**, and its raw capability was deleted. No service key was exposed or committed; no Auth account, role, RLS, schema or frontend feature change.
+- **Tests:** **311/311 automated tests in 17 files passed (15.33s)**, including 14 import-handler cases; strict TypeScript and lint pass. **6/6 actual live browser journeys passed (2.0m)** at 390/768/1440px: six course hubs, guest PDF previews, topics/types, study/solve filters, search and duplicate-free pagination. Mobile course/desktop PDF captures visually inspected. These are guest import journeys; previous authenticated role-test follow-up remains separate.
+- **Final data:** **66 total published resources**, including both pre-existing materials; **0 pending imports**; 35 topics in the six target courses. No users were created or changed by the import. A real registration brought the current profile count to 9 during the operation; it was preserved. Existing single admin and zero real student privilege grants retained.
+- **Report and reproducible ledger:** [imports/2026-10-24-materials/README.md](imports/2026-10-24-materials/README.md), [64-resource CSV](imports/2026-10-24-materials/migration_manifest.csv), validation/guest-byte results, and actual `material-import-*` screenshots. Original PDFs/archive remain outside Git; students access the real hosted files from normal course/resource pages.
 
 ## Class-leader self-approval — owner correction
 

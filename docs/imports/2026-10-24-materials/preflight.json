@@ -1,0 +1,51 @@
+{
+  "archive_sha256": "a8d01ba9e4f7f82f34c2e34ac523a3ab288072ec6cf578a551877c9b17066c1e",
+  "pdf_count": 64,
+  "total_pdf_bytes": 53209212,
+  "total_pages": 1673,
+  "links": 0,
+  "by_course": {
+    "capital-ai-310": 27,
+    "capital-ai-320": 4,
+    "capital-ai-330": 6,
+    "capital-cs-471": 11,
+    "capital-is-312": 10,
+    "capital-is-365": 6
+  },
+  "by_type": {
+    "question_bank": 22,
+    "notes": 5,
+    "past_exam": 6,
+    "slides": 30,
+    "reference": 1
+  },
+  "topic_count": 35,
+  "duplicate_hash_groups": [],
+  "errors": [],
+  "status": "imported_verified_live",
+  "source_folder": "https://drive.google.com/drive/folders/1pX77_zv5Y-5cQlhyfGiZR0YBlLuYNKx6",
+  "drive_file_id": "1erOlS9JqANn6_7LsdKhViCbROeyABEw5",
+  "archive_bytes": 45201678,
+  "crc_passed": true,
+  "imported_resources": 64,
+  "created_topics": 35,
+  "guest_resources_verified": 64,
+  "guest_sha256_checks_passed": 64,
+  "browser_tests_passed": 6,
+  "browser_widths": [390, 768, 1440],
+  "unit_tests_passed": 311,
+  "import_helper_tests": 14,
+  "typecheck": "passed",
+  "lint": "passed",
+  "endpoint_retired_status": 410,
+  "original_resources_preserved": 2,
+  "final_resources": 66,
+  "pending_resources": 0,
+  "auth_accounts_created_by_import": 0,
+  "role_changes": 0,
+  "notes": [
+    "Agent migration manifest was absent from the ZIP; this manifest was reconstructed from actual files.",
+    "Three reportedly oversized PDFs were not included in the supplied ZIP.",
+    "Question banks remain PDFs; no interactive quizzes or video links were fabricated."
+  ]
+}

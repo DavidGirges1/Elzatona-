@@ -1,5 +1,7 @@
 "use client";
 import { useState } from "react";
+import { ar } from "@/i18n/ar-EG";
+import type { ResourceType } from "@/lib/validation";
 import {
   BookOpen,
   PencilLine,
@@ -39,7 +41,11 @@ export function MaterialComposer({
         : "",
   );
   const [format, setFormat] = useState("");
-  const [studyType, setStudyType] = useState("video");
+  const [studyType, setStudyType] = useState<ResourceType>("video");
+  const [solveType, setSolveType] = useState<"question_bank" | "sheets">(
+    "question_bank",
+  );
+  const materialType = purpose === "solve" ? solveType : studyType;
   const [dirty, setDirty] = useState(false);
   return (
     <div className="material-composer">
@@ -52,9 +58,7 @@ export function MaterialComposer({
             <strong>
               {format === "quiz"
                 ? "مجموعة أسئلة تفاعلية"
-                : format === "pdf"
-                  ? "ملف PDF"
-                  : "لينك مصدر"}
+                : `${ar.types[materialType]} · ${format === "pdf" ? "ملف PDF" : "لينك مصدر"}`}
             </strong>
           </div>
           <button
@@ -119,13 +123,16 @@ export function MaterialComposer({
               {purpose === "study" ? (
                 <>
                   <div className="purpose-tabs">
-                    {[
-                      ["video", "فيديو"],
-                      ["slides", "سلايدز"],
-                      ["notes", "نوتس"],
-                      ["reference", "مرجع"],
-                      ["other", "حاجة تانية"],
-                    ].map(([value, label]) => (
+                    {(
+                      [
+                        ["video", "فيديو"],
+                        ["slides", "سلايدز"],
+                        ["sections", "سكاشن"],
+                        ["notes", "نوتس"],
+                        ["reference", "مرجع"],
+                        ["other", "حاجة تانية"],
+                      ] as const
+                    ).map(([value, label]) => (
                       <button
                         type="button"
                         className="button secondary"
@@ -140,6 +147,11 @@ export function MaterialComposer({
                       </button>
                     ))}
                   </div>
+                  {studyType === "sections" && (
+                    <p className="muted small">
+                      شرح وتطبيقات السكاشن واللابات.
+                    </p>
+                  )}
                   <div className="purpose-tabs">
                     <button
                       type="button"
@@ -164,44 +176,82 @@ export function MaterialComposer({
                   </div>
                 </>
               ) : (
-                <div className="material-choice-grid formats">
-                  {[
-                    {
-                      id: "quiz",
-                      label: "مجموعة تفاعلية",
-                      text: "اكتب أسئلتك أو استورد JSON",
-                      icon: ListChecks,
-                    },
-                    ...(pdfEnabled
-                      ? [
-                          {
-                            id: "pdf",
-                            label: "بنك أسئلة PDF",
-                            text: "ملف يتعرض جوّه المنصة",
-                            icon: FileText,
-                          },
-                        ]
-                      : []),
-                    {
-                      id: "link",
-                      label: "بنك أسئلة من موقع",
-                      text: "شارك لينك أسئلة مفيدة",
-                      icon: Link2,
-                    },
-                  ].map((item) => (
-                    <button
-                      key={item.id}
-                      type="button"
-                      className="material-choice-card"
-                      aria-pressed={format === item.id}
-                      onClick={() => setFormat(item.id)}
-                    >
-                      <item.icon size={22} />
-                      <strong>{item.label}</strong>
-                      <span>{item.text}</span>
-                    </button>
-                  ))}
-                </div>
+                <>
+                  <div className="purpose-tabs" aria-label="نوع الأسئلة">
+                    {(
+                      [
+                        ["question_bank", "بنوك أسئلة"],
+                        ["sheets", "شيتات"],
+                      ] as const
+                    ).map(([value, label]) => (
+                      <button
+                        type="button"
+                        className="button secondary"
+                        key={value}
+                        aria-pressed={solveType === value}
+                        onClick={() => {
+                          setSolveType(value);
+                          setFormat("");
+                        }}
+                      >
+                        {label}
+                      </button>
+                    ))}
+                  </div>
+                  {solveType === "sheets" && (
+                    <p className="muted small">
+                      شيتات وتمارين المادة اللي بيجهزها الدكتور.
+                    </p>
+                  )}
+                  <div className="material-choice-grid formats">
+                    {[
+                      ...(solveType === "question_bank"
+                        ? [
+                            {
+                              id: "quiz",
+                              label: "مجموعة تفاعلية",
+                              text: "اكتب أسئلتك أو استورد JSON",
+                              icon: ListChecks,
+                            },
+                          ]
+                        : []),
+                      ...(pdfEnabled
+                        ? [
+                            {
+                              id: "pdf",
+                              label:
+                                solveType === "sheets"
+                                  ? "شيت PDF"
+                                  : "بنك أسئلة PDF",
+                              text: "ملف يتعرض جوّه المنصة",
+                              icon: FileText,
+                            },
+                          ]
+                        : []),
+                      {
+                        id: "link",
+                        label:
+                          solveType === "sheets"
+                            ? "لينك شيت"
+                            : "بنك أسئلة من موقع",
+                        text: "شارك لينك أسئلة مفيدة",
+                        icon: Link2,
+                      },
+                    ].map((item) => (
+                      <button
+                        key={item.id}
+                        type="button"
+                        className="material-choice-card"
+                        aria-pressed={format === item.id}
+                        onClick={() => setFormat(item.id)}
+                      >
+                        <item.icon size={22} />
+                        <strong>{item.label}</strong>
+                        <span>{item.text}</span>
+                      </button>
+                    ))}
+                  </div>
+                </>
               )}
             </fieldset>
           )}
@@ -226,11 +276,7 @@ export function MaterialComposer({
             className="panel"
           >
             <input type="hidden" name="course_id" value={courseId} />
-            <input
-              type="hidden"
-              name="type"
-              value={purpose === "solve" ? "question_bank" : studyType}
-            />
+            <input type="hidden" name="type" value={materialType} />
             <label className="field">
               عنوان المصدر
               <input

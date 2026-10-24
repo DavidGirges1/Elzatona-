@@ -57,12 +57,37 @@ export function normalizeUrl(input: string): string {
 export const resourceTypes = [
   "notes",
   "slides",
+  "sections",
   "past_exam",
   "video",
   "question_bank",
+  "sheets",
   "reference",
   "other",
 ] as const;
+export type ResourceType = (typeof resourceTypes)[number];
+export const studyResourceTypes = [
+  "video",
+  "slides",
+  "sections",
+  "notes",
+  "reference",
+  "other",
+] as const;
+export const solveResourceTypes = [
+  "question_bank",
+  "sheets",
+  "past_exam",
+] as const;
+export function resourceTypesForPurpose(
+  purpose?: string,
+): readonly ResourceType[] {
+  return purpose === "study"
+    ? studyResourceTypes
+    : purpose === "solve"
+      ? solveResourceTypes
+      : resourceTypes;
+}
 // PostgreSQL UUID columns also accept IDs without RFC version/variant bits.
 export const idSchema = z.guid();
 export const resourceSchema = z.object({

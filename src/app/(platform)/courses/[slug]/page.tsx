@@ -16,7 +16,7 @@ import { follow, addMaterialTopic } from "@/lib/actions";
 import { ar } from "@/i18n/ar-EG";
 import { ActionForm, Submit } from "@/components/forms";
 import { SearchBar, ResourceRow, Empty } from "@/components/content";
-import { resourceTypes } from "@/lib/validation";
+import { resourceTypesForPurpose } from "@/lib/validation";
 export async function generateMetadata({
   params,
 }: {
@@ -289,19 +289,11 @@ export default async function CoursePage({
                 نوع المصدر
                 <select name="type" defaultValue={s.type || ""}>
                   <option value="">كل الأنواع</option>
-                  {resourceTypes
-                    .filter((t) =>
-                      s.purpose === "solve"
-                        ? ["question_bank", "past_exam"].includes(t)
-                        : s.purpose === "study"
-                          ? !["question_bank", "past_exam"].includes(t)
-                          : true,
-                    )
-                    .map((t) => (
-                      <option value={t} key={t}>
-                        {ar.types[t]}
-                      </option>
-                    ))}
+                  {resourceTypesForPurpose(s.purpose).map((t) => (
+                    <option value={t} key={t}>
+                      {ar.types[t]}
+                    </option>
+                  ))}
                 </select>
               </label>
               <label>

@@ -76,3 +76,7 @@ The owner rejects the regulations/prerequisite/source-page disclosure as clutter
 - Recheck roles when PDF verification completes. Removing trust during an upload queues the completed file for review. Keep published guest resource access and private Storage signing. Already issued short-lived signed URLs cannot be recalled.
 - Existing administrator roles are preserved, with serialized protection against removing the last active confirmed administrator. Retire legacy moderator/grant mutation endpoints instead of maintaining an undocumented fifth role or bypass.
 - See [COMMUNITY_ROLES.md](COMMUNITY_ROLES.md) and [IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md) for operation and evidence. This does not assign real students new privileges.
+
+## Sections and professor sheets — 24 October 2026
+
+The owner requests distinct سكاشن (sections/labs) and شيتات (professor-created sheets). Sections belong to مذاكرة; exercise sheets belong to حل. Keep category and format separate: both accept PDFs or links, while interactive quiz authoring stays with question banks. Centralize purpose grouping so contribution labels and course filters agree. Recategorize only the 12 imported files individually reviewed as these categories, preserving their URLs and bytes; do not guess from generic MCQ/practice titles. Roles and approval gates are unchanged.

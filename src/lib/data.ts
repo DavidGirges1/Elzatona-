@@ -4,7 +4,7 @@ import { studentContext } from "@/lib/auth/session";
 import { createClient, configured, currentUser } from "@/lib/supabase/server";
 import type { Database } from "@/lib/supabase/database.types";
 import { matchesCourse } from "@/lib/course-catalog";
-import { resourceTypes } from "@/lib/validation";
+import { resourceTypes, resourceTypesForPurpose } from "@/lib/validation";
 export type Course = Database["public"]["Tables"]["courses"]["Row"];
 export type Resource = Omit<
   Database["public"]["Views"]["resource_cards"]["Row"],
@@ -115,16 +115,8 @@ export async function getResources({
   if (courseId) query = query.eq("course_id", courseId);
   if (courseIds) query = query.in("course_id", courseIds);
   if (ids) query = query.in("id", ids);
-  if (purpose === "solve")
-    query = query.in("type", ["question_bank", "past_exam"]);
-  if (purpose === "study")
-    query = query.in("type", [
-      "video",
-      "slides",
-      "notes",
-      "reference",
-      "other",
-    ]);
+  if (purpose === "solve" || purpose === "study")
+    query = query.in("type", [...resourceTypesForPurpose(purpose)]);
   if (type && resourceTypes.includes(type as Resource["type"]))
     query = query.eq("type", type);
   if (topic && /^[0-9a-f-]{36}$/.test(topic))

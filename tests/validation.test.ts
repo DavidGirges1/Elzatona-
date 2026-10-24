@@ -4,6 +4,8 @@ import {
   safeNext,
   resourceSchema,
   idSchema,
+  resourceTypesForPurpose,
+  resourceTypes,
 } from "../src/lib/validation";
 describe("safe return destinations", () => {
   it.each([
@@ -93,3 +95,30 @@ it("accepts existing PostgreSQL course and topic UUIDs without RFC version bits"
   ])
     expect(idSchema.safeParse(invalid).success).toBe(false);
 });
+
+it("groups sections with studying and professor sheets with solving", () => {
+  expect(resourceTypesForPurpose("study")).toContain("sections");
+  expect(resourceTypesForPurpose("study")).not.toContain("sheets");
+  expect(resourceTypesForPurpose("solve")).toContain("sheets");
+  expect(resourceTypesForPurpose("solve")).not.toContain("sections");
+  expect(resourceTypesForPurpose()).toEqual(resourceTypes);
+});
+it.each(["sections", "sheets"])(
+  "validates a %s contribution with the usual sharing requirements",
+  (type) => {
+    const input = {
+      course_id: "00000000-0000-4000-8000-000000000001",
+      topic_id: "",
+      title: "A permitted material",
+      description: "",
+      type,
+      external_url: "https://example.org/material",
+      rights_confirmed: "on",
+    };
+    expect(resourceSchema.safeParse(input).success).toBe(true);
+    expect(
+      resourceSchema.safeParse({ ...input, rights_confirmed: undefined })
+        .success,
+    ).toBe(false);
+  },
+);

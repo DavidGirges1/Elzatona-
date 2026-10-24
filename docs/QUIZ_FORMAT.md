@@ -5,7 +5,7 @@ Owner requested native interactive question sets on 24 October 2026. This supers
 ## Student flow
 
 1. Open a course → **اعمل أسئلة خاصة**, or contribution → choose **مذاكرة** / **حل** first.
-2. Study: video / slides / notes / reference / other, then a link or permitted PDF (videos use links). Solve: interactive set / PDF bank / website bank.
+2. Study: video / slides / sections and labs / notes / reference / other, then a link or permitted PDF (videos use links). Solve: choose question banks or professor sheets; banks support interactive sets, PDFs and website links, while sheets support a PDF or external link. Sheets stay separate from general banks and exams in course filters.
 3. For a set, write questions manually or paste/upload JSON. The import replacement requires confirmation. Imported content is plain text; URLs in question text are not fetched or embedded.
 4. Save a private draft. Reopen via **حسابك → مجموعات أسئلتي**. Ordinary/leader submissions with sharing rights and complete keys enter a private review queue; trusted/admin submissions publish directly. A scoped leader/admin must approve queued banks before guest access. Leaders may explicitly approve their own submitted bank within an admin-assigned course. Follow rejection notes and resubmit through **إضافاتي وحالة المراجعة**.
 5. Preview a complete draft locally with the same player; keys stay in authorized author/admin editing or scoped submitted-bank review. Private drafts are not readable by leaders. A JSON export is available for backup. The editor warns on browser unload and when changing material format with unsaved changes; save before navigating elsewhere.

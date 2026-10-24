@@ -16,6 +16,8 @@ export const ar = {
   types: {
     notes: "ملخصات الطلبة",
     slides: "سلايدز",
+    sections: "سكاشن",
+    sheets: "شيتات",
     past_exam: "امتحانات",
     video: "فيديوهات",
     question_bank: "بنوك أسئلة",

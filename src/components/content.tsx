@@ -11,6 +11,8 @@ import {
   ArrowDown,
   Library,
   ListChecks,
+  UsersRound,
+  ClipboardList,
 } from "lucide-react";
 import { ar } from "@/i18n/ar-EG";
 import type { Course, Resource } from "@/lib/data";
@@ -63,6 +65,8 @@ export function CourseTile({ course }: { course: Course }) {
 const tones = {
   notes: "lavender",
   slides: "sky",
+  sections: "peach",
+  sheets: "mint",
   past_exam: "sunshine",
   video: "pink",
   question_bank: "mint",
@@ -94,6 +98,10 @@ export function ResourceRow({
           <ListChecks />
         ) : resource.type === "video" ? (
           <Play />
+        ) : resource.type === "sections" ? (
+          <UsersRound />
+        ) : resource.type === "sheets" ? (
+          <ClipboardList />
         ) : resource.type === "slides" ? (
           <Layers />
         ) : (

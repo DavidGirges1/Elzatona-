@@ -567,3 +567,61 @@ it("legacy moderator record is not an effective fifth role", async () => {
   );
   expect((await as(A, "select public.is_moderator() x")).rows[0].x).toBe(false);
 });
+
+it.each(["sections", "sheets"])(
+  "ordinary %s links retain the approval gate",
+  async (type) => {
+    const id = (
+      await as(
+        A,
+        `select public.submit_resource('${C}',null,'A new category material','','${type}','https://example.org/${type}',true,false) id`,
+      )
+    ).rows[0].id;
+    expect(
+      (
+        await as(
+          A,
+          `select type,status,review_state from resources where id='${id}'`,
+        )
+      ).rows[0],
+    ).toMatchObject({ type, status: "pending", review_state: "submitted" });
+    expect(
+      (await as(null, `select id from resources where id='${id}'`)).rows,
+    ).toEqual([]);
+    await as(L, review(id));
+    expect(
+      (await as(null, `select type from resources where id='${id}'`)).rows[0]
+        .type,
+    ).toBe(type);
+  },
+);
+it.each(["sections", "sheets"])(
+  "verified %s PDF retains the selected type",
+  async (type) => {
+    const id = (
+      await as(
+        B,
+        `select public.prepare_pdf('${C}',null,'A new category PDF','','${type}',true,false) id`,
+      )
+    ).rows[0].id;
+    expect(
+      (await as(null, `select id from resources where id='${id}'`)).rows,
+    ).toEqual([]);
+    await owner(`select public.finalize_pdf_checked('${id}','${B}')`);
+    expect(
+      (await as(null, `select type,status from resources where id='${id}'`))
+        .rows[0],
+    ).toMatchObject({ type, status: "published" });
+  },
+);
+it("new categories preserve quiz-kind and allowed-type constraints", async () => {
+  await expect(
+    owner(`update resources set type='sheets' where id='${Q}'`),
+  ).rejects.toThrow();
+  await expect(
+    as(
+      A,
+      `select public.submit_resource('${C}',null,'Unsupported category','','unknown_type','https://example.org/invalid-type',true,false)`,
+    ),
+  ).rejects.toThrow();
+});

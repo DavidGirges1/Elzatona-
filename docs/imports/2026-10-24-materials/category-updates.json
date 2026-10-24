@@ -1,0 +1,113 @@
+{
+  "reason": "Owner requests sections/labs and professor sheets as distinct types",
+  "changes": [
+    {
+      "id": "e6f9b0eb-30f8-523c-87e4-1f40d8380a22",
+      "course_id": "90058900-bf71-4866-8bac-a6b7d9cf7b97",
+      "title": "Sheet 02 - State Space Search (Fall 2020)",
+      "from": "question_bank",
+      "to": "sheets",
+      "reason": "Reviewed faculty professor exercise sheet",
+      "sha256": "ff5c543d61cce10fb3c8ebe846c917216c91e7ab32d861a7e43c423dff8b851f"
+    },
+    {
+      "id": "7c87d7f1-296c-5f83-8f7f-b4e3a0b6ba6b",
+      "course_id": "90058900-bf71-4866-8bac-a6b7d9cf7b97",
+      "title": "Sheet 02 - State Space Search (Fall 2021)",
+      "from": "question_bank",
+      "to": "sheets",
+      "reason": "Reviewed faculty professor exercise sheet",
+      "sha256": "0261144729ad4d499b50ae7f12f72384c27ce2c054fdc17be0906aedddc749f3"
+    },
+    {
+      "id": "636df2db-2980-544a-8bd7-73616611dfaa",
+      "course_id": "90058900-bf71-4866-8bac-a6b7d9cf7b97",
+      "title": "Sheet 03 - Heuristic and Adversarial Search",
+      "from": "question_bank",
+      "to": "sheets",
+      "reason": "Reviewed faculty professor exercise sheet",
+      "sha256": "6af242c3bf72a472b6053bcef42e1765bfd78a44218c7505a095653de374ed9b"
+    },
+    {
+      "id": "1dd5aa9d-735e-5cab-a40b-97374e69b264",
+      "course_id": "90058900-bf71-4866-8bac-a6b7d9cf7b97",
+      "title": "Sheet 04 - Genetic Algorithms and Evolutionary Search",
+      "from": "question_bank",
+      "to": "sheets",
+      "reason": "Reviewed faculty professor exercise sheet",
+      "sha256": "4ca2d6923967246fe68efb5bd9e5a505e456c1f0f8ce3f7b8f05fbd690d30449"
+    },
+    {
+      "id": "9c06b5fd-488a-5720-b3cb-19c9e909bc43",
+      "course_id": "90058900-bf71-4866-8bac-a6b7d9cf7b97",
+      "title": "Sheet 05 - Decision Trees and Information Gain",
+      "from": "question_bank",
+      "to": "sheets",
+      "reason": "Reviewed faculty professor exercise sheet",
+      "sha256": "cabc3967d62d39204de8f6ba6bb86abe8c962058ee5decb056f376c7d0f01e0d"
+    },
+    {
+      "id": "c5674bf0-c149-51a0-94bc-decbc38ff8e2",
+      "course_id": "90058900-bf71-4866-8bac-a6b7d9cf7b97",
+      "title": "Section 01 - Python Variables and Data Types",
+      "from": "notes",
+      "to": "sections",
+      "reason": "Reviewed section/lab teaching content",
+      "sha256": "6e5d7ed992866b29d9dbe8a85a3f30a20f5bf6f80730d4e7f4434aa7590def61"
+    },
+    {
+      "id": "a4ab1a94-4866-586e-8098-8d3ad920d59e",
+      "course_id": "90058900-bf71-4866-8bac-a6b7d9cf7b97",
+      "title": "Section 02 - Python Functions and Dynamic Arguments",
+      "from": "notes",
+      "to": "sections",
+      "reason": "Reviewed section/lab teaching content",
+      "sha256": "695c7ee5426cb4a57082e4dc6422c18639b0c25239a3b27b5d6296939e1e58c5"
+    },
+    {
+      "id": "78b0c455-a0e5-502a-8da8-5eb97866a2e7",
+      "course_id": "90058900-bf71-4866-8bac-a6b7d9cf7b97",
+      "title": "Sheet 01 - AI History and Applications (Fall 2020)",
+      "from": "question_bank",
+      "to": "sheets",
+      "reason": "Reviewed faculty professor exercise sheet",
+      "sha256": "200e3ff9bf77646b038fd1ed05ab7192c4e65f05d33ed7b11e846793f2769006"
+    },
+    {
+      "id": "132644bf-ac37-5341-9ac9-28ecd2fd19ea",
+      "course_id": "90058900-bf71-4866-8bac-a6b7d9cf7b97",
+      "title": "Sheet 01 - AI History and Applications (Fall 2021)",
+      "from": "question_bank",
+      "to": "sheets",
+      "reason": "Reviewed faculty professor exercise sheet",
+      "sha256": "b2dbba0a2ce6dd1495a7cfd383863fec5caa844d3c1cddc6883d0201ea9829f6"
+    },
+    {
+      "id": "67b6ebfb-0766-54f0-b6ea-0e2ae8d18a75",
+      "course_id": "b1554981-9231-429a-bf38-bf5b53987125",
+      "title": "Section 02 - Database Access Control Summary",
+      "from": "notes",
+      "to": "sections",
+      "reason": "Reviewed section/lab teaching content",
+      "sha256": "e3d65669ce1ea6871a450d4cdfc8390efa409682f216bc0a42d67624167e9516"
+    },
+    {
+      "id": "ad7f91a5-aa3e-5e61-8364-14f69754c6d3",
+      "course_id": "99a72378-ffbb-4d6a-9a2f-df0842a5fd03",
+      "title": "Section 01 - VirtualBox and Hadoop Installation Guide",
+      "from": "notes",
+      "to": "sections",
+      "reason": "Reviewed section/lab teaching content",
+      "sha256": "70f915a3ceb0cc537f380ec001ffb4760fe57f5798b99e48870141138c7b9fd7"
+    },
+    {
+      "id": "75df3496-8bff-5d8e-838e-870c79412fc0",
+      "course_id": "99a72378-ffbb-4d6a-9a2f-df0842a5fd03",
+      "title": "Section 02 - MapReduce Hands-On Implementation",
+      "from": "notes",
+      "to": "sections",
+      "reason": "Reviewed section/lab teaching content",
+      "sha256": "046fcdfe8fa3a1c0537a162377d712f9121ccdc4f42829ff2f3bcbb224cb5abb"
+    }
+  ]
+}

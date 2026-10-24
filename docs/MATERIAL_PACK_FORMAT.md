@@ -23,12 +23,16 @@ courses/
           Lecture slides.pdf
         notes/
           My revision notes.pdf
+        sections/
+          Lab or section handout.pdf
         reference/
         other/
         links.csv
       solve/
         question_bank/
           Practice questions.pdf
+        sheets/
+          Professor exercise sheet.pdf
         past_exam/
         quizzes/
           Reviewed questions.quiz.json
@@ -49,10 +53,12 @@ courses/
 | Folder within a topic  | Display purpose | Resource type |
 | ---------------------- | --------------- | ------------- |
 | `study/slides/`        | مذاكرة          | slides        |
+| `study/sections/`      | مذاكرة          | sections      |
 | `study/notes/`         | مذاكرة          | notes         |
 | `study/reference/`     | مذاكرة          | reference     |
 | `study/other/`         | مذاكرة          | other         |
 | `solve/question_bank/` | حل              | question_bank |
+| `solve/sheets/`        | حل              | sheets        |
 | `solve/past_exam/`     | حل              | past_exam     |
 
 Use clear filenames: `Binary search lecture slides.pdf` becomes the material title `Binary search lecture slides`. Arabic filenames are equally valid. Titles need 4–160 characters. The topic/course already provides context, so filenames do not need to repeat the university and department.
@@ -88,8 +94,10 @@ title,url,type,description
 "Recursion practice questions","https://YOUR_QUESTION_SITE/path","question_bank","With worked answers"
 ```
 
-Allowed study types: `video`, `slides`, `notes`, `reference`, `other`.
-Allowed solve types: `question_bank`, `past_exam`.
+Allowed study types: `video`, `slides`, `sections`, `notes`, `reference`, `other`.
+`sections` means سكاشن: section explanations, lab guides and hands-on teaching content.
+Allowed solve types: `question_bank`, `sheets`, `past_exam`.
+`sheets` means شيتات: professor-provided exercise sheets; it is separate from general question banks and exams.
 Use HTTPS links accessible to your intended student audience. Individual YouTube video links support inline playback; playlists are not automatically expanded into individual videos.
 
 ## 5. Interactive quizzes are optional

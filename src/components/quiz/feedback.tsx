@@ -1,4 +1,6 @@
 "use client";
+import { contentDirection, booleanAnswer } from "@/lib/quiz/direction";
+import { AnswerValues } from "./answer-values";
 import { Check, X, PenLine } from "lucide-react";
 import type { Feedback, PublicQuestion } from "@/lib/quiz/schema";
 export function QuizFeedback({
@@ -37,27 +39,33 @@ export function QuizFeedback({
               : "محتاج تراجع الإجابة"}
       </strong>
       {result.correctOptionIds && (
-        <p dir="auto">
-          الإجابة الصحيحة:{" "}
-          {question.options
-            ?.filter((o) => result.correctOptionIds!.includes(o.id))
-            .map((o) => o.text)
-            .join(" · ")}
-        </p>
+        <>
+          <p className="small muted">الإجابة الصحيحة</p>
+          <AnswerValues
+            values={(question.options || [])
+              .filter((o) => result.correctOptionIds!.includes(o.id))
+              .map((o) => o.text)}
+          />
+        </>
       )}
       {result.answer !== undefined && (
-        <p>الإجابة الصحيحة: {result.answer ? "صح" : "غلط"}</p>
+        <>
+          <p className="small muted">الإجابة الصحيحة</p>
+          <AnswerValues
+            values={[booleanAnswer(result.answer, question.prompt)]}
+          />
+        </>
       )}
       {result.modelAnswer && (
         <>
           <h3>الإجابة النموذجية</h3>
-          <p className="quiz-text" dir="auto">
+          <p className="quiz-text" dir={contentDirection(result.modelAnswer)}>
             {result.modelAnswer}
           </p>
         </>
       )}
       {result.explanation && (
-        <p className="quiz-text" dir="auto">
+        <p className="quiz-text" dir={contentDirection(result.explanation)}>
           {result.explanation}
         </p>
       )}

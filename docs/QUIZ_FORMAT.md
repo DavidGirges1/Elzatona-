@@ -50,3 +50,9 @@ TEST_QUIZ_ACCOUNTS=/secure/qa-accounts.json TEST_QUIZ_STATE=/secure/qa-state.jso
 ```
 
 `tests/quiz.test.ts`, `supabase/tests/quiz.test.mjs`, and `tests/e2e/quiz.spec.ts` cover schema, permissions/visibility, grading, import/manual creation, private preview, public discovery, real PDF rendering, guest practice/exam, session recovery, flags and results at 390/768/1440px. See [IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md) for actual execution counts, deployment evidence and remaining limits. Never provision or retain QA credentials in the repository.
+
+## Arabic navigation with English question content
+
+English-led content reads LTR, including controls at the left of answer rows, English True/False, model answers, explanations and results. Arabic-led content stays RTL. Each question/answer block is independent; formulas and numeric-only choices default to LTR. UI labels remain Arabic and sit outside the answer paragraph. Empty author/player writing fields inherit their question or bank language, then follow the actual typed text. The `language` field is a fallback, not a command to reverse Arabic content.
+
+For local-only layout reproduction, copy `tests/fixtures/quiz-bidi-page.tsx` to `src/app/qa-loading-check/bidi/page.tsx`, build/run locally, then use `TEST_QUIZ_DIRECTION_HARNESS=1 npx playwright test tests/e2e/quiz-direction.spec.ts`. Remove that temporary route and rebuild before deployment. The test refuses HTTPS deployment URLs and writes no backend data.

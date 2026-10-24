@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { useEffect, useRef, useState, useTransition } from "react";
 import { Plus, Trash2, ArrowUp, ArrowDown, Eye, Download } from "lucide-react";
+import { contentDirection } from "@/lib/quiz/direction";
 import { z } from "zod";
 import { saveQuizDocument, type QuizSaveState } from "@/lib/quiz/actions";
 import {
@@ -111,6 +112,8 @@ export function QuizEditor({
     deleteDialog = useRef<HTMLDialogElement>(null),
     pendingImport = useRef<QuizDocument | null>(null);
   const q = doc.questions[index];
+  const documentDirection = doc.language === "ar" ? "rtl" : "ltr";
+  const questionDirection = contentDirection(q.prompt, documentDirection);
   const path = `/courses/${slug}`;
   useEffect(() => {
     onDirtyChange?.(dirty);
@@ -248,7 +251,7 @@ export function QuizEditor({
             <input
               value={doc.title}
               maxLength={160}
-              dir="auto"
+              dir={contentDirection(doc.title, documentDirection)}
               onChange={(e) => update({ ...doc, title: e.target.value })}
               placeholder="مثال: مراجعة أول محاضرتين"
             />
@@ -258,7 +261,7 @@ export function QuizEditor({
             <textarea
               value={doc.description}
               maxLength={2000}
-              dir="auto"
+              dir={contentDirection(doc.description, documentDirection)}
               onChange={(e) => update({ ...doc, description: e.target.value })}
             />
           </label>
@@ -478,7 +481,7 @@ export function QuizEditor({
                 value={q.prompt}
                 aria-label="نص السؤال"
                 maxLength={3000}
-                dir="auto"
+                dir={questionDirection}
                 onChange={(e) =>
                   updateQuestion({ ...q, prompt: e.target.value })
                 }
@@ -490,7 +493,11 @@ export function QuizEditor({
                   علّم على الإجابة الصحيحة. ممكن تختار أكتر من إجابة.
                 </p>
                 {q.options.map((o, n) => (
-                  <div className="quiz-edit-option" key={o.id}>
+                  <div
+                    className="quiz-edit-option"
+                    key={o.id}
+                    dir={contentDirection(o.text, questionDirection)}
+                  >
                     <input
                       type="checkbox"
                       aria-label={`الإجابة ${n + 1} صحيحة`}
@@ -511,7 +518,7 @@ export function QuizEditor({
                       <input
                         value={o.text}
                         maxLength={500}
-                        dir="auto"
+                        dir={contentDirection(o.text, questionDirection)}
                         placeholder={`اختيار ${n + 1}`}
                         onChange={(e) =>
                           updateQuestion({
@@ -609,7 +616,7 @@ export function QuizEditor({
                     value={q.modelAnswer}
                     aria-label="الإجابة النموذجية"
                     maxLength={3000}
-                    dir="auto"
+                    dir={contentDirection(q.modelAnswer, questionDirection)}
                     onChange={(e) =>
                       updateQuestion({ ...q, modelAnswer: e.target.value })
                     }
@@ -620,7 +627,10 @@ export function QuizEditor({
                     الإجابات المقبولة · كل إجابة في سطر
                     <textarea
                       value={q.acceptedAnswers.join("\n")}
-                      dir="auto"
+                      dir={contentDirection(
+                        q.acceptedAnswers.join("\n"),
+                        questionDirection,
+                      )}
                       maxLength={10000}
                       onChange={(e) =>
                         updateQuestion({
@@ -646,7 +656,7 @@ export function QuizEditor({
                 <textarea
                   value={q.explanation}
                   maxLength={2000}
-                  dir="auto"
+                  dir={contentDirection(q.explanation, questionDirection)}
                   onChange={(e) =>
                     updateQuestion({ ...q, explanation: e.target.value })
                   }
@@ -675,7 +685,7 @@ export function QuizEditor({
                 <input
                   value={q.source}
                   maxLength={500}
-                  dir="auto"
+                  dir={contentDirection(q.source, questionDirection)}
                   onChange={(e) =>
                     updateQuestion({ ...q, source: e.target.value })
                   }

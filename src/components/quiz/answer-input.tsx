@@ -1,4 +1,5 @@
 "use client";
+import { contentDirection, booleanAnswer } from "@/lib/quiz/direction";
 import type { Answer, PublicQuestion } from "@/lib/quiz/schema";
 export function AnswerInput({
   question: q,
@@ -20,7 +21,15 @@ export function AnswerInput({
           value={typeof value === "string" ? value : ""}
           maxLength={3000}
           rows={5}
-          dir="auto"
+          dir={contentDirection(
+            typeof value === "string" ? value : "",
+            contentDirection(q.prompt),
+          )}
+          placeholder={
+            contentDirection(q.prompt) === "ltr"
+              ? "Write your answer…"
+              : "اكتب إجابتك…"
+          }
           disabled={disabled}
           onChange={(e) => onChange(e.target.value)}
         />
@@ -34,8 +43,8 @@ export function AnswerInput({
   const options =
     q.type === "true_false"
       ? [
-          { id: "true", text: "صح" },
-          { id: "false", text: "غلط" },
+          { id: "true", text: booleanAnswer(true, q.prompt) },
+          { id: "false", text: booleanAnswer(false, q.prompt) },
         ]
       : q.options || [];
   return (
@@ -52,6 +61,7 @@ export function AnswerInput({
           <label
             className={`quiz-option ${selected ? "selected" : ""}`}
             key={option.id}
+            dir={contentDirection(option.text, contentDirection(q.prompt))}
           >
             <input
               type={q.multiple ? "checkbox" : "radio"}
@@ -69,14 +79,17 @@ export function AnswerInput({
                 } else onChange([option.id]);
               }}
             />
-            <span className="quiz-option-letter" aria-hidden="true">
+            <span className="quiz-option-letter" aria-hidden="true" dir="ltr">
               {q.type === "true_false"
                 ? i
                   ? "×"
                   : "✓"
                 : String.fromCharCode(65 + i)}
             </span>
-            <span className="quiz-text" dir="auto">
+            <span
+              className="quiz-text"
+              dir={contentDirection(option.text, contentDirection(q.prompt))}
+            >
               {option.text}
             </span>
           </label>

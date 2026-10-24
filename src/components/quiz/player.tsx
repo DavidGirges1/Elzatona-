@@ -19,6 +19,8 @@ import {
   type Answers,
   type Feedback,
 } from "@/lib/quiz/schema";
+import { AnswerValues } from "./answer-values";
+import { contentDirection, answerText } from "@/lib/quiz/direction";
 import { AnswerInput } from "./answer-input";
 import { QuizFeedback } from "./feedback";
 const number = (v: number) => new Intl.NumberFormat("ar-EG").format(v);
@@ -202,7 +204,7 @@ export function QuizPlayer({
     return (
       <section className="panel quiz-resume">
         <span className="type-chip sky">محاولتك لسه موجودة</span>
-        <h1 dir="auto">{quiz.title}</h1>
+        <h1 dir={contentDirection(quiz.title)}>{quiz.title}</h1>
         <p>فيه إجابات محفوظة من نفس الجلسة. تحب تستكمل؟</p>
         <div className="actions">
           <button
@@ -338,22 +340,11 @@ export function QuizPlayer({
         {!visible.length && <p className="panel">مفيش أسئلة في الاختيار ده.</p>}
         {visible.map((q) => (
           <section className="panel quiz-review-question" key={q.id}>
-            <h2 className="quiz-text" dir="auto">
+            <h2 className="quiz-text" dir={contentDirection(q.prompt)}>
               {q.prompt}
             </h2>
-            <p className="muted quiz-text" dir="auto">
-              إجابتك:{" "}
-              {Array.isArray(answers[q.id])
-                ? q.options
-                    ?.filter((o) => (answers[q.id] as string[]).includes(o.id))
-                    .map((o) => o.text)
-                    .join(" · ")
-                : typeof answers[q.id] === "boolean"
-                  ? answers[q.id]
-                    ? "صح"
-                    : "غلط"
-                  : answers[q.id] || "من غير إجابة"}
-            </p>
+            <p className="muted small">إجابتك</p>
+            <AnswerValues values={answerText(q, answers[q.id])} />
             <QuizFeedback
               question={q}
               result={feedback[q.id]}
@@ -381,7 +372,7 @@ export function QuizPlayer({
             {localDocument ? "معاينة خاصة · " : ""}
             {mode === "practice" ? "تدرّب" : "اختبر نفسك"}
           </span>
-          <h1 dir="auto">{quiz.title}</h1>
+          <h1 dir={contentDirection(quiz.title)}>{quiz.title}</h1>
         </div>
         <details ref={map} className="quiz-map">
           <summary className="button secondary">
@@ -439,7 +430,7 @@ export function QuizPlayer({
         <h2
           ref={heading}
           tabIndex={-1}
-          dir="auto"
+          dir={contentDirection(current.prompt)}
           className="quiz-text quiz-prompt"
         >
           {current.prompt}
@@ -456,7 +447,7 @@ export function QuizPlayer({
           }
         />
         {current.source && (
-          <p className="muted small" dir="auto">
+          <p className="muted small" dir={contentDirection(current.source)}>
             {current.source}
           </p>
         )}

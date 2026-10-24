@@ -238,3 +238,42 @@ test("organizer edits map without changing URLs and ordinary signup never offers
   await page.goto("/signup");
   await expect(page.locator("select[name=role]")).toHaveCount(0);
 });
+test("placement changes preserve an unsaved quiz across revision and multiple lectures", async ({
+  page,
+  context,
+}, info) => {
+  test.skip(
+    info.project.name !== "mobile-390",
+    "One targeted state-preservation journey; responsive study paths are covered separately.",
+  );
+  const db = await login(context, "author");
+  await page.goto(`${path()}/submit?area=revision`);
+  await page.getByRole("button", { name: "حل", exact: true }).click();
+  await page
+    .getByRole("combobox", { name: "نوع المصدر", exact: true })
+    .selectOption("question_bank");
+  await page
+    .getByRole("button", { name: "مجموعة تفاعلية", exact: true })
+    .click();
+  const title = page.getByLabel("اسم المجموعة", { exact: true });
+  await title.fill("QA · Unsaved English quiz title");
+  await page.locator("select[name=area]").selectOption("lecture");
+  await expect(title).toHaveValue("QA · Unsaved English quiz title");
+  await expect(
+    page.getByText("اختار محاضرة عشان تحفظ المصدر.", { exact: true }),
+  ).toBeVisible();
+  await page.locator("select[name=lectures]").selectOption(state.lectures[0]);
+  await expect(title).toHaveValue("QA · Unsaved English quiz title");
+  await page
+    .getByText("نفس المصدر مفيد لمحاضرات تانية؟", { exact: true })
+    .click();
+  await page
+    .locator(
+      `input[type=checkbox][name=lectures][value="${state.lectures[1]}"]`,
+    )
+    .check();
+  await expect(title).toHaveValue("QA · Unsaved English quiz title");
+  await page.locator("select[name=area]").selectOption("revision");
+  await expect(title).toHaveValue("QA · Unsaved English quiz title");
+  await db.auth.signOut();
+});

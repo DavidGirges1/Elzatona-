@@ -79,7 +79,12 @@ export function MaterialComposer({
           setPlacement(p);
         }}
       />
-      {validPlacement && (
+      {!validPlacement && format && (
+        <p className="notice" role="status">
+          اختار محاضرة عشان تحفظ المصدر.
+        </p>
+      )}
+      {placement && (validPlacement || !!format) && (
         <>
           {!format ? (
             <>

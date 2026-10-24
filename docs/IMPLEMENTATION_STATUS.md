@@ -1,10 +1,23 @@
 # Elzatona implementation status
 
-Updated **24 October 2026**. Current phase: **core community and first semester materials deployed on https://elzatona.tech/**.
+Updated **24 October 2026**. Current phase: **lecture-first architecture verified locally against real Supabase; production rollout in progress**.
 
 Earlier owner instruction to keep Coming Soon at `/` and develop under `/test` is now **superseded**: the owner explicitly requests replacing Coming Soon with the actual platform at `/`. The earlier `/test` URL was public, not access control. Original instructions, design pack, uploaded ZIP and the full new request are retained under `docs/owner-instructions`, `docs/original-design-pack`, `docs/specification` and `docs/original-attachments`.
 
-## Sections/labs and professor sheets — deployed and verified
+## Lecture-first experience — current milestone
+
+Owner-approved replacement of the flat list/filter model. See [architecture, flows, reset and authorization](LECTURE_FIRST_ARCHITECTURE.md) and [owner scope](owner-instructions/2026-10-24-lecture-first.md).
+
+- **Implemented:** numbered stable lecture maps; study/main pick/alternatives; sheets/practice; independent general files and grouped revision; secondary sections/labs; expandable scoped search; unified general/context forum; required placement for link/PDF/quiz drafts/edits/reviews; one resource reused across lectures; automatic lazy single-canvas PDF reader. Existing typography/pastels/RTL retained. No semester picker, AI organization or progress tracking.
+- **Security:** same-course FKs/RLS, scoped organizers, trusted own publication, ordinary review, leader self-approval, atomic placement correction with versioned review ledger. Only authors edit quiz answers. Main-source eligibility/uniqueness/locking and stale-pick cleanup. Old topic mutation APIs retired. Reproducible additive migrations applied to real Supabase.
+- **Local automated:** **355/355 tests across 19 files** passed (**24.76s**) after updating the retained role/security/quiz suites to the new required-placement APIs. Strict TypeScript, lint and full production build passed. Initial test-only accessible-label/cookie callback/expected-error assertions were corrected. Final `npm run verify` (typecheck → lint → 355 tests → full production build) and `format:check` both pass against all four new migrations.
+- **Real Supabase:** **23/23 API/Auth/Storage journey assertions** passed using four temporary QA accounts. Includes real PDF upload/inspection, anonymous denial before review, exact guest-readable SHA-256 after approval, corrected placement/version ledger, leader self-approval, one shared multi-lecture resource, native English quiz grading, discussion/reply, ordinary vote/save, admin report dismissal, unauthorized edit/curation/cross-course denial and approved-file deletion denial. No production secret was exported.
+- **Reset completed:** removed **66** old resource records, **65** PDFs via the Storage API, and **52** obsolete topics. Preserved **9** existing profiles, **125** catalog courses, **12** saved-course memberships and existing roles. Audit history kept; discussion references would be detached while retaining text (there were 0 live threads at reset). No old-file alignment/reimport. Historic import documents below describe a removed batch.
+- **Local browser:** **12/12 complete journeys passed (1.9m)** on the production build against real Supabase at **360/390/768/1440px**: guest two-tap automatic PDF reading, separate areas/search/free forum, ordinary real PDF upload → scoped leader correcting placement/approval → guest reader, organizer screens and signup without roles. Actual screenshots saved for course, lecture, reader, submission and organizer at each width. No page errors or horizontal overflow in checked study/reader paths. A test-only select-label locator timeout was corrected using the accessible combobox role.
+- **Rollout in progress:** production Git/Vercel verification, final fixture cleanup and final counts remain. Do not treat these unfinished checks as passed. Existing maps intentionally stay empty after QA cleanup until organizers add current lectures.
+- **Handoff:** v2 empty ZIP template and explicit course/area/lecture-number CSV format replace the old topic pack. v1 manifests/scripts are historical evidence, not a current import queue.
+
+## Historical category milestone — old materials subsequently removed
 
 Added distinct **سكاشن (`sections`)** under **مذاكرة** and **شيتات (`sheets`)** under **حل**, with centralized query/filter grouping, Arabic labels, established pastel chips/icons, contribution choices and permitted PDF/link formats. The database type allowlist expands from seven to nine. Source-kind/quiz, approval, role and Storage rules are preserved. Professor sheets stay separate from general question banks/exams; interactive question authoring stays in question banks. The empty ZIP template and handoff guide now support `study/sections/` and `solve/sheets/`.
 

@@ -1,0 +1,8 @@
+# Lecture-first verification evidence
+
+- `reset-inventory.json`: exact bounded inventory immediately after pausing/draining writes. Contains resource IDs/object paths and protected counts, no credentials.
+- `reset-start.sql` and `reset-complete.sql`: executed owner-side transactional operations. The start hides exact IDs; completion checks Storage is empty, removes dependencies, preserves accounts/catalog/follows and audit, then reopens writes. These are historical evidence; do not execute as a future bulk-delete script.
+- Between them, the managed operator job removed the 65 exact objects through `storage.from('course-pdfs').remove(paths)`, with an expiring hashed capability, exact hidden-inventory match and maintenance check. The template is `scripts/verification/lecture-operator.template.txt`; config/raw capability and QA passwords are deliberately excluded. Its QA-only operations are scoped to four fixed test emails and used solely for this verification. The deployed operator is retired when cleanup finishes.
+- `live-results.json`: 23 actual Auth/API/Storage assertions, including a real PDF byte comparison. Browser verification additionally exercised actual server actions and file input uploads at all four viewport widths. No Auth traces or session state are committed.
+- Actual screenshots: `docs/screenshots/lecture-{course,study,reader,submit,organize}-{mobile-360,mobile-390,tablet-768,desktop-1440}.png`. Labels identify temporary QA content; it is removed after testing.
+- Final results, rollout state and limitations are in `docs/IMPLEMENTATION_STATUS.md`.

@@ -1,6 +1,6 @@
 import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
-import { getCourse, getResource } from "@/lib/data";
+import { getCourse, getResource, getLectures } from "@/lib/data";
 import { currentUser } from "@/lib/supabase/server";
 import { ask } from "@/lib/actions";
 import { ActionForm, Submit } from "@/components/forms";
@@ -9,15 +9,19 @@ export default async function Ask({
   searchParams,
 }: {
   params: Promise<{ slug: string }>;
-  searchParams: Promise<{ resource?: string }>;
+  searchParams: Promise<{ resource?: string; lecture?: string }>;
 }) {
   const { slug } = await params;
-  const { resource } = await searchParams;
+  const { resource, lecture } = await searchParams;
   const c = await getCourse(slug);
   if (!c) notFound();
   const r = resource ? await getResource(resource) : null;
   if (resource && (!r || r.course_id !== c.id)) notFound();
-  const path = `/courses/${slug}/ask${resource ? "?resource=" + resource : ""}`;
+  const l = lecture
+    ? (await getLectures(c.id)).find((l) => l.id === lecture)
+    : null;
+  if (lecture && !l) notFound();
+  const path = `/courses/${slug}/ask${resource ? "?resource=" + resource : lecture ? "?lecture=" + lecture : ""}`;
   if (!(await currentUser()))
     redirect(`/login?next=${encodeURIComponent(path)}`);
   return (
@@ -26,6 +30,11 @@ export default async function Ask({
         {c.title_ar || c.title} / المناقشات
       </Link>
       <h1>اسأل دفعتك</h1>
+      {l && (
+        <p className="muted">
+          عن المحاضرة {l.number} · <bdi>{l.title}</bdi>
+        </p>
+      )}
       {r && (
         <p className="muted">
           عن المصدر: <bdi>{r.title}</bdi>
@@ -35,6 +44,7 @@ export default async function Ask({
         action={ask.bind(null, slug, c.id, resource || null)}
         className="panel"
       >
+        {l && <input type="hidden" name="lecture_id" value={l.id} />}
         <label className="field">
           سؤالك في سطر
           <input

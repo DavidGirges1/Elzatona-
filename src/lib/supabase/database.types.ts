@@ -239,6 +239,7 @@ export type Database = {
           status: string;
           created_at: string;
           updated_at: string;
+          lecture_id: string | null;
         };
         Insert: {
           id?: string;
@@ -251,6 +252,7 @@ export type Database = {
           status?: string;
           created_at?: string;
           updated_at?: string;
+          lecture_id?: string | null;
         };
         Update: Partial<Database["public"]["Tables"]["discussions"]["Insert"]>;
         Relationships: [];
@@ -271,6 +273,36 @@ export type Database = {
           is_active?: boolean;
         };
         Update: Partial<Database["public"]["Tables"]["faculties"]["Insert"]>;
+        Relationships: [];
+      };
+      lectures: {
+        Row: {
+          id: string;
+          course_id: string;
+          number: number;
+          title: string;
+        };
+        Insert: {
+          id?: string;
+          course_id: string;
+          number: number;
+          title?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["lectures"]["Insert"]>;
+        Relationships: [];
+      };
+      material_maintenance: {
+        Row: {
+          singleton: boolean;
+          paused: boolean;
+        };
+        Insert: {
+          singleton?: boolean;
+          paused?: boolean;
+        };
+        Update: Partial<
+          Database["public"]["Tables"]["material_maintenance"]["Insert"]
+        >;
         Relationships: [];
       };
       material_permissions: {
@@ -457,6 +489,24 @@ export type Database = {
         >;
         Relationships: [];
       };
+      resource_lectures: {
+        Row: {
+          resource_id: string;
+          lecture_id: string;
+          course_id: string;
+          is_main: boolean;
+        };
+        Insert: {
+          resource_id: string;
+          lecture_id: string;
+          course_id: string;
+          is_main?: boolean;
+        };
+        Update: Partial<
+          Database["public"]["Tables"]["resource_lectures"]["Insert"]
+        >;
+        Relationships: [];
+      };
       resource_reviews: {
         Row: {
           id: number;
@@ -541,6 +591,7 @@ export type Database = {
           review_state: string;
           submission_version: number;
           submitted_at: string | null;
+          area: string;
         };
         Insert: {
           id?: string;
@@ -567,6 +618,7 @@ export type Database = {
           review_state?: string;
           submission_version?: number;
           submitted_at?: string | null;
+          area?: string;
         };
         Update: Partial<Database["public"]["Tables"]["resources"]["Insert"]>;
         Relationships: [];
@@ -712,6 +764,8 @@ export type Database = {
           topic_title: string | null;
           course_slug: string;
           course_title: string;
+          area: string;
+          lecture_ids: string[];
         };
         Relationships: [];
       };
@@ -736,34 +790,12 @@ export type Database = {
         Args: { p_discussion: string; p_body: string };
         Returns: undefined;
       };
-      edit_resource: {
-        Args: {
-          p_resource: string | null;
-          p_title: string;
-          p_description: string;
-          p_topic: string | null;
-        };
-        Returns: undefined;
-      };
       follow_course: { Args: { p_course: string }; Returns: undefined };
       set_vote: {
         Args: { p_resource: string | null; p_value: number };
         Returns: undefined;
       };
       is_moderator: { Args: Record<string, never>; Returns: boolean };
-      submit_resource: {
-        Args: {
-          p_course: string;
-          p_topic: string | null;
-          p_title: string;
-          p_description: string;
-          p_type: string;
-          p_url: string | null;
-          p_rights: boolean;
-          p_ai?: boolean;
-        };
-        Returns: string;
-      };
       report_content: {
         Args: {
           p_kind: string;
@@ -790,18 +822,6 @@ export type Database = {
       update_profile: { Args: { p_name: string }; Returns: undefined };
       review_pdf_path: {
         Args: { p_resource: string | null; p_reviewer: string };
-        Returns: string;
-      };
-      prepare_pdf: {
-        Args: {
-          p_course: string;
-          p_topic: string | null;
-          p_title: string;
-          p_description: string;
-          p_type: string;
-          p_rights: boolean;
-          p_ai?: boolean;
-        };
         Returns: string;
       };
       provision_admin: {
@@ -895,6 +915,10 @@ export type Database = {
         };
         Returns: undefined;
       };
+      add_material_topic: {
+        Args: { p_course: string; p_title: string };
+        Returns: string;
+      };
       admin_set_material_permissions: {
         Args: {
           p_user: string;
@@ -908,10 +932,6 @@ export type Database = {
       admin_set_publishing_mode: {
         Args: { p_open: boolean; p_reason: string; p_confirm: boolean };
         Returns: undefined;
-      };
-      add_material_topic: {
-        Args: { p_course: string; p_title: string };
-        Returns: string;
       };
       material_access: { Args: { p_course?: string }; Returns: Json };
       review_scope: { Args: Record<string, never>; Returns: unknown };
@@ -936,44 +956,10 @@ export type Database = {
         Returns: undefined;
       };
       admin_community_roles: { Args: { p_users: string[] }; Returns: Json };
+      leads_course: { Args: { p_course: string }; Returns: boolean };
       can_review_material: {
         Args: { p_resource: string | null };
         Returns: boolean;
-      };
-      leads_course: { Args: { p_course: string }; Returns: boolean };
-      review_material: {
-        Args: {
-          p_resource: string | null;
-          p_version: number;
-          p_decision: string;
-          p_reason: string;
-        };
-        Returns: undefined;
-      };
-      edit_proposed_resource: {
-        Args: {
-          p_resource: string | null;
-          p_title: string;
-          p_description: string;
-          p_topic: string | null;
-          p_url: string | null;
-        };
-        Returns: undefined;
-      };
-      organize_topic: {
-        Args: { p_topic: string | null; p_title: string; p_order: number };
-        Returns: undefined;
-      };
-      save_quiz: {
-        Args: {
-          p_course: string;
-          p_topic: string | null;
-          p_document: Json;
-          p_resource?: string | null;
-          p_publish?: boolean;
-          p_rights?: boolean;
-        };
-        Returns: string;
       };
       admin_users: {
         Args: {
@@ -984,6 +970,106 @@ export type Database = {
           p_page?: number;
         };
         Returns: Json;
+      };
+      material_writes_open: { Args: Record<string, never>; Returns: boolean };
+      organize_topic: {
+        Args: { p_topic: string | null; p_title: string; p_order: number };
+        Returns: undefined;
+      };
+      save_lecture: {
+        Args: {
+          p_course: string;
+          p_number: number;
+          p_title: string;
+          p_id?: string | null;
+        };
+        Returns: string;
+      };
+      delete_lecture: { Args: { p_id: string | null }; Returns: undefined };
+      submit_material: {
+        Args: {
+          p_course: string;
+          p_area: string;
+          p_lectures: string[];
+          p_title: string;
+          p_description: string;
+          p_type: string;
+          p_url: string | null;
+          p_rights: boolean;
+          p_ai?: boolean;
+        };
+        Returns: string;
+      };
+      prepare_material_pdf: {
+        Args: {
+          p_course: string;
+          p_area: string;
+          p_lectures: string[];
+          p_title: string;
+          p_description: string;
+          p_type: string;
+          p_rights: boolean;
+          p_ai?: boolean;
+        };
+        Returns: string;
+      };
+      edit_material: {
+        Args: {
+          p_resource: string | null;
+          p_title: string;
+          p_description: string;
+          p_area: string;
+          p_lectures: string[];
+        };
+        Returns: undefined;
+      };
+      edit_proposed_material: {
+        Args: {
+          p_resource: string | null;
+          p_title: string;
+          p_description: string;
+          p_area: string;
+          p_lectures: string[];
+          p_url: string | null;
+        };
+        Returns: undefined;
+      };
+      review_placed_material: {
+        Args: {
+          p_resource: string | null;
+          p_version: number;
+          p_decision: string;
+          p_reason: string;
+          p_area: string;
+          p_lectures: string[];
+        };
+        Returns: undefined;
+      };
+      save_material_quiz: {
+        Args: {
+          p_course: string;
+          p_area: string;
+          p_lectures: string[];
+          p_document: Json;
+          p_resource?: string | null;
+          p_publish?: boolean;
+          p_rights?: boolean;
+        };
+        Returns: string;
+      };
+      set_lecture_main: {
+        Args: { p_lecture: string | null; p_resource?: string | null };
+        Returns: undefined;
+      };
+      ask_lecture_question: {
+        Args: {
+          p_course: string;
+          p_resource: string | null;
+          p_lecture: string | null;
+          p_title: string;
+          p_body: string;
+        };
+        Returns: string;
       };
     };
     Enums: Record<string, never>;

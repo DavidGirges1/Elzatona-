@@ -13,6 +13,7 @@ import {
   idSchema,
   safeNext,
 } from "@/lib/validation";
+import { placementFromForm } from "@/lib/placement";
 import type { ActionState } from "@/components/forms";
 async function actor(next: string) {
   const user = await currentUser();
@@ -106,6 +107,8 @@ export async function submitResource(
   const { db, user } = await actor(`/courses/${slug}/submit`);
   if (!(await materialAccess()).can_submit)
     return failure(publishingLockedMessage);
+  const placement = placementFromForm(form);
+  if (!placement.success) return failure(placement.error.issues[0].message);
   const raw = Object.fromEntries(form);
   const file = form.get("file");
   const isPdf = file instanceof File && file.size > 0;
@@ -132,9 +135,10 @@ export async function submitResource(
       new TextDecoder().decode(await file.slice(0, 5).arrayBuffer()) !== "%PDF-"
     )
       return failure("اختار ملف PDF صالح، حجمه أقل من ٣ ميجابايت.");
-    const { data, error } = await db.rpc("prepare_pdf", {
+    const { data, error } = await db.rpc("prepare_material_pdf", {
       p_course: p.course_id,
-      p_topic: p.topic_id,
+      p_area: placement.data.area,
+      p_lectures: placement.data.lectures,
       p_title: p.title,
       p_description: p.description,
       p_type: p.type,
@@ -160,9 +164,10 @@ export async function submitResource(
     if (!published)
       return failure("فحص الملف ماكملش. تقدر تعيد المحاولة من إضافاتي.");
   } else {
-    const { data, error } = await db.rpc("submit_resource", {
+    const { data, error } = await db.rpc("submit_material", {
       p_course: p.course_id,
-      p_topic: p.topic_id,
+      p_area: placement.data.area,
+      p_lectures: placement.data.lectures,
       p_title: p.title,
       p_description: p.description,
       p_type: p.type,
@@ -198,16 +203,14 @@ export async function editResource(
   const { db } = await actor(`/courses/${slug}/resources/${id}/edit`);
   const title = z.string().trim().min(4).max(160).safeParse(form.get("title"));
   const description = z.string().max(2000).safeParse(form.get("description"));
-  const topic = z
-    .union([idSchema, z.literal("")])
-    .safeParse(form.get("topic_id"));
+  const placement = placementFromForm(form);
   if (
     !idSchema.safeParse(id).success ||
     !title.success ||
     !description.success ||
-    !topic.success
+    !placement.success
   )
-    return failure("راجع العنوان والوصف والموضوع.");
+    return failure("راجع العنوان والوصف ومكان المصدر.");
   const user = await currentUser();
   const resource = await db
     .from("resources")
@@ -225,7 +228,8 @@ export async function editResource(
     p_resource: id,
     p_title: title.data,
     p_description: description.data,
-    p_topic: topic.data || null,
+    p_area: placement.data.area,
+    p_lectures: placement.data.lectures,
   };
   let error;
   if (resource.data.status === "pending") {
@@ -241,11 +245,11 @@ export async function editResource(
       : null;
     if (resource.data.source_kind === "external" && !url?.success)
       return failure("راجع لينك المصدر.");
-    ({ error } = await db.rpc("edit_proposed_resource", {
+    ({ error } = await db.rpc("edit_proposed_material", {
       ...p,
       p_url: url?.success ? url.data : null,
     }));
-  } else ({ error } = await db.rpc("edit_resource", p));
+  } else ({ error } = await db.rpc("edit_material", p));
   if (error)
     return failure("التعديل ماكملش. راجع صلاحيتك والبيانات وحالة المصدر.");
   revalidatePath("/", "layout");
@@ -270,7 +274,10 @@ export async function ask(
     (resourceId && !idSchema.safeParse(resourceId).success)
   )
     return failure("اكتب عنوان واضح وسؤال من ٨ حروف على الأقل.");
-  const { data, error } = await db.rpc("ask_question", {
+  const { data, error } = await db.rpc("ask_lecture_question", {
+    p_lecture: idSchema.safeParse(form.get("lecture_id")).success
+      ? String(form.get("lecture_id"))
+      : null,
     p_course: courseId,
     p_resource: resourceId,
     p_title: p.data.title,
@@ -442,29 +449,4 @@ export async function retryPdf(
     return failure("الملف مش موجود أو غير صالح. اختاره وجرّب تاني.");
   revalidatePath("/", "layout");
   redirect(`/my-contributions?submitted=${id}`);
-}
-
-export async function addMaterialTopic(
-  courseId: string,
-  slug: string,
-  _state: ActionState,
-  form: FormData,
-): Promise<ActionState> {
-  const { db } = await actor(`/courses/${slug}`);
-  const title = z.string().trim().min(2).max(120).safeParse(form.get("title"));
-  if (!title.success || !idSchema.safeParse(courseId).success)
-    return failure("اكتب اسم الموضوع من حرفين لـ١٢٠ حرف.");
-  const { error } = await db.rpc("add_material_topic", {
-    p_course: courseId,
-    p_title: title.data,
-  });
-  if (error)
-    return failure(
-      "إضافة الموضوع متاحة للمنظّمين المصرّح لهم فقط، في مادة متاحة.",
-    );
-  revalidatePath("/", "layout");
-  return {
-    success:
-      "الموضوع موجود دلوقتي ضمن اختيارات المادة. افتح المصدر واختار تعديل المصدر لتنظيمه.",
-  };
 }

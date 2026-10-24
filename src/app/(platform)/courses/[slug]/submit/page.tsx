@@ -1,9 +1,10 @@
+import { materialAreas, type MaterialArea } from "@/lib/placement";
 import Link from "next/link";
 import { materialAccess } from "@/lib/material-access";
 import { pdfEnabled } from "@/lib/supabase/files";
 import { notFound, redirect } from "next/navigation";
 import { currentUser } from "@/lib/supabase/server";
-import { getCourse, getTopics } from "@/lib/data";
+import { getCourse, getLectures } from "@/lib/data";
 import { MaterialComposer } from "@/components/quiz/material-composer";
 export const metadata = { title: "ضيف مصدر" };
 export default async function SubmitPage({
@@ -11,7 +12,7 @@ export default async function SubmitPage({
   searchParams,
 }: {
   params: Promise<{ slug: string }>;
-  searchParams: Promise<{ purpose?: string }>;
+  searchParams: Promise<{ area?: string; lecture?: string }>;
 }) {
   const { slug } = await params;
   if (!(await currentUser()))
@@ -19,8 +20,13 @@ export default async function SubmitPage({
   const c = await getCourse(slug);
   if (!c) notFound();
   const access = await materialAccess(c.id);
-  const { purpose } = await searchParams;
-  const topics = await getTopics(c.id);
+  const { area, lecture } = await searchParams;
+  const initialPlacement = materialAreas.includes(area as MaterialArea)
+    ? { area: area as MaterialArea, lectures: lecture ? [lecture] : [] }
+    : lecture
+      ? { area: "lecture" as const, lectures: [lecture] }
+      : undefined;
+  const lectures = await getLectures(c.id);
   return (
     <div className="form-page">
       <Link className="breadcrumb" href={`/courses/${slug}`}>
@@ -34,11 +40,11 @@ export default async function SubmitPage({
       <MaterialComposer
         courseId={c.id}
         slug={slug}
-        topics={topics}
+        lectures={lectures}
         canPublish={access.can_publish}
         canSubmit={access.can_submit}
         pdfEnabled={pdfEnabled()}
-        purpose={purpose}
+        initialPlacement={initialPlacement}
       />
     </div>
   );

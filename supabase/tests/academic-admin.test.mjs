@@ -297,7 +297,7 @@ it("resource moderation hides content and records a private audit entry", async 
   R = (
     await as(
       A,
-      `select public.submit_resource('${C}',null,'مصدر اختبار الإدارة','','notes','https://example.org/admin-qa',true,false) id`,
+      `select public.submit_material('${C}','general',array[]::uuid[],'مصدر اختبار الإدارة','','notes','https://example.org/admin-qa',true,false) id`,
     )
   ).rows[0].id;
   await as(
@@ -323,7 +323,7 @@ it("unverified PDF cannot be published by admin bypass", async () => {
   const p = (
     await as(
       A,
-      `select public.prepare_pdf('${C}',null,'ملف لسه اترفَعش','','notes',true,false) id`,
+      `select public.prepare_material_pdf('${C}','general',array[]::uuid[],'ملف لسه اترفَعش','','notes',true,false) id`,
     )
   ).rows[0].id;
   await expect(
@@ -366,7 +366,7 @@ it("service-side PDF finalization rechecks current academic eligibility", async 
   const pdf = (
     await as(
       A,
-      `select public.prepare_pdf('${C}',null,'ملف اختبار الحالة الأكاديمية','','notes',true,false) id`,
+      `select public.prepare_material_pdf('${C}','general',array[]::uuid[],'ملف اختبار الحالة الأكاديمية','','notes',true,false) id`,
     )
   ).rows[0].id;
   await owner(

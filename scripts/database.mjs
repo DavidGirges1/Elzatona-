@@ -26,6 +26,7 @@ export async function generateTypes(db) {
     int4: "number",
     int8: "number",
     jsonb: "Json",
+    _uuid: "string[]",
   };
   const tsType = (t) => types[t] || "unknown";
   let tables = "",
@@ -79,7 +80,7 @@ export async function generateTypes(db) {
       const argsText = args
         .map(
           (n, i) =>
-            `${n}${i >= args.length - f.pronargdefaults ? "?" : ""}: ${oidMap[f.argtypes[i]] || "unknown"}${["p_topic", "p_resource", "p_id", "p_faculty", "p_university", "p_year", "p_semester", "p_url"].includes(n) ? " | null" : ""}`,
+            `${n}${i >= args.length - f.pronargdefaults ? "?" : ""}: ${oidMap[f.argtypes[i]] || "unknown"}${["p_lecture", "p_topic", "p_resource", "p_id", "p_faculty", "p_university", "p_year", "p_semester", "p_url"].includes(n) ? " | null" : ""}`,
         )
         .join("; ");
       const ret =
@@ -92,6 +93,7 @@ export async function generateTypes(db) {
           text: "string",
           void: "undefined",
           jsonb: "Json",
+          _uuid: "string[]",
         }[f.rettype] || "unknown";
       return `    ${f.proname}: { Args: ${argsText ? `{${argsText}}` : "Record<string, never>"}; Returns: ${ret} };`;
     })

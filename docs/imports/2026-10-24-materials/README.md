@@ -1,3 +1,5 @@
+> **Historical batch — removed 24 October 2026.** Owner requested a complete materials reset for the lecture-first architecture. None of the records/files in these manifests remains current. Do not reimport this batch. See `docs/LECTURE_FIRST_ARCHITECTURE.md`.
+
 # Imported semester materials — 24 October 2026
 
 Imported the owner's public Drive archive into the real Elzatona Supabase project and verified it on https://elzatona.tech. This is an operator-run data import, not a new public ZIP-upload feature.

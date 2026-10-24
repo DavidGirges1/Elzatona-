@@ -1,4 +1,6 @@
 "use client";
+import { PlacementFields } from "@/components/placement-fields";
+import type { Placement, LectureOption } from "@/lib/placement";
 import Link from "next/link";
 import { useEffect, useRef, useState, useTransition } from "react";
 import { Plus, Trash2, ArrowUp, ArrowDown, Eye, Download } from "lucide-react";
@@ -51,7 +53,9 @@ const newQuestion = (type: QuizQuestion["type"]): QuizQuestion => {
 export function QuizEditor({
   courseId,
   slug,
-  topics,
+  lectures,
+  placement,
+  initialPlacement,
   canPublish,
   canSubmit = true,
   initial,
@@ -59,12 +63,13 @@ export function QuizEditor({
   published: initiallyPublished = false,
   submitted: initiallySubmitted = false,
   readOnly = false,
-  topicId = "",
   onDirtyChange,
 }: {
   courseId: string;
   slug: string;
-  topics: { id: string; title: string; title_ar?: string | null }[];
+  lectures: LectureOption[];
+  placement?: Placement;
+  initialPlacement?: Partial<Placement>;
   canPublish: boolean;
   canSubmit?: boolean;
   initial?: QuizDocument;
@@ -72,7 +77,6 @@ export function QuizEditor({
   published?: boolean;
   submitted?: boolean;
   readOnly?: boolean;
-  topicId?: string;
   onDirtyChange?: (dirty: boolean) => void;
 }) {
   const [published, setPublished] = useState(initiallyPublished);
@@ -104,7 +108,9 @@ export function QuizEditor({
   );
   const [index, setIndex] = useState(0),
     [id, setId] = useState(resourceId),
-    [topic, setTopic] = useState(topicId),
+    [location, setLocation] = useState<Partial<Placement>>(
+      initialPlacement || {},
+    ),
     [rights, setRights] = useState(false);
   const [state, setState] = useState<QuizSaveState>({}),
     [json, setJson] = useState(""),
@@ -187,7 +193,10 @@ export function QuizEditor({
         const data = new FormData();
         data.set("document", JSON.stringify(normalizedDoc()));
         data.set("resource", id);
-        data.set("topic", topic);
+        const selectedPlacement = placement || location;
+        data.set("area", selectedPlacement.area || "");
+        for (const lecture of selectedPlacement.lectures || [])
+          data.append("lectures", lecture);
         data.set("intent", intent);
         if (rights) data.set("rights", "on");
         const result = await saveQuizDocument(courseId, slug, {}, data);
@@ -280,23 +289,18 @@ export function QuizEditor({
             />
           </label>
           <div className="filters">
-            <label className="field">
-              الموضوع
-              <select
-                value={topic}
-                onChange={(e) => {
-                  setTopic(e.target.value);
+            {!placement && (
+              <PlacementFields
+                lectures={lectures}
+                slug={slug}
+                initial={initialPlacement}
+                quiz
+                onChange={(p) => {
+                  setLocation(p);
                   setDirty(true);
                 }}
-              >
-                <option value="">المادة كلها</option>
-                {topics.map((t) => (
-                  <option value={t.id} key={t.id}>
-                    {t.title_ar || t.title}
-                  </option>
-                ))}
-              </select>
-            </label>
+              />
+            )}
             <label className="field">
               لغة الأسئلة
               <select

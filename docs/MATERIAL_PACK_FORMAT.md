@@ -1,128 +1,56 @@
-# Elzatona semester materials — ZIP handoff format v1
+# Materials pack v2 — explicit lecture placement
 
-Use this folder layout when sending a semester collection to the Elzatona development assistant. It is a handoff convention for a validated import, not an existing website ZIP-upload feature. This template contains no real course materials, no PDF placeholders and no populated link CSVs.
+This format supersedes v1's generic topic folders. The outdated first import was removed at the owner's request; old manifests and ZIPs are historical and must not be reimported.
 
-## 1. Choose courses
+Use [the empty v2 template](import-templates/Elzatona_Materials_Template_v2.zip). This is a handoff format for a reviewed operator import; uploading a ZIP in the website does not automatically publish it.
 
-`COURSE_CATALOG.csv` lists the 122 active Capital University / Faculty of Computers courses currently in the database, with codes, Arabic/English titles, year and exact folder names. Semester values are not assigned in the live catalog, so choose the subjects you are actually taking; the two template courses are examples, not a semester recommendation.
-
-Put each course under `courses/`, using the exact `folder_name` from the catalog or the final part of its website URL. Example: `https://elzatona.tech/courses/capital-cs-316` → `courses/capital-cs-316/`.
-
-Keep only the courses you need. Empty folders are ignored. Do not put materials directly in the catalog/guide area.
-
-## 2. Organize topics
-
-Create one folder per topic/lecture inside the course:
-
-```
-courses/
-  capital-cs-316/
-    01 - Divide and Conquer/
-      study/
-        slides/
-          Lecture slides.pdf
-        notes/
-          My revision notes.pdf
-        sections/
-          Lab or section handout.pdf
-        reference/
-        other/
-        links.csv
-      solve/
-        question_bank/
-          Practice questions.pdf
-        sheets/
-          Professor exercise sheet.pdf
-        past_exam/
-        quizzes/
-          Reviewed questions.quiz.json
-        links.csv
-    02 - Dynamic Programming/
-      ...
-    _general/
-      ...
+```text
+Elzatona_Materials/
+  README.md
+  courses/
+    capital-cs-316/                 # exact live course slug
+      lectures.csv
+      materials.csv
+      files/
+        lecture-01-slides.pdf
+        full-course-reference.pdf
 ```
 
-- Topic names may be English or Arabic. Number prefixes such as `01 -` communicate the intended topic sequence and are not part of the displayed topic title.
-- If a topic already exists in Elzatona, use its existing displayed name so it can be reused. Ambiguous course/topic matches will be flagged for review instead of guessed.
-- `_general` is optional. It means the resource covers the whole course and has no topic assignment; it does not create a topic called “General.”
-- The website still offers its normal latest/helpful material sorting; topic folder numbering does not invent a new material ranking.
+Use any clear Arabic/English filenames. Optional subfolders under `files/` are allowed. The CSV manifest determines placement, not inferred filenames.
 
-## 3. Add PDFs to the right folder
-
-| Folder within a topic  | Display purpose | Resource type |
-| ---------------------- | --------------- | ------------- |
-| `study/slides/`        | مذاكرة          | slides        |
-| `study/sections/`      | مذاكرة          | sections      |
-| `study/notes/`         | مذاكرة          | notes         |
-| `study/reference/`     | مذاكرة          | reference     |
-| `study/other/`         | مذاكرة          | other         |
-| `solve/question_bank/` | حل              | question_bank |
-| `solve/sheets/`        | حل              | sheets        |
-| `solve/past_exam/`     | حل              | past_exam     |
-
-Use clear filenames: `Binary search lecture slides.pdf` becomes the material title `Binary search lecture slides`. Arabic filenames are equally valid. Titles need 4–160 characters. The topic/course already provides context, so filenames do not need to repeat the university and department.
-
-Current app uploads support genuine PDF files only, maximum **3 MiB (3,145,728 bytes) per file**. For larger files, add a publicly accessible HTTPS file/Drive link to the appropriate `links.csv`, or supply a smaller PDF. The in-app PDF reader covers permitted uploaded PDFs; a linked Drive/PDF resource keeps the ordinary external-link behavior.
-
-For DOCX/PPTX, export to PDF or provide an HTTPS link. Supply videos as links rather than MP4 files.
-
-## 4. Add video and website links with CSV
-
-Each topic can contain `study/links.csv` and `solve/links.csv`. Open them in Excel, Google Sheets or a text editor. Add one row per link. Save as **CSV UTF-8** (comma separated). The template files contain only the correct header.
+## lectures.csv
 
 ```csv
-title,url,type,description
+number,title
+1,Introduction
+3,SQL Joins
 ```
 
-Required fields: `title`, `url`, `type`. `description` is optional; it can credit the original lecturer/source or say which pages/ideas the resource covers. Quote fields containing commas; Excel/Sheets handles this when exporting CSV. Descriptions are limited to 2,000 characters.
+Numbers 1–999, unique within a course, with gaps allowed. Title optional, at most 120 characters. One current sequence per course; no semester/class folders. Existing lecture UUIDs remain stable when organizers change a number/title. Ambiguous existing matches require review.
 
-Examples below are documentation only. Replace the placeholder links with your real links; do not copy placeholders into an import.
-
-`study/links.csv`:
+## materials.csv
 
 ```csv
-title,url,type,description
-"BFS and DFS explained","https://youtu.be/YOUR_VIDEO_ID","video","English explanation"
-"Course reference website","https://YOUR_REFERENCE_SITE/path","reference","Chapter 3"
+key,title,area,lecture_numbers,type,file,url,rights_confirmed
+intro-slides,Introduction slides,lecture,1,slides,files/lecture-01-slides.pdf,,true
+shared-notes,Notes for two lectures,lecture,1|3,notes,files/shared-notes.pdf,,true
+reference,Course reference,general,,reference,,https://example.org/reference,true
+revision,Comprehensive questions,revision,,question_bank,files/questions.pdf,,true
+lab,Lab handout,sections,,sections,files/lab.pdf,,true
 ```
 
-`solve/links.csv`:
+- One row per actual resource; unique `key` within the pack. Reuse the same row with `lecture_numbers=1|3` instead of copying its file. One title, URL, votes, saves and discussion.
+- Exactly one of `file` and `url`. UTF-8 CSV, properly quote comma-containing values. No invented permission: `rights_confirmed=true` means you have authority to share the actual content.
+- Required explicit `area`: `lecture`, `general`, `revision`, or `sections`. Lecture numbers required only for `lecture`; other areas must leave them empty. All listed numbers must exist in this course's lecture map.
+- Lecture types: `video`, `slides`, `notes`, `reference`, `other`, `sheets`, `question_bank`.
+- General types: `video`, `slides`, `notes`, `reference`, `other`.
+- Revision types: general types plus `sheets`, `question_bank`, `past_exam`.
+- Sections area: only `sections`. Keep labs separate even when their titles resemble lectures.
+- Professor sheets use `sheets`; native interactive sets use `question_bank` with the existing `elzatona.quiz` v1 JSON document in `file`, only in lecture/revision placement. Questions/keys still require validation before publication.
+- PDFs: genuine PDF, maximum **3 MiB (3,145,728 bytes)**. Larger files → a permitted publicly reachable HTTPS link or a smaller PDF. Videos → HTTPS links; no MP4 upload.
+- Titles 4–160 characters. Optional additional `description` column up to 2,000 characters. Do not include lecture names repeatedly in resource titles when placement already makes them obvious.
+- Only admin/scoped leaders curate a main study source after publication. Do not fabricate rankings/endorsements in pack metadata.
 
-```csv
-title,url,type,description
-"Recursion practice questions","https://YOUR_QUESTION_SITE/path","question_bank","With worked answers"
-```
+Operator preflight must validate ZIP paths, size/type, PDF header, SHA-256, unique identities, course/lecture matches, area/type compatibility, rights and URL safety. Produce a reviewable ledger before importing. Use the same placement-aware transactions and verified PDF lifecycle as the app; do not use the retired v1 topic RPCs. Do not auto-publish normal-user proposals or assume a private draft is reviewed.
 
-Allowed study types: `video`, `slides`, `sections`, `notes`, `reference`, `other`.
-`sections` means سكاشن: section explanations, lab guides and hands-on teaching content.
-Allowed solve types: `question_bank`, `sheets`, `past_exam`.
-`sheets` means شيتات: professor-provided exercise sheets; it is separate from general question banks and exams.
-Use HTTPS links accessible to your intended student audience. Individual YouTube video links support inline playback; playlists are not automatically expanded into individual videos.
-
-## 5. Interactive quizzes are optional
-
-Put a valid native question document in `solve/quizzes/*.json`. It must use the existing `format: "elzatona.quiz", version: 1` contract. For English banks, use `language: "en"`; mixed content remains supported.
-
-- Full guide/conversion prompt: https://elzatona.tech/quiz-format
-- `_guides/quiz-example.json` is a valid educational example. It is outside the material tree and must not be published as part of the semester pack.
-- Maximum 100 questions and 256 KiB per quiz. Review all questions/keys before publication.
-- A PDF question bank stays a PDF. It does not automatically become an interactive quiz merely by being placed under `solve/`; provide a reviewed quiz JSON when you want practice/exam modes.
-
-## 6. Optional import notes
-
-Add a root `IMPORT_NOTES.txt` if needed, with:
-
-- The existing admin/trusted contributor username that should receive contributor attribution.
-- Any topic-name aliases, source credits, exceptions or files that should be skipped.
-- Whether you want everything published after validation, or want to review the proposed list first.
-
-Include only materials you have permission to share. Do not include account passwords, API keys or private student records.
-
-## 7. Send the ZIP
-
-Zip this root folder and upload it in the conversation. For large collections, split by subject into manageable ZIPs (around 25 MB is convenient).
-
-On receipt, the assistant can validate the file tree, match exact courses, reuse/create topics, check duplicate URLs/files, validate quiz documents and report oversized/invalid files before preparing the actual authorized database/Storage import. Publication uses the chosen account under the current [four-layer quality rules](COMMUNITY_ROLES.md): admin/trusted contributions publish directly; ordinary contributions wait for an eligible reviewer; leaders may explicitly approve their own submitted materials in an assigned course. Topic creation requires an admin or leader assigned to that course. This template does not execute an import or change live data by itself.
-
-Root README/catalog/guide files, empty directories, hidden system files, and `_guides/` are not resources. Avoid nested ZIP/RAR archives inside the course folders.
+The example manifest illustrates the format; it is not a claim that these example files exist or that these are your current lectures.

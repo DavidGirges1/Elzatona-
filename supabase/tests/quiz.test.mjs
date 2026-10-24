@@ -56,7 +56,7 @@ async function as(id, sql) {
   return db.query(sql);
 }
 const save = (d = doc, id = null, publish = false, rights = false) =>
-  `select public.save_quiz('${C}',null,${json(d)},${id ? `'${id}'` : "null"},${publish},${rights}) id`;
+  `select public.save_material_quiz('${C}','revision',array[]::uuid[],${json(d)},${id ? `'${id}'` : "null"},${publish},${rights}) id`;
 const grade = (answers, revision = 1) =>
   `select public.grade_quiz('${R}',${revision},${json(answers)}) result`;
 beforeAll(async () => {
@@ -151,9 +151,7 @@ it("author IDs/course ownership cannot be forged, even with publisher or organiz
     M,
     `select public.admin_assign_community_role('${B}','class_leader',array['${C}']::uuid[],'QA only',true)`,
   );
-  await expect(as(B, save(doc, R, true, true))).rejects.toThrow(
-    "not authorized",
-  );
+  await expect(as(B, save(doc, R, true, true))).rejects.toThrow("only author");
 });
 it("organizer can arrange metadata without rewriting quiz keys", async () => {
   await as(
@@ -162,7 +160,7 @@ it("organizer can arrange metadata without rewriting quiz keys", async () => {
   );
   await as(
     B,
-    `select public.edit_resource('${R}','Organized quiz title','A better summary',null)`,
+    `select public.edit_material('${R}','Organized quiz title','A better summary','revision',array[]::uuid[])`,
   );
   expect(
     (await as(null, `select public.read_quiz('${R}') x`)).rows[0].x.title,

@@ -1,0 +1,36 @@
+// Temporary operator-only job; exact inventory, short expiry, hashed capability.
+import {createClient} from 'npm:@supabase/supabase-js@2.118.0';
+import config from './config.json' with {type:'json'};
+const keys=JSON.parse(Deno.env.get('SUPABASE_SECRET_KEYS')||'{}');
+const db=createClient(Deno.env.get('SUPABASE_URL')!,keys.default||Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!,{auth:{persistSession:false,autoRefreshToken:false}});
+Deno.serve(async(req)=>{
+ const response=(data:unknown,status=200)=>Response.json(data,{status,headers:{'Cache-Control':'no-store'}});
+ if(req.method!=='POST')return response({error:'method'},405);
+ const digest=Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(req.headers.get('x-operator-capability')||'')))).map(b=>b.toString(16).padStart(2,'0')).join('');
+ if(Date.now()>config.expires||digest!==config.hash)return response({error:'unavailable'},403);
+ try{
+ const body=await req.json();
+ if(body.action==='reset-files'){
+ const gate=await db.from('material_maintenance').select('paused').single();if(gate.error||!gate.data.paused)throw Error('maintenance required');
+ const resources=await db.from('resources').select('storage_path,status').not('storage_path','is',null);if(resources.error||resources.data.some(r=>r.status!=='hidden')||resources.data.length!==config.paths.length||resources.data.some(r=>!config.paths.includes(r.storage_path)))throw Error('inventory mismatch');
+ const removed=await db.storage.from('course-pdfs').remove(config.paths);if(removed.error)throw removed.error;return response({removed:removed.data.length});
+ }
+ if(body.action==='create-qa'){
+ if(typeof body.password!=='string'||body.password.length<32)throw Error('password required');
+ const users=[];for(const email of config.emails){const r=await db.auth.admin.createUser({email,password:body.password,email_confirm:true,user_metadata:{full_name:'QA lecture verification',username:'lfqa_'+email.split('@')[0].split('-').at(-1)}});if(r.error)throw r.error;users.push({id:r.data.user.id,email});}return response({users});
+ }
+ if(body.action==='clean-qa-files'){
+ const users=await db.auth.admin.listUsers({perPage:1000});if(users.error)throw users.error;const ids=users.data.users.filter(u=>config.emails.includes(u.email||'')).map(u=>u.id);
+ for(const id of ids){const files=await db.storage.from('course-pdfs').list(id,{limit:100});if(files.error)throw files.error;if(files.data.length){const removed=await db.storage.from('course-pdfs').remove(files.data.map(f=>id+'/'+f.name));if(removed.error)throw removed.error;}}
+ return response({cleaned:ids.length});
+ }
+ if(body.action==='delete-qa'){
+ const listed=await db.auth.admin.listUsers({perPage:1000});if(listed.error)throw listed.error;
+ for(const u of listed.data.users.filter(u=>config.emails.includes(u.email||''))){
+ // Short-lived QA access is revoked by suspension before this call; do not touch real accounts.
+ const r=await db.auth.admin.deleteUser(u.id);if(r.error)throw r.error;
+ }return response({deleted:true});
+ }
+ return response({error:'operation'},400);
+ }catch(e){return response({error:e instanceof Error?e.message:'operation failed'},409);}
+});

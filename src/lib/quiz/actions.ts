@@ -2,6 +2,7 @@
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { currentUser, createClient } from "@/lib/supabase/server";
+import { placementFromForm } from "@/lib/placement";
 import { idSchema } from "@/lib/validation";
 import {
   importQuiz,
@@ -29,13 +30,14 @@ export async function saveQuizDocument(
     .object({
       document: z.string(),
       resource: z.union([idSchema, z.literal("")]),
-      topic: z.union([idSchema, z.literal("")]),
       intent: z.enum(["draft", "publish"]),
     })
     .safeParse(Object.fromEntries(form));
   if (!fields.success || !idSchema.safeParse(courseId).success)
     return { error: "راجع بيانات المجموعة." };
-  const { document: text, resource, topic, intent } = fields.data;
+  const placement = placementFromForm(form);
+  if (!placement.success) return { error: placement.error.issues[0].message };
+  const { document: text, resource, intent } = fields.data;
   let doc;
   try {
     doc = importQuiz(text);
@@ -53,9 +55,10 @@ export async function saveQuizDocument(
     .eq("slug", slug)
     .single();
   if (course.error) return { error: "المادة مش متاحة." };
-  const r = await db.rpc("save_quiz", {
+  const r = await db.rpc("save_material_quiz", {
     p_course: courseId,
-    p_topic: topic || null,
+    p_area: placement.data.area,
+    p_lectures: placement.data.lectures,
     p_document: JSON.parse(JSON.stringify(doc)),
     p_resource: resource || null,
     p_publish: intent === "publish",

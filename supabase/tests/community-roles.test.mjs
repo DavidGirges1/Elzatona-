@@ -36,11 +36,11 @@ const assign = (id, role, courses = []) =>
     `select public.admin_assign_community_role('${id}','${role}',array[${courses.map((id) => `'${id}'`).join(",")}]::uuid[],'QA role decision',true)`,
   );
 const submit = (course = C, url = "https://example.org/material") =>
-  `select public.submit_resource('${course}',null,'Student material title','','notes','${url}',true,false) id`;
+  `select public.submit_material('${course}','general',array[]::uuid[],'Student material title','','notes','${url}',true,false) id`;
 const review = (id = R, version = 1, decision = "approved") =>
-  `select public.review_material('${id}',${version},'${decision}','Reviewed test material')`;
+  `select public.review_placed_material('${id}',${version},'${decision}','Reviewed test material',(select area from resources where id='${id}'),array(select lecture_id from resource_lectures where resource_id='${id}'))`;
 const quiz = (resource = "null", publish = true, rights = true) =>
-  `select public.save_quiz('${C}',null,${json(doc)},${resource},${publish},${rights}) id`;
+  `select public.save_material_quiz('${C}','revision',array[]::uuid[],${json(doc)},${resource},${publish},${rights}) id`;
 beforeAll(async () => {
   db = await database();
   for (const [id, name] of [
@@ -69,7 +69,7 @@ beforeEach(async () => {
   P = (
     await as(
       A,
-      `select public.prepare_pdf('${C}',null,'Pending student PDF','','notes',true,false) id`,
+      `select public.prepare_material_pdf('${C}','general',array[]::uuid[],'Pending student PDF','','notes',true,false) id`,
     )
   ).rows[0].id;
   Q = (await as(A, quiz())).rows[0].id;
@@ -201,7 +201,7 @@ it("self-review preserves stale-version checks", async () => {
     .rows[0].id;
   await as(
     L,
-    `select public.edit_proposed_resource('${id}','Updated leader material','',null,'https://example.org/leader-version')`,
+    `select public.edit_proposed_material('${id}','Updated leader material','','general',array[]::uuid[],'https://example.org/leader-version')`,
   );
   await expect(as(L, review(id, 1))).rejects.toThrow("submission changed");
   await as(L, review(id, 2));
@@ -222,7 +222,7 @@ it("leader can approve their own PDF only after verified submission", async () =
   const id = (
     await as(
       L,
-      `select public.prepare_pdf('${C}',null,'Leader own PDF','','notes',true,false) id`,
+      `select public.prepare_material_pdf('${C}','general',array[]::uuid[],'Leader own PDF','','notes',true,false) id`,
     )
   ).rows[0].id;
   await expect(as(L, review(id))).rejects.toThrow("not authorized");
@@ -316,7 +316,7 @@ it("revoking a leader scope immediately blocks pending approval and topic change
   await assign(L, "class_leader", [D]);
   await expect(as(L, review())).rejects.toThrow();
   await expect(
-    as(L, `select public.add_material_topic('${C}','Revoked scope topic')`),
+    as(L, `select public.save_lecture('${C}',1,'Revoked scope lecture')`),
   ).rejects.toThrow();
 });
 it("revoking trust routes future submissions to review and blocks own published edits", async () => {
@@ -324,7 +324,10 @@ it("revoking trust routes future submissions to review and blocks own published 
     .rows[0].id;
   await assign(B, "student");
   await expect(
-    as(B, `select public.edit_resource('${id}','New title','',null)`),
+    as(
+      B,
+      `select public.edit_material('${id}','New title','','general',array[]::uuid[])`,
+    ),
   ).rejects.toThrow();
   const next = (await as(B, submit(C, "https://example.org/after-revoke")))
     .rows[0].id;
@@ -358,7 +361,7 @@ it("reject with reason, edit and resubmit; stale reviews are rejected", async ()
   ).toContain("Reviewed");
   await as(
     A,
-    `select public.edit_proposed_resource('${R}','Corrected resource','Corrected description',null,'https://example.org/corrected')`,
+    `select public.edit_proposed_material('${R}','Corrected resource','Corrected description','general',array[]::uuid[],'https://example.org/corrected')`,
   );
   await expect(as(L, review(R, 1))).rejects.toThrow("submission changed");
   await as(L, review(R, 2));
@@ -372,7 +375,7 @@ it("another student cannot edit proposed material or inspect review notes", asyn
   await expect(
     as(
       B,
-      `select public.edit_proposed_resource('${R}','Attack resource','',null,'https://example.org/attack')`,
+      `select public.edit_proposed_material('${R}','Attack resource','','general',array[]::uuid[],'https://example.org/attack')`,
     ),
   ).rejects.toThrow();
   expect(
@@ -385,7 +388,7 @@ it("ordinary authors cannot alter already approved content without publishing pe
   await expect(
     as(
       A,
-      `select public.edit_resource('${R}','After approval attack','',null)`,
+      `select public.edit_material('${R}','After approval attack','','general',array[]::uuid[])`,
     ),
   ).rejects.toThrow();
 });
@@ -430,7 +433,7 @@ it("trust revoked while bytes upload cannot cause auto publication", async () =>
   const p = (
     await as(
       B,
-      `select public.prepare_pdf('${C}',null,'Trusted pending PDF','','notes',true,false) id`,
+      `select public.prepare_material_pdf('${C}','general',array[]::uuid[],'Trusted pending PDF','','notes',true,false) id`,
     )
   ).rows[0].id;
   await assign(B, "student");
@@ -444,7 +447,7 @@ it("trusted PDF verification publishes directly", async () => {
   const p = (
     await as(
       B,
-      `select public.prepare_pdf('${C}',null,'Trusted complete PDF','','notes',true,false) id`,
+      `select public.prepare_material_pdf('${C}','general',array[]::uuid[],'Trusted complete PDF','','notes',true,false) id`,
     )
   ).rows[0].id;
   await owner(`select public.finalize_pdf_checked('${p}','${B}')`);
@@ -477,25 +480,22 @@ it("submitted PDF objects cannot be deleted or replaced by their author during r
     ),
   ).rejects.toThrow();
 });
-it("leaders rename/reorder/create assigned course topics and organize published metadata only", async () => {
+it("leaders create/rename/reorder assigned lectures and organize published placement", async () => {
   const t = (
-    await as(
-      L,
-      `select public.add_material_topic('${C}','New course topic') id`,
-    )
+    await as(L, `select public.save_lecture('${C}',1,'New lecture') id`)
   ).rows[0].id;
-  await as(L, `select public.organize_topic('${t}','Renamed topic',3)`);
+  await as(L, `select public.save_lecture('${C}',3,'Renamed lecture','${t}')`);
   expect(
-    (await as(null, `select title,sort_order from topics where id='${t}'`))
+    (await as(null, `select title,number from lectures where id='${t}'`))
       .rows[0],
-  ).toEqual({ title: "Renamed topic", sort_order: 3 });
+  ).toEqual({ title: "Renamed lecture", number: 3 });
   await expect(
-    as(L, `select public.add_material_topic('${D}','Other scope topic')`),
+    as(L, `select public.save_lecture('${D}',1,'Other scope')`),
   ).rejects.toThrow();
   await as(L, review());
   await as(
     L,
-    `select public.edit_resource('${R}','Organized resource title','','${t}')`,
+    `select public.edit_material('${R}','Organized resource title','','lecture',array['${t}']::uuid[])`,
   );
 });
 it("leader cannot edit another author quiz keys, but can read submitted keys for review", async () => {
@@ -574,7 +574,7 @@ it.each(["sections", "sheets"])(
     const id = (
       await as(
         A,
-        `select public.submit_resource('${C}',null,'A new category material','','${type}','https://example.org/${type}',true,false) id`,
+        `select public.submit_material('${C}','${type === "sections" ? "sections" : "revision"}',array[]::uuid[],'A new category material','','${type}','https://example.org/${type}',true,false) id`,
       )
     ).rows[0].id;
     expect(
@@ -601,7 +601,7 @@ it.each(["sections", "sheets"])(
     const id = (
       await as(
         B,
-        `select public.prepare_pdf('${C}',null,'A new category PDF','','${type}',true,false) id`,
+        `select public.prepare_material_pdf('${C}','${type === "sections" ? "sections" : "revision"}',array[]::uuid[],'A new category PDF','','${type}',true,false) id`,
       )
     ).rows[0].id;
     expect(
@@ -621,7 +621,7 @@ it("new categories preserve quiz-kind and allowed-type constraints", async () =>
   await expect(
     as(
       A,
-      `select public.submit_resource('${C}',null,'Unsupported category','','unknown_type','https://example.org/invalid-type',true,false)`,
+      `select public.submit_material('${C}','general',array[]::uuid[],'Unsupported category','','unknown_type','https://example.org/invalid-type',true,false)`,
     ),
   ).rejects.toThrow();
 });

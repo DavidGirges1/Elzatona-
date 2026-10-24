@@ -51,7 +51,7 @@ describe("source URL safety", () => {
       "t=25",
     ));
 });
-it("requires sharing permission and valid topic UUID", () => {
+it("requires sharing permission and valid course UUID", () => {
   const input = {
     course_id: "00000000-0000-4000-8000-000000000001",
     topic_id: "",
@@ -68,7 +68,7 @@ it("requires sharing permission and valid topic UUID", () => {
     resourceSchema.safeParse({
       ...input,
       rights_confirmed: "on",
-      topic_id: "another-course",
+      course_id: "another-course",
     }).success,
   ).toBe(false);
 });

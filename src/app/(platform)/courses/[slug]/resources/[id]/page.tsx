@@ -1,3 +1,4 @@
+import { placementPath } from "@/lib/placement";
 import Link from "next/link";
 import { materialAccess } from "@/lib/material-access";
 import { appPath } from "@/lib/paths";
@@ -6,7 +7,12 @@ import { MaterialPreview } from "@/components/material-preview";
 import { ResourceVote } from "@/components/resource-vote";
 import { notFound } from "next/navigation";
 import { ArrowRight } from "lucide-react";
-import { getResource, getResources, getDiscussions } from "@/lib/data";
+import {
+  getResource,
+  getResources,
+  getDiscussions,
+  getLectures,
+} from "@/lib/data";
 import { createClient, currentUser } from "@/lib/supabase/server";
 import { save } from "@/lib/actions";
 import { ActionForm, Submit, Share } from "@/components/forms";
@@ -43,11 +49,21 @@ export default async function ResourcePage({
   const path = `/courses/${slug}/resources/${id}`;
   const [user, related, discussions, s] = await Promise.all([
     currentUser(),
-    getResources({ courseId: r.course_id, topic: r.topic_id || undefined }),
+    getResources({
+      courseId: r.course_id,
+      lecture: r.lecture_ids[0],
+      area: r.area,
+    }),
     getDiscussions(r.course_id, id),
     searchParams,
   ]);
   const access = await materialAccess(r.course_id);
+  const linkedLectures =
+    r.lecture_ids.length > 1
+      ? (await getLectures(r.course_id)).filter((l) =>
+          r.lecture_ids.includes(l.id),
+        )
+      : [];
   const quiz = r.source_kind === "quiz" ? await readQuiz(id) : null;
   let saved = false,
     myVote = 0;
@@ -72,7 +88,10 @@ export default async function ResourcePage({
   }
   return (
     <div className="detail">
-      <Link className="breadcrumb" href={`/courses/${slug}`}>
+      <Link
+        className="breadcrumb"
+        href={placementPath(slug, r.area, r.lecture_ids[0])}
+      >
         <ArrowRight size={16} />
         <bdi>{r.course_title}</bdi>
         {r.topic_title && (
@@ -82,6 +101,19 @@ export default async function ResourcePage({
           </>
         )}
       </Link>
+      {linkedLectures.length > 1 && (
+        <nav className="purpose-tabs" aria-label="محاضرات المصدر">
+          {linkedLectures.map((l) => (
+            <Link
+              className="text-link"
+              key={l.id}
+              href={`/courses/${slug}/lectures/${l.id}`}
+            >
+              المحاضرة {new Intl.NumberFormat("ar-EG").format(l.number)}
+            </Link>
+          ))}
+        </nav>
+      )}
       {s.reported && (
         <p className="notice" role="status">
           وصل البلاغ للمراجعة. شكرًا إنك بتساعدنا.
@@ -216,7 +248,9 @@ export default async function ResourcePage({
       </article>
       <section>
         <div className="section-head">
-          <h2>مصادر تانية {r.topic_id ? "لنفس الموضوع" : "للمادة"}</h2>
+          <h2>
+            مصادر تانية {r.area === "lecture" ? "لنفس المحاضرة" : "للمادة"}
+          </h2>
         </div>
         <div className="resource-list">
           {related

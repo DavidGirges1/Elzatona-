@@ -136,7 +136,7 @@ it("cross-year contribution, questions, votes and saves remain normal community 
   const resource = (
     await as(
       A,
-      `select public.submit_resource('${first}',null,'Cross-year test resource','A temporary reference','reference','https://example.org/cross-year',true,false) id`,
+      `select public.submit_material('${first}','general',array[]::uuid[],'Cross-year test resource','A temporary reference','reference','https://example.org/cross-year',true,false) id`,
     )
   ).rows[0].id;
   expect(
@@ -162,7 +162,7 @@ it("cross-year contribution, questions, votes and saves remain normal community 
   await expect(
     as(
       B,
-      `select public.edit_resource('${resource}','Stolen resource title','not allowed',null)`,
+      `select public.edit_material('${resource}','Stolen resource title','not allowed','general',array[]::uuid[])`,
     ),
   ).rejects.toThrow();
 });

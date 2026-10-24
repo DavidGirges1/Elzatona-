@@ -460,7 +460,6 @@ test("ordinary PDF and quiz need approval; trusted material publishes directly a
   }
 });
 
-
 test("class leader can explicitly approve their own queued material", async ({
   page,
   context,
@@ -493,7 +492,11 @@ test("class leader can explicitly approve their own queued material", async ({
       .getByRole("link")
       .filter({ has: page.getByRole("heading", { name: title, exact: true }) })
       .click();
-    await decision(page, "approved", "I checked my own source and confirm its quality.");
+    await decision(
+      page,
+      "approved",
+      "I checked my own source and confirm its quality.",
+    );
     await guest.goto(`/courses/${state.slug}/resources/${id}`);
     await expect(
       guest.getByRole("heading", { name: title, exact: true }),

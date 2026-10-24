@@ -48,6 +48,14 @@ export default async function Discussion({
         <Link className="text-link" href={`/u/${d.author_id}`}>
           صاحب السؤال
         </Link>
+        {d.lecture_id && (
+          <Link
+            className="button ghost"
+            href={`/courses/${slug}/lectures/${d.lecture_id}`}
+          >
+            المحاضرة المرتبطة
+          </Link>
+        )}
         {d.resource_id && (
           <Link
             className="button ghost"

@@ -251,15 +251,11 @@ ok(
   }),
 );
 const own = save(ok(await material(leader.db, c.id, "QA leader own material")));
-eq(
-  ok(await leader.db.rpc("can_review_material", { p_resource: own })),
-  true,
-);
+eq(ok(await leader.db.rpc("can_review_material", { p_resource: own })), true);
 ok(await review(leader.db, own, 1));
 eq(
-  ok(
-    await guest.from("resources").select("status").eq("id", own).single(),
-  ).status,
+  ok(await guest.from("resources").select("status").eq("id", own).single())
+    .status,
   "published",
 );
 const ownOutside = save(

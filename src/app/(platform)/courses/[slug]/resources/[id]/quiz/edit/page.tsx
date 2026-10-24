@@ -1,9 +1,10 @@
+import type { MaterialArea } from "@/lib/placement";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { privateQuiz } from "@/lib/quiz/data";
 import { currentUser, createClient } from "@/lib/supabase/server";
 import { materialAccess } from "@/lib/material-access";
-import { getTopics } from "@/lib/data";
+import { getLectures, getResourceLectures } from "@/lib/data";
 import { QuizEditor } from "@/components/quiz/editor";
 export const metadata = {
   title: "تعديل مجموعة أسئلة",
@@ -23,26 +24,22 @@ export default async function EditQuiz({
   const quiz = await privateQuiz(id);
   if (!quiz) notFound();
   const db = await createClient();
-  const [course, admin, access] = await Promise.all([
+  const [course, access] = await Promise.all([
     db
       .from("courses")
       .select("slug,is_active")
       .eq("id", quiz.resource.course_id)
       .maybeSingle(),
-    db.rpc("is_admin"),
     materialAccess(quiz.resource.course_id),
   ]);
-  if (
-    course.data?.slug !== slug ||
-    (!admin.data && quiz.resource.author_id !== user.id)
-  )
+  if (course.data?.slug !== slug || quiz.resource.author_id !== user.id)
     notFound();
   const published = quiz.resource.status === "published";
   const readOnly =
     quiz.resource.status === "hidden" ||
     !course.data.is_active ||
     (published && !access.can_publish);
-  const topics = await getTopics(quiz.resource.course_id);
+  const lectures = await getLectures(quiz.resource.course_id);
   return (
     <div>
       <Link
@@ -59,10 +56,13 @@ export default async function EditQuiz({
       <QuizEditor
         courseId={quiz.resource.course_id}
         slug={slug}
-        topics={topics}
+        lectures={lectures}
         initial={quiz.document}
         resourceId={id}
-        topicId={quiz.resource.topic_id || ""}
+        initialPlacement={{
+          area: quiz.resource.area as MaterialArea,
+          lectures: (await getResourceLectures(id)).map((a) => a.lecture_id),
+        }}
         published={published}
         submitted={quiz.resource.review_state === "submitted"}
         readOnly={readOnly}

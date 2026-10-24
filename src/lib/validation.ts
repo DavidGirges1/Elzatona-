@@ -92,7 +92,6 @@ export function resourceTypesForPurpose(
 export const idSchema = z.guid();
 export const resourceSchema = z.object({
   course_id: idSchema,
-  topic_id: z.union([idSchema, z.literal("")]).transform((x) => x || null),
   title: z.string().trim().min(4, "اكتب عنوان من ٤ حروف على الأقل").max(160),
   description: z.string().trim().max(2000),
   type: z.enum(resourceTypes),

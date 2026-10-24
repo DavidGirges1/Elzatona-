@@ -1,0 +1,94 @@
+[
+  {
+    "name": "leader creates explicit lecture numbers with gap",
+    "passed": true
+  },
+  {
+    "name": "one public resource reused in two lectures",
+    "passed": true
+  },
+  {
+    "name": "guest denied unpublished proposal",
+    "passed": true
+  },
+  {
+    "name": "other author cannot edit",
+    "passed": true
+  },
+  {
+    "name": "ordinary cannot curate",
+    "passed": true
+  },
+  {
+    "name": "approval corrects lecture and publishes",
+    "passed": true
+  },
+  {
+    "name": "review ledger records corrected version",
+    "passed": true
+  },
+  {
+    "name": "leader self approval accepted",
+    "passed": true
+  },
+  {
+    "name": "general revision and sections have distinct placement",
+    "passed": true
+  },
+  {
+    "name": "real PDF upload succeeds",
+    "passed": true
+  },
+  {
+    "name": "guest file open denied before approval",
+    "passed": true
+  },
+  {
+    "name": "real PDF inspection/finalization succeeds",
+    "passed": true
+  },
+  {
+    "name": "guest signed URL after approval",
+    "passed": true
+  },
+  {
+    "name": "published uploaded bytes exact",
+    "passed": true
+  },
+  {
+    "name": "ordinary voting and saving work",
+    "passed": true
+  },
+  {
+    "name": "lecture discussion and reply work",
+    "passed": true
+  },
+  {
+    "name": "free course discussion requires no lecture",
+    "passed": true
+  },
+  {
+    "name": "native English quiz grading works",
+    "passed": true
+  },
+  {
+    "name": "ordinary lecture creation denied",
+    "passed": true
+  },
+  {
+    "name": "leader cannot organize outside scope",
+    "passed": true
+  },
+  {
+    "name": "cross-course lecture denied",
+    "passed": true
+  },
+  {
+    "name": "admin can review reported material",
+    "passed": true
+  },
+  {
+    "name": "approved PDF owner deletion denied",
+    "passed": true
+  }
+]

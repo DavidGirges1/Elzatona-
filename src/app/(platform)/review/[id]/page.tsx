@@ -1,3 +1,6 @@
+import { getLectures, getResourceLectures } from "@/lib/data";
+import { PlacementFields } from "@/components/placement-fields";
+import type { MaterialArea } from "@/lib/placement";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { createClient, currentUser } from "@/lib/supabase/server";
@@ -92,6 +95,16 @@ export default async function ReviewPage({
         <ActionForm
           action={reviewMaterial.bind(null, id, resource.submission_version)}
         >
+          <PlacementFields
+            lectures={await getLectures(resource.course_id)}
+            slug={course.data.slug}
+            initial={{
+              area: resource.area as MaterialArea,
+              lectures: (await getResourceLectures(id)).map(
+                (a) => a.lecture_id,
+              ),
+            }}
+          />
           <label className="field">
             القرار
             <select name="decision" defaultValue="rejected">

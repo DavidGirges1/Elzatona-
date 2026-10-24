@@ -31,7 +31,7 @@ beforeAll(async () => {
   );
   const x = await as(
     A,
-    `select public.submit_resource('${C}',null,'شرح Trees','شرح تجريبي','notes','https://example.org/trees',true,false) as id`,
+    `select public.submit_material('${C}','general',array[]::uuid[],'شرح Trees','شرح تجريبي','notes','https://example.org/trees',true,false) as id`,
   );
   R = x.rows[0].id;
 });
@@ -54,7 +54,7 @@ describe("actual PostgreSQL grants, RPCs and RLS (embedded auth/storage schemas)
     await expect(
       as(
         null,
-        `select public.submit_resource('${C}',null,'new title','','notes','https://example.org/new',true,false)`,
+        `select public.submit_material('${C}','general',array[]::uuid[],'new title','','notes','https://example.org/new',true,false)`,
       ),
     ).rejects.toThrow());
   it("student cannot insert role", async () =>
@@ -76,12 +76,15 @@ describe("actual PostgreSQL grants, RPCs and RLS (embedded auth/storage schemas)
   });
   it("other student cannot edit source", async () =>
     await expect(
-      as(B, `select public.edit_resource('${R}','hacked title','',null)`),
+      as(
+        B,
+        `select public.edit_material('${R}','hacked title','','general',array[]::uuid[])`,
+      ),
     ).rejects.toThrow());
   it("author can edit allowed metadata", async () => {
     await as(
       A,
-      `select public.edit_resource('${R}','شرح Trees','وصف جديد',null)`,
+      `select public.edit_material('${R}','شرح Trees','وصف جديد','general',array[]::uuid[])`,
     );
     expect(
       (
@@ -107,14 +110,14 @@ describe("actual PostgreSQL grants, RPCs and RLS (embedded auth/storage schemas)
     await expect(
       as(
         A,
-        `select public.submit_resource('${C}','${T}','cross topic','','notes','https://example.org/cross',true,false)`,
+        `select public.submit_material('${C}','lecture',array['${T}']::uuid[],'cross topic','','notes','https://example.org/cross',true,false)`,
       ),
     ).rejects.toThrow());
   it("unsafe URL denied in direct RPC", async () =>
     await expect(
       as(
         A,
-        `select public.submit_resource('${C}',null,'unsafe URL','','notes','https://127.0.0.1/x',true,false)`,
+        `select public.submit_material('${C}','general',array[]::uuid[],'unsafe URL','','notes','https://127.0.0.1/x',true,false)`,
       ),
     ).rejects.toThrow());
   it("duplicate returns existing record", async () =>
@@ -122,7 +125,7 @@ describe("actual PostgreSQL grants, RPCs and RLS (embedded auth/storage schemas)
       (
         await as(
           B,
-          `select public.submit_resource('${C}',null,'same URL','','notes','https://example.org/trees',true,false) as id`,
+          `select public.submit_material('${C}','general',array[]::uuid[],'same URL','','notes','https://example.org/trees',true,false) as id`,
         )
       ).rows[0].id,
     ).toBe(R));
@@ -130,7 +133,7 @@ describe("actual PostgreSQL grants, RPCs and RLS (embedded auth/storage schemas)
     await expect(
       as(
         B,
-        `select public.submit_resource('${C}',null,'no permission','','notes','https://example.org/rights',false,false)`,
+        `select public.submit_material('${C}','general',array[]::uuid[],'no permission','','notes','https://example.org/rights',false,false)`,
       ),
     ).rejects.toThrow());
   it("author cannot vote on own source", async () =>
@@ -223,7 +226,7 @@ describe("actual PostgreSQL grants, RPCs and RLS (embedded auth/storage schemas)
   it("PDF starts pending and cannot finalize missing file", async () => {
     const x = await as(
       A,
-      `select public.prepare_pdf('${C}',null,'ملف تجريبي','','notes',true,false) as id`,
+      `select public.prepare_material_pdf('${C}','general',array[]::uuid[],'ملف تجريبي','','notes',true,false) as id`,
     );
     const id = x.rows[0].id;
     expect(
@@ -302,7 +305,7 @@ describe("actual PostgreSQL grants, RPCs and RLS (embedded auth/storage schemas)
     );
     const x = await as(
       A,
-      `select public.submit_resource('${C}',null,'account delete vote','','notes','https://example.org/delete-vote',true,false) as id`,
+      `select public.submit_material('${C}','general',array[]::uuid[],'account delete vote','','notes','https://example.org/delete-vote',true,false) as id`,
     );
     const id = x.rows[0].id;
     await as(u, `select public.set_vote('${id}',1)`);
@@ -333,7 +336,7 @@ describe("actual PostgreSQL grants, RPCs and RLS (embedded auth/storage schemas)
   it("oversized PDF metadata cannot be finalized", async () => {
     const x = await as(
       A,
-      `select public.prepare_pdf('${C}',null,'oversized PDF','','notes',true,false) as id`,
+      `select public.prepare_material_pdf('${C}','general',array[]::uuid[],'oversized PDF','','notes',true,false) as id`,
     );
     const id = x.rows[0].id;
     await as(

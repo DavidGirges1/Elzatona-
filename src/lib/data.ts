@@ -77,13 +77,22 @@ export async function getCourseRequirements(ids: string[]) {
   if (error) throw error;
   return data || [];
 }
-export async function getTopics(courseId: string) {
+export async function getLectures(courseId: string) {
   const db = await createClient();
   const { data, error } = await db
-    .from("topics")
+    .from("lectures")
     .select("*")
     .eq("course_id", courseId)
-    .order("sort_order");
+    .order("number");
+  if (error) throw error;
+  return data || [];
+}
+export async function getResourceLectures(resourceId: string) {
+  const db = await createClient();
+  const { data, error } = await db
+    .from("resource_lectures")
+    .select("*")
+    .eq("resource_id", resourceId);
   if (error) throw error;
   return data || [];
 }
@@ -93,7 +102,8 @@ export type ResourceFilters = {
   q?: string;
   type?: string;
   purpose?: string;
-  topic?: string;
+  lecture?: string;
+  area?: string;
   sort?: string;
   page?: number;
   ids?: string[];
@@ -104,7 +114,8 @@ export async function getResources({
   q,
   type,
   purpose,
-  topic,
+  lecture,
+  area,
   sort,
   page = 1,
   ids,
@@ -119,8 +130,9 @@ export async function getResources({
     query = query.in("type", [...resourceTypesForPurpose(purpose)]);
   if (type && resourceTypes.includes(type as Resource["type"]))
     query = query.eq("type", type);
-  if (topic && /^[0-9a-f-]{36}$/.test(topic))
-    query = query.eq("topic_id", topic);
+  if (lecture && /^[0-9a-f-]{36}$/.test(lecture))
+    query = query.contains("lecture_ids", [lecture]);
+  if (area) query = query.eq("area", area);
   if (q) {
     const term = q.slice(0, 100).replace(/[%,()._*\\]/g, " ");
     query = query.or(

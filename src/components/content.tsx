@@ -84,9 +84,11 @@ export function TypeBadge({ type }: { type: Resource["type"] }) {
 export function ResourceRow({
   resource,
   slug,
+  showContext = true,
 }: {
   resource: Resource;
   slug: string;
+  showContext?: boolean;
 }) {
   return (
     <Link
@@ -118,7 +120,11 @@ export function ResourceRow({
               ? "أسئلة تفاعلية"
               : ar.types[resource.type]}
           </span>{" "}
-          · <bdi>{resource.topic_title || "المادة كلها"}</bdi>
+          {showContext && (
+            <>
+              · <bdi>{resource.topic_title || "المادة كلها"}</bdi>
+            </>
+          )}
         </p>
       </div>
       <span className="score" aria-label={`${resource.score} صافي الأصوات`}>

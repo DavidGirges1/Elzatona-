@@ -1,7 +1,9 @@
+import { PlacementFields } from "@/components/placement-fields";
+import type { MaterialArea } from "@/lib/placement";
 import { materialAccess } from "@/lib/material-access";
 import { MaterialLocked } from "@/components/material-locked";
 import { notFound, redirect } from "next/navigation";
-import { getCourse, getTopics } from "@/lib/data";
+import { getCourse, getLectures, getResourceLectures } from "@/lib/data";
 import { currentUser, createClient } from "@/lib/supabase/server";
 import { editResource } from "@/lib/actions";
 import { ActionForm, Submit } from "@/components/forms";
@@ -36,7 +38,8 @@ export default async function Edit({
       : !access.can_organize && !(r.author_id === user.id && access.can_publish)
   )
     return <MaterialLocked slug={slug} edit />;
-  const topics = await getTopics(r.course_id);
+  const lectures = await getLectures(r.course_id);
+  const associations = await getResourceLectures(id);
   return (
     <div className="form-page">
       <h1>تعديل المصدر</h1>
@@ -67,17 +70,14 @@ export default async function Edit({
             dir="auto"
           />
         </label>
-        <label className="field">
-          الموضوع
-          <select name="topic_id" defaultValue={r.topic_id || ""}>
-            <option value="">المادة كلها</option>
-            {topics.map((t) => (
-              <option value={t.id} key={t.id}>
-                {t.title_ar || t.title}
-              </option>
-            ))}
-          </select>
-        </label>
+        <PlacementFields
+          lectures={lectures}
+          slug={slug}
+          initial={{
+            area: r.area as MaterialArea,
+            lectures: associations.map((a) => a.lecture_id),
+          }}
+        />
         {r.status === "pending" && r.source_kind === "external" && (
           <label className="field">
             لينك المصدر

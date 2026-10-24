@@ -25,7 +25,7 @@ export function MaterialPreview({
 }) {
   const video = kind === "external" ? youtubeVideo(url) : null;
   const isPdf = kind === "pdf";
-  const [active, setActive] = useState(false);
+  const [active, setActive] = useState(isPdf);
   const [full, setFull] = useState(false);
   const [fullscreenError, setFullscreenError] = useState("");
   const frame = useRef<HTMLElement>(null);

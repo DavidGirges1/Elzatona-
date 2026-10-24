@@ -4,6 +4,12 @@ Updated **24 October 2026**. Current phase: **interactive question sets and Engl
 
 Earlier owner instruction to keep Coming Soon at `/` and develop under `/test` is now **superseded**: the owner explicitly requests replacing Coming Soon with the actual platform at `/`. The earlier `/test` URL was public, not access control. Original instructions, design pack, uploaded ZIP and the full new request are retained under `docs/owner-instructions`, `docs/original-design-pack`, `docs/specification` and `docs/original-attachments`.
 
+## Semester material ZIP handoff — preparation only
+
+Prepared [MATERIAL_PACK_FORMAT.md](MATERIAL_PACK_FORMAT.md) and [a ready-to-fill ZIP](import-templates/Elzatona_Materials_Template_v1.zip) for course/topic/purpose/type matching. The archive contains exact live catalog names for all **122** active Capital University / Computers courses, two example course folder skeletons, empty UTF-8 link CSVs, and a separately marked valid English quiz-format example. Semester fields in the catalog remain unassigned; the example courses are not a semester enrollment recommendation.
+
+Archive integrity/CRC, empty CSV headers and the example's actual quiz-publication Zod schema were checked. No real PDF/video/link examples are placed in the material tree. This is an agent handoff convention; **no ZIP uploader/importer feature or database/Storage import has been implemented or executed by this preparation**. On receipt of real materials, validate exact course/topic matches, duplicate sources, rights, metadata, quiz keys and PDF size limits before the authorized import. Existing restricted public publishing remains unchanged.
+
 ## English/LTR quiz verification — current follow-up
 
 Owner asks whether English-heavy question banks render correctly inside the Arabic platform. English text already used automatic direction, but review found that answer rows still inherited RTL, Arabic feedback prefixes shared the English answer paragraph, and native radios inherited text-field dimensions. These are corrected without changing the established fonts, colors, navigation, quiz contract or backend permissions.

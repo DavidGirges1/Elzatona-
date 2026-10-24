@@ -175,6 +175,10 @@ test("guests find the newly organized sections and professor sheets and read the
     );
     await expect(row).toContainText(label);
     await expect(row).toContainText(f.title);
+    await expect(page.locator("a.resource-row")).toHaveCount(
+      type === "sections" ? 2 : 7,
+    );
+    await row.scrollIntoViewIfNeeded();
     expect(
       await page.evaluate(
         () => document.documentElement.scrollWidth <= innerWidth,

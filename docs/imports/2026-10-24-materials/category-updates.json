@@ -109,5 +109,12 @@
       "reason": "Reviewed section/lab teaching content",
       "sha256": "046fcdfe8fa3a1c0537a162377d712f9121ccdc4f42829ff2f3bcbb224cb5abb"
     }
-  ]
+  ],
+  "applied": true,
+  "schema_migration": "20261024143635_sections_and_sheets",
+  "application_commit": "7ed3e3442032e4bd7883c9d5f4b7d7227a053f9f",
+  "sections": 5,
+  "sheets": 7,
+  "original_file_hashes_verified": 64,
+  "new_or_replaced_real_files": 0
 }

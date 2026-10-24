@@ -1,5 +1,7 @@
 # Elzatona system design
 
+**Current authorization model:** [four-layer quality control](COMMUNITY_ROLES.md) supersedes earlier publisher/organizer switches or legacy moderator references below. Admin-only role assignment, explicit leader-course scopes, private pending submissions and database-checked review govern all link/PDF/quiz publication.
+
 The authoritative product/design documents are in `docs/specification/`; the eight original reference files and original ZIP are retained in `docs/original-design-pack/` and `docs/original-attachments/`. Owner requests are retained in `docs/owner-instructions/`. `AGENTS.md` supplies repository instructions.
 
 ## Application and deployment

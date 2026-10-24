@@ -1,14 +1,14 @@
 # Question sets and material purposes
 
-Owner requested native interactive question sets on 24 October 2026. This supersedes the original MVP blueprint's deferral of native quizzes. Existing launch publishing restrictions still apply to **public** question-bank contributions. Active, academically onboarded students may create private drafts without publication approval.
+Owner requested native interactive question sets on 24 October 2026. This supersedes the original MVP blueprint's deferral of native quizzes. The [four-layer quality-control system](COMMUNITY_ROLES.md) governs publication: ready ordinary students submit complete banks for review; trusted contributors/admins publish directly. Private drafts remain available without publication approval.
 
 ## Student flow
 
-1. Open a course → **اعمل أسئلة خاصة**, or approved contribution → choose **مذاكرة** / **حل** first.
+1. Open a course → **اعمل أسئلة خاصة**, or contribution → choose **مذاكرة** / **حل** first.
 2. Study: video / slides / notes / reference / other, then a link or permitted PDF (videos use links). Solve: interactive set / PDF bank / website bank.
 3. For a set, write questions manually or paste/upload JSON. The import replacement requires confirmation. Imported content is plain text; URLs in question text are not fetched or embedded.
-4. Save a private draft. Reopen via **حسابك → مجموعات أسئلتي**. Nothing is public until an approved author/admin explicitly publishes with sharing rights and complete keys. The original resource attribution and organization controls remain.
-5. Preview a complete draft locally with the same player; no answer keys leave the author-only editor. A JSON export is available for backup. The editor warns on browser unload and when changing material format with unsaved changes; save before navigating elsewhere.
+4. Save a private draft. Reopen via **حسابك → مجموعات أسئلتي**. Ordinary/leader submissions with sharing rights and complete keys enter a private review queue; trusted/admin submissions publish directly. A scoped leader/admin must approve queued banks before guest access. Leaders cannot approve their own bank. Follow rejection notes and resubmit through **إضافاتي وحالة المراجعة**.
+5. Preview a complete draft locally with the same player; keys stay in authorized author/admin editing or scoped submitted-bank review. Private drafts are not readable by leaders. A JSON export is available for backup. The editor warns on browser unload and when changing material format with unsaved changes; save before navigating elsewhere.
 6. A published resource has two explicit starting choices. **تدرّب** checks one question at a time and allows another try. **اختبر نفسك** defers feedback until the final confirmation; questions may be visited freely and flagged for review.
 7. The result distinguishes incorrect/unanswered answers and written self-assessment. Weighted points total 1–10 per question. The final score remains provisional until written self-assessments are made. Retry clears the attempt.
 8. Answers/position/flags recover from the current tab's session for up to 24 hours. They are separate per resource/revision/mode. Feedback and results are not permanent records or synced between devices. An author revision invalidates grading of the older question set, with a reload explanation.
@@ -31,7 +31,7 @@ Owner requested native interactive question sets on 24 October 2026. This supers
 `resources.source_kind='quiz'` and `type='question_bank'` reuse resource URLs, attribution, votes, saves, topic assignment, reporting, moderation, discussions and highlights. No external URL or Storage path is allowed. A pending quiz can lack sharing consent; a published quiz cannot.
 
 - `quiz_sets`: RLS author/admin-only SELECT; no direct client writes. Full answer documents never enter public course/resource/player reads.
-- `save_quiz`: authenticated active/onboarded actor, hourly mutation limit, active course/university, valid course topic, author/admin ownership. Public writes require the current publishing permission and sharing rights. Revocation applies immediately. Published updates must remain complete/public; other students and cross-author organizers cannot rewrite questions/keys.
+- `save_quiz`: authenticated active/onboarded actor, hourly mutation limit, active course/university, valid course topic, author/admin ownership. The existing `p_publish` flag requests publication/submission; the database determines direct publication versus pending review from current roles. Complete validated keys and sharing rights are required to submit; private drafts stay outside the queue. Revocation applies immediately. Published updates must remain complete/public; other students and cross-author organizers cannot rewrite questions/keys.
 - `read_quiz`: public **answerless** projection for published active resources only.
 - `grade_quiz`: public bounded input validation, revision check, typed answer matching; feedback only for submitted question IDs.
 - `export_quiz`: explicit public full JSON download for published active resources only, including keys. This is a reusable self-study bank, **not a secure/proctored exam or academic grading service**. Exam mode controls the learning flow; it cannot prevent someone requesting answers/export separately.

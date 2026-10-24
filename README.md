@@ -13,6 +13,7 @@ npm run dev
 Open **http://localhost:3000**. No server secret is needed with the deployed managed file function. Email/password login is primary; configure verified email delivery in Supabase. Google is secondary and requires its provider configuration.
 
 - [Official-domain deployment and remaining Auth setup](docs/PRODUCTION_DOMAIN.md)
+- [Admin-assigned roles, scoped leaders and material approval](docs/COMMUNITY_ROLES.md)
 - [Authentication, academic catalog and initial admin setup](docs/AUTH_ADMIN_SETUP.md)
 - [Accepted scope and execution plan](docs/AUTH_ADMIN_PLAN.md)
 - [System design](docs/SYSTEM_DESIGN.md)

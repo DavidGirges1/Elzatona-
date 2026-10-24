@@ -5,6 +5,7 @@ export type PdfRecord = {
 export type FileServices = {
   authenticate(token: string): Promise<{ id: string } | null>;
   isAdmin?(id: string): Promise<boolean>;
+  canReview?(id:string,resourceId:string): Promise<boolean>;
   resource(id: string): Promise<PdfRecord | null>;
   download(path: string): Promise<Blob | null>;
   finalize(id: string, author: string): Promise<boolean>;
@@ -24,7 +25,7 @@ export function fileHandler(services:FileServices){return async(request:Request)
    const auth=request.headers.get('authorization');if(!auth?.startsWith('Bearer '))return reply(401,{error:'sign_in_required'});
    actor=await services.authenticate(auth.slice(7));if(!actor)return reply(401,{error:'sign_in_required'});
   }
-  if(input.action==='review'&&(!services.isAdmin||!await services.isAdmin(actor!.id)))return reply(403,{error:'not_authorized'});
+  if(input.action==='review'&&!((services.isAdmin&&await services.isAdmin(actor!.id))||(services.canReview&&await services.canReview(actor!.id,input.resource_id))))return reply(403,{error:'not_authorized'});
   const resource=await services.resource(input.resource_id);
   if(!resource||resource.source_kind!=='pdf'||!resource.storage_path||(input.action!=='review'&&!resource.course_active))return reply(404,{error:'resource_unavailable'});
   if(input.action==='open'||input.action==='review'){
@@ -35,6 +36,7 @@ export function fileHandler(services:FileServices){return async(request:Request)
   const file=await services.download(resource.storage_path);
   if(!file||file.size<5||file.size>3145728||new TextDecoder().decode(await file.slice(0,5).arrayBuffer())!=='%PDF-')return reply(422,{error:'invalid_pdf'});
   if(!await services.finalize(resource.id,actor!.id))return reply(409,{error:'publication_failed'});
-  return reply(200,{published:true});
+  const updated=await services.resource(resource.id);
+  return reply(200,{complete:true,published:updated?.status==='published',submitted:updated?.status==='pending'});
  }catch{return reply(400,{error:'invalid_request'});}
 };}

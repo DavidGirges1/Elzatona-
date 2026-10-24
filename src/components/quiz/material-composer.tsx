@@ -19,6 +19,7 @@ export function MaterialComposer({
   slug,
   topics,
   canPublish,
+  canSubmit,
   pdfEnabled,
   purpose: initialPurpose,
 }: {
@@ -26,6 +27,7 @@ export function MaterialComposer({
   slug: string;
   topics: { id: string; title: string; title_ar?: string | null }[];
   canPublish: boolean;
+  canSubmit: boolean;
   pdfEnabled: boolean;
   purpose?: string;
 }) {
@@ -211,12 +213,13 @@ export function MaterialComposer({
           slug={slug}
           topics={topics}
           canPublish={canPublish}
+          canSubmit={canSubmit}
           onDirtyChange={setDirty}
         />
       )}
       {purpose &&
         (format === "link" || format === "pdf") &&
-        (canPublish ? (
+        (canSubmit ? (
           <ActionForm
             key={`${purpose}-${format}`}
             action={submitResource.bind(null, slug)}
@@ -294,7 +297,7 @@ export function MaterialComposer({
               <input type="checkbox" name="rights_confirmed" required />
               عندي حق مشاركة المصدر، ومفيهوش بيانات خاصة.
             </label>
-            <Submit>ضيف المصدر</Submit>
+            <Submit>{canPublish ? "ضيف المصدر" : "ابعت للمراجعة"}</Submit>
           </ActionForm>
         ) : (
           <MaterialLocked slug={slug} />

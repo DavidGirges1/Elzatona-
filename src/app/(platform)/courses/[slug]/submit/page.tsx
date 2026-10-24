@@ -18,7 +18,7 @@ export default async function SubmitPage({
     redirect(`/login?next=${encodeURIComponent(`/courses/${slug}/submit`)}`);
   const c = await getCourse(slug);
   if (!c) notFound();
-  const access = await materialAccess();
+  const access = await materialAccess(c.id);
   const { purpose } = await searchParams;
   const topics = await getTopics(c.id);
   return (
@@ -27,12 +27,16 @@ export default async function SubmitPage({
         <bdi>{c.title_ar || c.title}</bdi> / ضيف مصدر
       </Link>
       <h1>ضيف مصدر يفيد دفعتك</h1>
-      <p className="muted">لينك مفيد أو ملف من شغلك، وخليه سهل يتلاقى.</p>
+      <p className="muted">
+        لينك مفيد أو ملف من شغلك، وخليه سهل يتلاقى. الإضافات بتظهر بعد المراجعة،
+        أو مباشرة لو حسابك مصرح له.
+      </p>
       <MaterialComposer
         courseId={c.id}
         slug={slug}
         topics={topics}
         canPublish={access.can_publish}
+        canSubmit={access.can_submit}
         pdfEnabled={pdfEnabled()}
         purpose={purpose}
       />

@@ -85,6 +85,38 @@ export type Database = {
         >;
         Relationships: [];
       };
+      class_leader_courses: {
+        Row: {
+          user_id: string;
+          course_id: string;
+        };
+        Insert: {
+          user_id: string;
+          course_id: string;
+        };
+        Update: Partial<
+          Database["public"]["Tables"]["class_leader_courses"]["Insert"]
+        >;
+        Relationships: [];
+      };
+      community_roles: {
+        Row: {
+          user_id: string;
+          role: string;
+          assigned_by: string | null;
+          updated_at: string;
+        };
+        Insert: {
+          user_id: string;
+          role: string;
+          assigned_by?: string | null;
+          updated_at?: string;
+        };
+        Update: Partial<
+          Database["public"]["Tables"]["community_roles"]["Insert"]
+        >;
+        Relationships: [];
+      };
       course_highlights: {
         Row: {
           id: string;
@@ -425,6 +457,30 @@ export type Database = {
         >;
         Relationships: [];
       };
+      resource_reviews: {
+        Row: {
+          id: number;
+          resource_id: string;
+          reviewer_id: string | null;
+          decision: string;
+          reason: string;
+          submission_version: number;
+          created_at: string;
+        };
+        Insert: {
+          id?: number;
+          resource_id: string;
+          reviewer_id?: string | null;
+          decision: string;
+          reason: string;
+          submission_version: number;
+          created_at?: string;
+        };
+        Update: Partial<
+          Database["public"]["Tables"]["resource_reviews"]["Insert"]
+        >;
+        Relationships: [];
+      };
       resource_saves: {
         Row: {
           resource_id: string;
@@ -482,6 +538,9 @@ export type Database = {
           created_at: string;
           updated_at: string;
           file_verified_at: string | null;
+          review_state: string;
+          submission_version: number;
+          submitted_at: string | null;
         };
         Insert: {
           id?: string;
@@ -505,6 +564,9 @@ export type Database = {
           created_at?: string;
           updated_at?: string;
           file_verified_at?: string | null;
+          review_state?: string;
+          submission_version?: number;
+          submitted_at?: string | null;
         };
         Update: Partial<Database["public"]["Tables"]["resources"]["Insert"]>;
         Relationships: [];
@@ -621,6 +683,16 @@ export type Database = {
       };
     };
     Views: {
+      latest_resource_reviews: {
+        Row: {
+          resource_id: string;
+          decision: string;
+          reason: string;
+          submission_version: number;
+          created_at: string;
+        };
+        Relationships: [];
+      };
       resource_cards: {
         Row: {
           id: string;
@@ -650,6 +722,7 @@ export type Database = {
       academic_ready: { Args: Record<string, never>; Returns: boolean };
       can_contribute: { Args: Record<string, never>; Returns: boolean };
       username_available: { Args: { p_username: string }; Returns: boolean };
+      can_submit_materials: { Args: Record<string, never>; Returns: boolean };
       ask_question: {
         Args: {
           p_course: string;
@@ -673,6 +746,11 @@ export type Database = {
         Returns: undefined;
       };
       follow_course: { Args: { p_course: string }; Returns: undefined };
+      set_vote: {
+        Args: { p_resource: string | null; p_value: number };
+        Returns: undefined;
+      };
+      is_moderator: { Args: Record<string, never>; Returns: boolean };
       submit_resource: {
         Args: {
           p_course: string;
@@ -680,17 +758,12 @@ export type Database = {
           p_title: string;
           p_description: string;
           p_type: string;
-          p_url: string;
+          p_url: string | null;
           p_rights: boolean;
           p_ai?: boolean;
         };
         Returns: string;
       };
-      set_vote: {
-        Args: { p_resource: string | null; p_value: number };
-        Returns: undefined;
-      };
-      is_moderator: { Args: Record<string, never>; Returns: boolean };
       report_content: {
         Args: {
           p_kind: string;
@@ -715,6 +788,10 @@ export type Database = {
       };
       record_open: { Args: { p_resource: string | null }; Returns: undefined };
       update_profile: { Args: { p_name: string }; Returns: undefined };
+      review_pdf_path: {
+        Args: { p_resource: string | null; p_reviewer: string };
+        Returns: string;
+      };
       prepare_pdf: {
         Args: {
           p_course: string;
@@ -734,7 +811,6 @@ export type Database = {
       admin_overview: { Args: Record<string, never>; Returns: Json };
       finalize_pdf: { Args: { p_resource: string | null }; Returns: undefined };
       can_publish_materials: { Args: Record<string, never>; Returns: boolean };
-      material_access: { Args: Record<string, never>; Returns: Json };
       finalize_pdf_checked: {
         Args: { p_resource: string | null; p_author: string };
         Returns: undefined;
@@ -796,6 +872,10 @@ export type Database = {
         };
         Returns: undefined;
       };
+      admin_login_identity: {
+        Args: { p_username: string; p_key: string };
+        Returns: string;
+      };
       admin_manage_resource: {
         Args: {
           p_resource: string | null;
@@ -805,20 +885,6 @@ export type Database = {
           p_confirm: boolean;
         };
         Returns: undefined;
-      };
-      admin_users: {
-        Args: {
-          p_query?: string;
-          p_university?: string | null;
-          p_faculty?: string | null;
-          p_year?: number | null;
-          p_page?: number;
-        };
-        Returns: Json;
-      };
-      admin_login_identity: {
-        Args: { p_username: string; p_key: string };
-        Returns: string;
       };
       add_courses: { Args: { p_courses: string[] }; Returns: number };
       set_academic_context: {
@@ -847,6 +913,57 @@ export type Database = {
         Args: { p_course: string; p_title: string };
         Returns: string;
       };
+      material_access: { Args: { p_course?: string }; Returns: Json };
+      review_scope: { Args: Record<string, never>; Returns: unknown };
+      read_quiz: { Args: { p_resource: string | null }; Returns: Json };
+      export_quiz: { Args: { p_resource: string | null }; Returns: Json };
+      grade_quiz: {
+        Args: {
+          p_resource: string | null;
+          p_revision: number;
+          p_answers: Json;
+        };
+        Returns: Json;
+      };
+      admin_assign_community_role: {
+        Args: {
+          p_user: string;
+          p_role: string;
+          p_courses: string[];
+          p_reason: string;
+          p_confirm: boolean;
+        };
+        Returns: undefined;
+      };
+      admin_community_roles: { Args: { p_users: string[] }; Returns: Json };
+      can_review_material: {
+        Args: { p_resource: string | null };
+        Returns: boolean;
+      };
+      leads_course: { Args: { p_course: string }; Returns: boolean };
+      review_material: {
+        Args: {
+          p_resource: string | null;
+          p_version: number;
+          p_decision: string;
+          p_reason: string;
+        };
+        Returns: undefined;
+      };
+      edit_proposed_resource: {
+        Args: {
+          p_resource: string | null;
+          p_title: string;
+          p_description: string;
+          p_topic: string | null;
+          p_url: string | null;
+        };
+        Returns: undefined;
+      };
+      organize_topic: {
+        Args: { p_topic: string | null; p_title: string; p_order: number };
+        Returns: undefined;
+      };
       save_quiz: {
         Args: {
           p_course: string;
@@ -858,13 +975,13 @@ export type Database = {
         };
         Returns: string;
       };
-      read_quiz: { Args: { p_resource: string | null }; Returns: Json };
-      export_quiz: { Args: { p_resource: string | null }; Returns: Json };
-      grade_quiz: {
+      admin_users: {
         Args: {
-          p_resource: string | null;
-          p_revision: number;
-          p_answers: Json;
+          p_query?: string;
+          p_university?: string | null;
+          p_faculty?: string | null;
+          p_year?: number | null;
+          p_page?: number;
         };
         Returns: Json;
       };

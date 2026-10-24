@@ -3390,3 +3390,42 @@ input[type="checkbox"] {
 .quiz-written textarea {
   unicode-bidi: plaintext;
 }
+
+.role-course-picker {
+  border: 1px solid var(--ez-border);
+  border-radius: var(--ez-radius-input);
+  padding: var(--ez-space-4);
+  margin-block: var(--ez-space-4);
+  min-width: 0;
+}
+.role-course-picker > div {
+  max-height: 260px;
+  overflow-y: auto;
+  margin-block-start: var(--ez-space-3);
+}
+.role-course-picker .check {
+  padding-block: var(--ez-space-2);
+}
+.role-course-picker input[type="checkbox"] {
+  flex-shrink: 0;
+}
+.review-queue-row {
+  display: block;
+}
+.review-note {
+  padding: var(--ez-space-4);
+  margin-block: var(--ez-space-4);
+  border-inline-start: 3px solid var(--ez-primary);
+  background: var(--ez-page);
+  border-radius: var(--ez-radius-input);
+}
+.topic-management {
+  display: grid;
+  gap: var(--ez-space-3);
+  margin-block: var(--ez-space-4);
+}
+.topic-management details {
+  padding: var(--ez-space-3);
+  border: 1px solid var(--ez-border);
+  border-radius: var(--ez-radius-input);
+}

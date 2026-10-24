@@ -117,6 +117,12 @@ export async function fixtures() {
     .from("user_roles")
     .insert({ user_id: people[2].id, role: "admin" });
   if (result.error) throw result.error;
+  const roleGrant = await admin
+    .from("community_roles")
+    .insert(
+      people.slice(0, 2).map((p) => ({ user_id: p.id, role: "trusted" })),
+    );
+  if (roleGrant.error) throw roleGrant.error;
   const { data: resource, error } = await people[0].db.rpc("submit_resource", {
     p_course: course,
     p_topic: topic,

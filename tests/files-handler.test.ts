@@ -185,3 +185,68 @@ it("verified administrator may review hidden PDF without republishing it", async
   expect(x.services.sign).toHaveBeenCalled();
   expect(x.services.finalize).not.toHaveBeenCalled();
 });
+it("PDF verification reports submitted rather than falsely claiming publication", async () => {
+  const x = setup();
+  const r = await x.request();
+  expect(await r.json()).toMatchObject({
+    complete: true,
+    published: false,
+    submitted: true,
+  });
+});
+it("scoped reviewer can preview a pending PDF without receiving admin rights", async () => {
+  const x = setup();
+  const services = {
+    ...x.services,
+    canReview: vi.fn().mockResolvedValue(true),
+  };
+  const handle = fileHandler(services);
+  const r = await handle(
+    new Request("https://function.invalid", {
+      method: "POST",
+      headers: { authorization: "Bearer real-leader-jwt" },
+      body: JSON.stringify({ action: "review", resource_id: id }),
+    }),
+  );
+  expect(r.status).toBe(200);
+  expect(services.canReview).toHaveBeenCalledWith("student-a", id);
+  expect(services.finalize).not.toHaveBeenCalled();
+});
+it("revoked or out-of-course reviewer cannot obtain a signed pending-file URL", async () => {
+  const x = setup();
+  const handle = fileHandler({ ...x.services, canReview: async () => false });
+  const r = await handle(
+    new Request("https://function.invalid", {
+      method: "POST",
+      headers: { authorization: "Bearer revoked-leader-jwt" },
+      body: JSON.stringify({ action: "review", resource_id: id }),
+    }),
+  );
+  expect(r.status).toBe(403);
+  expect(x.services.sign).not.toHaveBeenCalled();
+});
+it("verified direct publisher receives an accurate published result", async () => {
+  const x = setup();
+  x.services.resource
+    .mockResolvedValueOnce({
+      id,
+      author_id: "student-a",
+      source_kind: "pdf",
+      status: "pending",
+      storage_path: "student-a/file.pdf",
+      course_active: true,
+    })
+    .mockResolvedValueOnce({
+      id,
+      author_id: "student-a",
+      source_kind: "pdf",
+      status: "published",
+      storage_path: "student-a/file.pdf",
+      course_active: true,
+    });
+  expect(await (await x.request()).json()).toMatchObject({
+    complete: true,
+    published: true,
+    submitted: false,
+  });
+});

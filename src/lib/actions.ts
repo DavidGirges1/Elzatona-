@@ -8,6 +8,7 @@ import { createClient, currentUser, configured } from "@/lib/supabase/server";
 import { finalizePdf, pdfEnabled } from "@/lib/supabase/files";
 import {
   resourceSchema,
+  normalizeUrl,
   questionSchema,
   idSchema,
   safeNext,
@@ -103,7 +104,7 @@ export async function submitResource(
   form: FormData,
 ): Promise<ActionState> {
   const { db, user } = await actor(`/courses/${slug}/submit`);
-  if (!(await materialAccess()).can_publish)
+  if (!(await materialAccess()).can_submit)
     return failure(publishingLockedMessage);
   const raw = Object.fromEntries(form);
   const file = form.get("file");
@@ -157,9 +158,7 @@ export async function submitResource(
       );
     const published = await finalizePdf(db, id, user.id);
     if (!published)
-      return failure(
-        "الملف لسه معلّق ومش ظاهر للطلبة. ممكن صلاحية النشر اتغيّرت؛ راجع الإدارة.",
-      );
+      return failure("فحص الملف ماكملش. تقدر تعيد المحاولة من إضافاتي.");
   } else {
     const { data, error } = await db.rpc("submit_resource", {
       p_course: p.course_id,
@@ -178,7 +177,17 @@ export async function submitResource(
     id = data;
   }
   revalidatePath(`/courses/${slug}`);
-  redirect(`/courses/${slug}/resources/${id}`);
+  const result = await db
+    .from("resources")
+    .select("status")
+    .eq("id", id)
+    .single();
+  if (result.error) return failure();
+  redirect(
+    result.data.status === "published"
+      ? `/courses/${slug}/resources/${id}`
+      : `/my-contributions?submitted=${id}`,
+  );
 }
 export async function editResource(
   id: string,
@@ -187,9 +196,6 @@ export async function editResource(
   form: FormData,
 ): Promise<ActionState> {
   const { db } = await actor(`/courses/${slug}/resources/${id}/edit`);
-  const access = await materialAccess();
-  if (!access.can_publish && !access.can_organize)
-    return failure("تعديل وتنظيم المصادر متاح للحسابات المصرّح لها فقط.");
   const title = z.string().trim().min(4).max(160).safeParse(form.get("title"));
   const description = z.string().max(2000).safeParse(form.get("description"));
   const topic = z
@@ -202,15 +208,52 @@ export async function editResource(
     !topic.success
   )
     return failure("راجع العنوان والوصف والموضوع.");
-  const { error } = await db.rpc("edit_resource", {
+  const user = await currentUser();
+  const resource = await db
+    .from("resources")
+    .select("source_kind,status,course_id,author_id")
+    .eq("id", id)
+    .single();
+  if (!resource.data || !user) return failure();
+  const course = await db
+    .from("courses")
+    .select("slug")
+    .eq("id", resource.data.course_id)
+    .single();
+  if (course.data?.slug !== slug) return failure();
+  const p = {
     p_resource: id,
     p_title: title.data,
     p_description: description.data,
     p_topic: topic.data || null,
-  });
-  if (error) return failure();
+  };
+  let error;
+  if (resource.data.status === "pending") {
+    let normalized: string | null = null;
+    try {
+      if (resource.data.source_kind === "external")
+        normalized = normalizeUrl(String(form.get("external_url") || ""));
+    } catch {
+      return failure("راجع لينك المصدر.");
+    }
+    const url = normalized
+      ? { success: true as const, data: normalized }
+      : null;
+    if (resource.data.source_kind === "external" && !url?.success)
+      return failure("راجع لينك المصدر.");
+    ({ error } = await db.rpc("edit_proposed_resource", {
+      ...p,
+      p_url: url?.success ? url.data : null,
+    }));
+  } else ({ error } = await db.rpc("edit_resource", p));
+  if (error)
+    return failure("التعديل ماكملش. راجع صلاحيتك والبيانات وحالة المصدر.");
   revalidatePath("/", "layout");
-  redirect(`/courses/${slug}/resources/${id}`);
+  redirect(
+    resource.data.status === "published"
+      ? `/courses/${slug}/resources/${id}`
+      : "/my-contributions",
+  );
 }
 export async function ask(
   slug: string,
@@ -366,6 +409,7 @@ export async function retryPdf(
     .eq("id", id)
     .eq("author_id", user.id)
     .eq("status", "pending")
+    .eq("review_state", "draft")
     .single();
   if (!r || !r.storage_path) return failure();
   const file = form.get("file");
@@ -397,7 +441,7 @@ export async function retryPdf(
   if (!published)
     return failure("الملف مش موجود أو غير صالح. اختاره وجرّب تاني.");
   revalidatePath("/", "layout");
-  return {};
+  redirect(`/my-contributions?submitted=${id}`);
 }
 
 export async function addMaterialTopic(

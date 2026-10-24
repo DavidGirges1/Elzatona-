@@ -35,7 +35,7 @@ beforeAll(async () => {
   G = (await owner("select id from public.faculties where slug='computers'"))
     .rows[0].id;
   await owner(
-    `insert into public.material_permissions(user_id,can_publish) values('${A}',true),('${B}',true)`,
+    `insert into public.community_roles(user_id,role) values('${A}','trusted'),('${B}','trusted')`,
   );
 });
 afterAll(async () => await db?.close());

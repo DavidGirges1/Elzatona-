@@ -30,7 +30,7 @@ export default async function EditQuiz({
       .eq("id", quiz.resource.course_id)
       .maybeSingle(),
     db.rpc("is_admin"),
-    materialAccess(),
+    materialAccess(quiz.resource.course_id),
   ]);
   if (
     course.data?.slug !== slug ||
@@ -64,8 +64,10 @@ export default async function EditQuiz({
         resourceId={id}
         topicId={quiz.resource.topic_id || ""}
         published={published}
+        submitted={quiz.resource.review_state === "submitted"}
         readOnly={readOnly}
         canPublish={access.can_publish}
+        canSubmit={access.can_submit}
       />
     </div>
   );

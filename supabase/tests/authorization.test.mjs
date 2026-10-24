@@ -21,13 +21,13 @@ async function admin(sql) {
 beforeAll(async () => {
   db = await database();
   await db.exec(
-    `insert into auth.users(id) values('${A}'),('${B}'),('${M}');insert into public.universities(id,slug,name) values('${C}','demo','جامعة تجريبية');insert into public.courses(id,university_id,slug,code,title,department) values('${C}','${C}','ds','CS1','هياكل البيانات','تجريبي'),('${D}','${C}','db','CS2','قواعد البيانات','تجريبي');insert into public.topics(id,course_id,title) values('${T}','${D}','SQL');insert into public.user_roles(user_id,role) values('${M}','moderator');`,
+    `insert into auth.users(id) values('${A}'),('${B}'),('${M}');insert into public.universities(id,slug,name) values('${C}','demo','جامعة تجريبية');insert into public.courses(id,university_id,slug,code,title,department) values('${C}','${C}','ds','CS1','هياكل البيانات','تجريبي'),('${D}','${C}','db','CS2','قواعد البيانات','تجريبي');insert into public.topics(id,course_id,title) values('${T}','${D}','SQL');insert into public.user_roles(user_id,role) values('${M}','admin');`,
   );
   await admin(
     `update public.profiles set username_claimed=true where id in('${A}','${B}','${M}');update public.student_academics set university_id=(select id from public.universities where slug='capital-university'),faculty_id=(select id from public.faculties where slug='computers'),academic_year=1,completed_at=now() where user_id in('${A}','${B}','${M}');`,
   );
   await admin(
-    `insert into public.material_permissions(user_id,can_publish) values('${A}',true),('${B}',true)`,
+    `insert into public.community_roles(user_id,role) values('${A}','trusted'),('${B}','trusted')`,
   );
   const x = await as(
     A,

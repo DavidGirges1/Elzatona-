@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { reviewLabels } from "@/lib/community";
 import { redirect } from "next/navigation";
 import { currentUser, createClient } from "@/lib/supabase/server";
 export const metadata = {
@@ -11,7 +12,7 @@ export default async function MyQuizzes() {
   const db = await createClient();
   const result = await db
     .from("resources")
-    .select("id,title,status,course_id")
+    .select("id,title,status,course_id,review_state")
     .eq("author_id", user.id)
     .eq("source_kind", "quiz")
     .order("updated_at", { ascending: false })
@@ -31,6 +32,9 @@ export default async function MyQuizzes() {
   });
   return (
     <div>
+      <Link className="text-link" href="/my-contributions">
+        تابع إضافاتك وملاحظات المراجعة
+      </Link>
       <div className="section-head">
         <div>
           <h1>مجموعات أسئلتي</h1>
@@ -51,7 +55,7 @@ export default async function MyQuizzes() {
               {q.status === "published"
                 ? "منشورة"
                 : q.status === "pending"
-                  ? "نسخة خاصة"
+                  ? reviewLabels[q.review_state]
                   : "مخفية بالمراجعة"}
             </span>
             <h2 dir="auto">{q.title}</h2>

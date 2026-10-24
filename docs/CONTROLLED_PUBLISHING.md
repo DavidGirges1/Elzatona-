@@ -1,3 +1,5 @@
+> Historical launch policy. Superseded by [COMMUNITY_ROLES.md](COMMUNITY_ROLES.md); the old global switch and grant endpoints are retired.
+
 # Controlled material publishing
 
 The launch default is **restricted publishing**. Existing and new students have no publishing or organization approval until an administrator explicitly grants it. Administrators can publish and organize without a student grant. No real student was automatically approved by the migration.

@@ -38,7 +38,7 @@ beforeAll(async () => {
   third = rows.find((c) => c.code === "CS 316").id;
   fourth = rows.find((c) => c.code === "CS 419").id;
   await owner(
-    `insert into public.material_permissions(user_id,can_publish) values('${A}',true),('${B}',true)`,
+    `insert into public.community_roles(user_id,role) values('${A}','trusted'),('${B}','trusted')`,
   );
 });
 afterAll(async () => await db?.close());

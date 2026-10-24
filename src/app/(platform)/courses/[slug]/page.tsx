@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { organizeTopic } from "@/lib/community-actions";
 import { materialAccess } from "@/lib/material-access";
 import { notFound } from "next/navigation";
 import { Plus, ArrowRight } from "lucide-react";
@@ -55,7 +56,7 @@ export default async function CoursePage({
       getFollowedIds(),
       currentUser(),
     ]);
-  const access = await materialAccess();
+  const access = await materialAccess(course.id);
   const pagination = (n: number) => {
     const q = new URLSearchParams();
     for (const [key, value] of Object.entries(s))
@@ -108,14 +109,22 @@ export default async function CoursePage({
               ضيف لموادي
             </Link>
           )}
-          {access.can_publish ? (
+          {access.can_review && (
+            <Link
+              className="button secondary"
+              href={`/review?course=${course.id}`}
+            >
+              راجع الإضافات
+            </Link>
+          )}
+          {access.can_submit ? (
             <Link className="button secondary" href={`${path}/submit`}>
               <Plus size={18} />
               {ar.add}
             </Link>
           ) : (
             <span className="muted material-launch-label">
-              الإضافة للمصرّح لهم
+              سجّل دخولك لإضافة مصدر
             </span>
           )}
         </div>
@@ -127,6 +136,39 @@ export default async function CoursePage({
             ضيف محاضرة أو موضوع، وبعدها افتح المصدر واختار «تعديل المصدر» عشان
             تنقله للموضوع المناسب.
           </p>
+          <div className="topic-management">
+            {topics.map((t) => (
+              <details key={t.id}>
+                <summary>
+                  <bdi>{t.title_ar || t.title}</bdi>
+                </summary>
+                <ActionForm action={organizeTopic.bind(null, t.id, slug)}>
+                  <label className="field">
+                    اسم الموضوع
+                    <input
+                      name="title"
+                      defaultValue={t.title_ar || t.title}
+                      required
+                      minLength={2}
+                      maxLength={120}
+                      dir="auto"
+                    />
+                  </label>
+                  <label className="field">
+                    ترتيب الموضوع
+                    <input
+                      name="order"
+                      type="number"
+                      min={0}
+                      max={10000}
+                      defaultValue={t.sort_order}
+                    />
+                  </label>
+                  <Submit variant="outline">احفظ الموضوع</Submit>
+                </ActionForm>
+              </details>
+            ))}
+          </div>
           <ActionForm action={addMaterialTopic.bind(null, course.id, slug)}>
             <label className="field">
               اسم الموضوع أو المحاضرة
@@ -288,7 +330,7 @@ export default async function CoursePage({
             </div>
           ) : (
             <Empty>
-              {access.can_publish ? (
+              {access.can_submit ? (
                 <Link className="text-link" href={`${path}/submit`}>
                   ضيف أول مصدر
                 </Link>

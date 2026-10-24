@@ -77,12 +77,12 @@ beforeAll(async () => {
 });
 beforeEach(async () => {
   await owner(
-    `delete from public.product_events;delete from public.discussions;delete from public.resources where source_kind='quiz';delete from public.mutation_limits;delete from public.material_permissions;update public.material_publishing_settings set open_to_all=false;update public.account_states set status='active';update public.courses set is_active=true where id='${C}'`,
+    `delete from public.product_events;delete from public.discussions;delete from public.resources where source_kind='quiz';delete from public.mutation_limits;delete from public.material_permissions;delete from public.community_roles;update public.material_publishing_settings set open_to_all=false;update public.account_states set status='active';update public.courses set is_active=true where id='${C}'`,
   );
   D = (await as(B, save())).rows[0].id;
   await as(
     M,
-    `select public.admin_set_material_permissions('${A}',true,false,'QA only',true)`,
+    `select public.admin_assign_community_role('${A}','trusted',array[]::uuid[],'QA only',true)`,
   );
   R = (await as(A, save(doc, null, true, true))).rows[0].id;
 });
@@ -90,9 +90,15 @@ afterAll(async () => await db?.close());
 it("guest cannot create a private or public quiz", async () => {
   await expect(as(null, save())).rejects.toThrow();
 });
-it("unapproved students save private sets but cannot publish", async () => {
-  expect(D).toBeTruthy();
-  await expect(as(B, save(doc, D, true, true))).rejects.toThrow("restricted");
+it("ordinary students save private drafts and submit complete sets for review", async () => {
+  await as(B, save(doc, D, true, true));
+  expect(
+    (await as(B, `select status,review_state from resources where id='${D}'`))
+      .rows[0],
+  ).toEqual({ status: "pending", review_state: "submitted" });
+  expect(
+    (await as(null, `select public.read_quiz('${D}') x`)).rows[0].x,
+  ).toBeNull();
 });
 it("private drafts and keys are isolated from other students and guests", async () => {
   expect(
@@ -143,7 +149,7 @@ it("author IDs/course ownership cannot be forged, even with publisher or organiz
   await expect(as(B, save(doc, R, true, true))).rejects.toThrow();
   await as(
     M,
-    `select public.admin_set_material_permissions('${B}',true,true,'QA only',true)`,
+    `select public.admin_assign_community_role('${B}','class_leader',array['${C}']::uuid[],'QA only',true)`,
   );
   await expect(as(B, save(doc, R, true, true))).rejects.toThrow(
     "not authorized",
@@ -152,7 +158,7 @@ it("author IDs/course ownership cannot be forged, even with publisher or organiz
 it("organizer can arrange metadata without rewriting quiz keys", async () => {
   await as(
     M,
-    `select public.admin_set_material_permissions('${B}',false,true,'QA only',true)`,
+    `select public.admin_assign_community_role('${B}','class_leader',array['${C}']::uuid[],'QA only',true)`,
   );
   await as(
     B,
@@ -286,7 +292,7 @@ it("suspension and incomplete onboarding deny private drafts too", async () => {
 it("publishing approval revocation blocks public-key edits but preserves private drafting", async () => {
   await as(
     M,
-    `select public.admin_set_material_permissions('${A}',false,false,'QA revoke',true)`,
+    `select public.admin_assign_community_role('${A}','student',array[]::uuid[],'QA revoke',true)`,
   );
   await expect(as(A, save(doc, R, true, true))).rejects.toThrow();
   expect((await as(A, save())).rows[0].id).toBeTruthy();

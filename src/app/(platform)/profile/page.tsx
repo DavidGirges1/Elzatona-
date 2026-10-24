@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { materialAccess } from "@/lib/material-access";
 import { redirect } from "next/navigation";
 import { currentUser, createClient } from "@/lib/supabase/server";
 import { getResources } from "@/lib/data";
@@ -13,6 +14,7 @@ export default async function Profile({
   const user = await currentUser();
   if (!user) redirect("/login?next=/profile");
   const db = await createClient();
+  const access = await materialAccess();
   const [p, pending, s] = await Promise.all([
     db.from("profiles").select("*").eq("id", user.id).single(),
     db
@@ -20,6 +22,7 @@ export default async function Profile({
       .select("*")
       .eq("author_id", user.id)
       .eq("status", "pending")
+      .eq("review_state", "draft")
       .eq("source_kind", "pdf"),
     searchParams,
   ]);
@@ -32,6 +35,16 @@ export default async function Profile({
   return (
     <div className="form-page">
       <h1>حسابك</h1>
+      <div className="actions">
+        <Link className="button secondary" href="/my-contributions">
+          إضافاتي وحالة المراجعة
+        </Link>
+        {access.can_review && (
+          <Link className="button secondary" href="/review">
+            مراجعة الإضافات
+          </Link>
+        )}
+      </div>
       {s.updated && (
         <p className="notice" role="status">
           اتحفظ الاسم.
@@ -80,7 +93,7 @@ export default async function Profile({
               إعادة رفع الملف عند الحاجة
               <input type="file" name="file" accept="application/pdf,.pdf" />
             </label>
-            <Submit>أعد المحاولة وانشر</Submit>
+            <Submit>أكمل الرفع والفحص</Submit>
           </ActionForm>
         </section>
       ))}

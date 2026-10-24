@@ -3,11 +3,9 @@ import { AdminHeading, Pager } from "@/components/admin/shell";
 import { Confirmation } from "@/components/admin/confirmation";
 import { ActionForm, Submit } from "@/components/forms";
 import { catalog, usersSchema, date } from "@/lib/admin/data";
-import {
-  changeAccount,
-  changeMaterialPermissions,
-  changePublishingMode,
-} from "@/lib/admin/actions";
+import { changeAccount } from "@/lib/admin/actions";
+import { CommunityRoleForm } from "@/components/admin/community-role-form";
+import { roleLabels, type CommunityRole } from "@/lib/community";
 import { requireAdmin } from "@/lib/auth/session";
 import { idSchema } from "@/lib/validation";
 export default async function Page({
@@ -40,20 +38,32 @@ export default async function Page({
   });
   if (r.error) throw r.error;
   const d = usersSchema.parse(r.data);
-  const [settings, permissions] = await Promise.all([
-    db.from("material_publishing_settings").select("open_to_all").single(),
+  const [rolesResult, courseResult] = await Promise.all([
+    db.rpc("admin_community_roles", { p_users: d.users.map((u) => u.id) }),
     db
-      .from("material_permissions")
-      .select("user_id,can_publish,can_organize")
-      .in(
-        "user_id",
-        d.users.map((u) => u.id),
-      ),
+      .from("courses")
+      .select("id,code,title,title_ar,university_id")
+      .eq("is_active", true)
+      .order("code")
+      .limit(1000),
   ]);
-  if (settings.error) throw settings.error;
-  if (permissions.error) throw permissions.error;
-  const grants = new Map((permissions.data || []).map((p) => [p.user_id, p]));
-  const open = settings.data.open_to_all;
+  if (rolesResult.error) throw rolesResult.error;
+  if (courseResult.error) throw courseResult.error;
+  const assignments = rolesResult.data as {
+    id: string;
+    role: CommunityRole;
+    courses: string[];
+  }[];
+  const catalogUniversities = c.universities;
+  const available = courseResult.data.map((c) => ({
+    id: c.id,
+    code: c.code,
+    title:
+      (c.title_ar || c.title) +
+      " · " +
+      (catalogUniversities.find((u) => u.id === c.university_id)?.name_ar ||
+        ""),
+  }));
   const query = new URLSearchParams({
     q,
     university: s.university || "",
@@ -63,47 +73,18 @@ export default async function Page({
   return (
     <>
       <AdminHeading
-        title="الطلبة"
+        title="الحسابات"
         description="بيانات الحسابات دي خاصة بالإدارة. الإيقاف يمنع التفاعل حتى لو جلسة الطالب لسه مفتوحة."
       />
-      <section className="panel publishing-policy">
-        <div>
-          <h2>نشر المصادر</h2>
-          <p className="muted">
-            {open
-              ? "النشر متاح لكل طالب مكتمل الحساب. تنظيم مصادر الآخرين يظل بصلاحية منفصلة."
-              : "النشر مقفول للطلبة، باستثناء الحسابات اللي تختارها. حسابات الإدارة تقدر تنشر."}
-          </p>
-        </div>
-        <span className={`type-chip ${open ? "mint" : "sunshine"}`}>
-          {open ? "مفتوح للجميع" : "للمصرّح لهم فقط"}
-        </span>
-        <Confirmation
-          label={open ? "قفل النشر العام" : "فتح النشر للجميع"}
-          title={open ? "الرجوع للنشر المقيّد" : "فتح نشر المصادر لكل الطلبة"}
-        >
-          <ActionForm action={changePublishingMode}>
-            <input
-              type="hidden"
-              name="mode"
-              value={open ? "restricted" : "open"}
-            />
-            <p>
-              {open
-                ? "الحسابات المختارة هتحتفظ بصلاحياتها، وباقي الطلبة مش هيقدروا يضيفوا مصادر."
-                : "كل طالب نشط ومكتمل الحساب هيقدر يضيف لينكات وPDF ويعدّل إضافاته. صلاحية تنظيم مصادر الآخرين مش هتتفتح تلقائيًا."}
-            </p>
-            <label className="field">
-              سبب القرار
-              <textarea name="reason" required minLength={4} maxLength={1000} />
-            </label>
-            <label className="check">
-              <input name="confirm" type="checkbox" required />
-              راجعت تأثير القرار وبأكد التغيير
-            </label>
-            <Submit>تأكيد وضع النشر</Submit>
-          </ActionForm>
-        </Confirmation>
+      <section className="panel">
+        <h2>جودة المصادر</h2>
+        <p className="muted">
+          كل حساب جديد يبدأ كطالب. الإدارة فقط بتعيّن الأدوار ونطاق المواد.
+          الإضافات العادية بتدخل المراجعة قبل ما تظهر للطلبة.
+        </p>
+        <Link className="text-link" href="/review">
+          افتح قائمة المراجعة
+        </Link>
       </section>
       <form className="admin-filter" role="search">
         <label className="field">
@@ -155,7 +136,7 @@ export default async function Page({
                 <th>الدراسة</th>
                 <th>التسجيل</th>
                 <th>الحالة</th>
-                <th>صلاحيات المصادر</th>
+                <th>الدور ونطاق المواد</th>
                 <th>إدارة الحساب</th>
               </tr>
             </thead>
@@ -188,69 +169,35 @@ export default async function Page({
                     </span>
                   </td>
                   <td>
-                    <div className="material-permission-labels">
-                      {grants.get(u.id)?.can_publish && (
-                        <span className="type-chip sky">ناشر</span>
-                      )}
-                      {grants.get(u.id)?.can_organize && (
-                        <span className="type-chip lavender">منظّم</span>
-                      )}
-                      {!grants.get(u.id)?.can_publish &&
-                        !grants.get(u.id)?.can_organize && (
-                          <span className="muted">
-                            {open ? "نشر عام · إضافاته فقط" : "بدون صلاحيات"}
-                          </span>
-                        )}
-                    </div>
+                    <span className="type-chip sky">
+                      {
+                        roleLabels[
+                          assignments.find((a) => a.id === u.id)?.role ||
+                            "student"
+                        ]
+                      }
+                    </span>
+                    <p className="muted small">
+                      {(assignments.find((a) => a.id === u.id)?.courses || [])
+                        .map((id) => available.find((c) => c.id === id)?.code)
+                        .filter(Boolean)
+                        .join(" · ")}
+                    </p>
                     <Confirmation
-                      label="صلاحيات المصادر"
-                      title={`صلاحيات المصادر · ${u.full_name}`}
+                      label="تعيين الدور"
+                      title={`دور الحساب · ${u.full_name}`}
                     >
-                      <ActionForm
-                        action={changeMaterialPermissions.bind(null, u.id)}
-                      >
-                        <label className="check">
-                          <input
-                            type="checkbox"
-                            name="publish"
-                            defaultChecked={
-                              grants.get(u.id)?.can_publish || false
-                            }
-                          />
-                          نشر لينكات وملفات PDF وتعديل إضافاته
-                        </label>
-                        <label className="check">
-                          <input
-                            type="checkbox"
-                            name="organize"
-                            defaultChecked={
-                              grants.get(u.id)?.can_organize || false
-                            }
-                          />
-                          تنظيم المصادر المنشورة، بما فيها إضافات الطلبة الآخرين
-                        </label>
-                        <p className="muted">
-                          التنظيم يتيح تعديل العنوان والوصف والموضوع فقط، ولا
-                          يمنح صلاحيات إدارة أو حذف أو إخفاء. لإلغاء التصريح،
-                          شيل العلامتين.{" "}
-                          {open &&
-                            "النشر العام مفتوح حاليًا؛ إزالة تصريح الناشر لا تمنع النشر إلا بعد قفل النشر العام."}
-                        </p>
-                        <label className="field">
-                          سبب تغيير الصلاحيات
-                          <textarea
-                            name="reason"
-                            required
-                            minLength={4}
-                            maxLength={1000}
-                          />
-                        </label>
-                        <label className="check">
-                          <input name="confirm" type="checkbox" required />
-                          راجعت الصلاحيات وبأكد القرار
-                        </label>
-                        <Submit>احفظ الصلاحيات</Submit>
-                      </ActionForm>
+                      <CommunityRoleForm
+                        id={u.id}
+                        role={
+                          assignments.find((a) => a.id === u.id)?.role ||
+                          "student"
+                        }
+                        assigned={
+                          assignments.find((a) => a.id === u.id)?.courses || []
+                        }
+                        courses={available}
+                      />
                     </Confirmation>
                   </td>
                   <td>

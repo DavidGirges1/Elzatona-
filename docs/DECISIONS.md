@@ -66,3 +66,13 @@ The owner rejects the regulations/prerequisite/source-page disclosure as clutter
 - Session recovery is tab-local, version/mode scoped and expires after 24 hours; no attempt/marks table or cross-device grade history is implied. Author revision changes fail stale grading explicitly.
 - Reuse resource attribution, moderation/reporting, votes, discussions and PDF security. A database trigger guards generic admin publication. Keep existing fonts, token colors/radii and one-question focus. Lazy-load the editor and author preview; no unnecessary player animation or distraction.
 - See [QUIZ_FORMAT.md](QUIZ_FORMAT.md) for the data contract and full flows.
+
+## Four-layer quality control — 24 October 2026
+
+- The owner's explicit four-role request supersedes the former restricted-publishing switch and separate global publisher/organizer permissions. Ordinary ready students submit for approval while retaining browsing, follows/saves, voting, questions, replies and reports. Private quiz drafts remain possible.
+- Administrators assign roles and explicit active-course scopes. Leaders review and organize only their assigned courses; they do not inherit powers from year/faculty or become global moderators. Trusted contributors publish their own work directly but do not organize other authors or review them.
+- Leaders' own submissions need another assigned reviewer/admin. No self-approval; trusted status is the direct-publication role. New registrations have no role choice/public badge, and editable Auth metadata cannot assign privileges.
+- Pending submissions are private. Rejections have private actionable reasons and author resubmission. Approval uses a submission-version check; published student edits cannot bypass review. Reviewed PDF bytes are immutable; replacing a rejected file requires a new submission. Incomplete uploads may be retried.
+- Recheck roles when PDF verification completes. Removing trust during an upload queues the completed file for review. Keep published guest resource access and private Storage signing. Already issued short-lived signed URLs cannot be recalled.
+- Existing administrator roles are preserved, with serialized protection against removing the last active confirmed administrator. Retire legacy moderator/grant mutation endpoints instead of maintaining an undocumented fifth role or bypass.
+- See [COMMUNITY_ROLES.md](COMMUNITY_ROLES.md) and [IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md) for operation and evidence. This does not assign real students new privileges.

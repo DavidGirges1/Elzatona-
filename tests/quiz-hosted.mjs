@@ -71,10 +71,10 @@ const persist = () =>
   });
 persist();
 const grant = (person, publish = false, organize = false) =>
-  admin.db.rpc("admin_set_material_permissions", {
+  admin.db.rpc("admin_assign_community_role", {
     p_user: person.id,
-    p_publish: publish,
-    p_organize: organize,
+    p_role: organize ? "class_leader" : publish ? "trusted" : "student",
+    p_courses: organize ? [course.id] : [],
     p_reason: "Isolated question-bank QA",
     p_confirm: true,
   });
@@ -102,7 +102,8 @@ try {
     ok(await author.db.from("quiz_sets").select("*").eq("resource_id", draft)),
     [],
   );
-  denied(await save(reader.db, doc, draft, true, true));
+  ok(await save(reader.db, doc, draft, true, true));
+  eq(ok(await guest.rpc("read_quiz", { p_resource: draft })), null);
   ok(await grant(author, true));
   const incomplete = structuredClone(doc);
   incomplete.questions[0].correctOptionIds = null;

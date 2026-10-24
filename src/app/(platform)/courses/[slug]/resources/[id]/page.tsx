@@ -47,7 +47,7 @@ export default async function ResourcePage({
     getDiscussions(r.course_id, id),
     searchParams,
   ]);
-  const access = await materialAccess();
+  const access = await materialAccess(r.course_id);
   const quiz = r.source_kind === "quiz" ? await readQuiz(id) : null;
   let saved = false,
     myVote = 0;

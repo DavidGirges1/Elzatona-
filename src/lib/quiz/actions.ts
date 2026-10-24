@@ -15,6 +15,7 @@ export type QuizSaveState = {
   issues?: { index: number | null; message: string }[];
   id?: string;
   published?: boolean;
+  submitted?: boolean;
 };
 export async function saveQuizDocument(
   courseId: string,
@@ -64,11 +65,22 @@ export async function saveQuizDocument(
     return {
       error:
         r.error.code === "42501"
-          ? "النشر للحسابات المصرّح لها فقط. تقدر تحفظ أسئلتك كنسخة خاصة."
+          ? "راجع حالة حسابك وصلاحية تعديل المجموعة. تقدر ترجع لإضافاتي."
           : "الحفظ ماكملش. راجع حقوق المشاركة، الموضوع والأسئلة، أو جرّب تاني بعد شوية.",
     };
   revalidatePath("/", "layout");
-  return { id: r.data, published: intent === "publish" };
+  const saved = await db
+    .from("resources")
+    .select("status,review_state")
+    .eq("id", r.data)
+    .single();
+  if (saved.error)
+    return { error: "الحفظ تم، لكن حالة المجموعة مش متاحة. راجع إضافاتي." };
+  return {
+    id: r.data,
+    published: saved.data.status === "published",
+    submitted: saved.data.review_state === "submitted",
+  };
 }
 export async function checkQuizAnswers(
   id: string,

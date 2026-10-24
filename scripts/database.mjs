@@ -79,7 +79,7 @@ export async function generateTypes(db) {
       const argsText = args
         .map(
           (n, i) =>
-            `${n}${i >= args.length - f.pronargdefaults ? "?" : ""}: ${oidMap[f.argtypes[i]] || "unknown"}${["p_topic", "p_resource", "p_id", "p_faculty", "p_university", "p_year", "p_semester"].includes(n) ? " | null" : ""}`,
+            `${n}${i >= args.length - f.pronargdefaults ? "?" : ""}: ${oidMap[f.argtypes[i]] || "unknown"}${["p_topic", "p_resource", "p_id", "p_faculty", "p_university", "p_year", "p_semester", "p_url"].includes(n) ? " | null" : ""}`,
         )
         .join("; ");
       const ret =

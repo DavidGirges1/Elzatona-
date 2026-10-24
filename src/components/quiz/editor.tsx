@@ -53,9 +53,11 @@ export function QuizEditor({
   slug,
   topics,
   canPublish,
+  canSubmit = true,
   initial,
   resourceId = "",
   published: initiallyPublished = false,
+  submitted: initiallySubmitted = false,
   readOnly = false,
   topicId = "",
   onDirtyChange,
@@ -64,14 +66,17 @@ export function QuizEditor({
   slug: string;
   topics: { id: string; title: string; title_ar?: string | null }[];
   canPublish: boolean;
+  canSubmit?: boolean;
   initial?: QuizDocument;
   resourceId?: string;
   published?: boolean;
+  submitted?: boolean;
   readOnly?: boolean;
   topicId?: string;
   onDirtyChange?: (dirty: boolean) => void;
 }) {
   const [published, setPublished] = useState(initiallyPublished);
+  const [submitted, setSubmitted] = useState(initiallySubmitted);
   const [doc, setDoc] = useState<QuizDocument>(
     initial || {
       format: "elzatona.quiz",
@@ -189,12 +194,15 @@ export function QuizEditor({
         setState(result);
         if (result.id) {
           setId(result.id);
+          setSubmitted(!!result.submitted);
           if (result.published) setPublished(true);
           setDirty(false);
           setNotice(
             result.published
               ? "اتنشرت المجموعة. تقدر تشارك لينكها دلوقتي."
-              : "اتحفظت نسخة خاصة في مجموعات أسئلتي.",
+              : result.submitted
+                ? "اتبعتت المجموعة للمراجعة. هتظهر لدفعتك بعد الموافقة."
+                : "اتحفظت نسخة خاصة في مجموعات أسئلتي.",
           );
         }
       } catch {
@@ -238,6 +246,12 @@ export function QuizEditor({
           مجموعات أسئلتي
         </Link>
       </div>
+      {submitted && !published && (
+        <p className="notice">
+          المجموعة منتظرة المراجعة. تقدر تعدّل وتعيد الإرسال؛ حفظ نسخة خاصة
+          هيسحبها من المراجعة.
+        </p>
+      )}
       {published && (
         <p className="notice">
           المجموعة منشورة. أي تعديل محفوظ هيحدّث النسخة اللي بيشوفها الطلاب؛
@@ -721,11 +735,13 @@ export function QuizEditor({
               href={
                 state.published
                   ? `${path}/resources/${state.id}`
-                  : "/my-quizzes"
+                  : state.submitted
+                    ? "/my-contributions"
+                    : "/my-quizzes"
               }
             >
               {" "}
-              افتح المجموعة
+              {state.submitted ? "تابع حالة المراجعة" : "افتح المجموعة"}
             </Link>
           )}
         </p>
@@ -763,7 +779,7 @@ export function QuizEditor({
         </div>
         {!readOnly && (
           <>
-            {canPublish && (
+            {canSubmit && (
               <label className="check">
                 <input
                   type="checkbox"
@@ -779,19 +795,36 @@ export function QuizEditor({
                   type="button"
                   className="button secondary"
                   disabled={pending}
-                  onClick={() => save("draft")}
+                  onClick={() => {
+                    if (
+                      submitted &&
+                      !window.confirm(
+                        "هتسحب المجموعة من المراجعة وتحفظها كنسخة خاصة. تكمل؟",
+                      )
+                    )
+                      return;
+                    save("draft");
+                  }}
                 >
-                  {pending ? "جاري الحفظ…" : "احفظ نسخة خاصة"}
+                  {pending
+                    ? "جاري الحفظ…"
+                    : submitted
+                      ? "اسحب لنسخة خاصة"
+                      : "احفظ نسخة خاصة"}
                 </button>
               )}
-              {canPublish && (
+              {canSubmit && (
                 <button
                   type="button"
                   className="button primary"
                   disabled={pending || !rights}
                   onClick={() => save("publish")}
                 >
-                  {published ? "حدّث المجموعة المنشورة" : "انشر لدفعتك"}
+                  {published
+                    ? "حدّث المجموعة المنشورة"
+                    : canPublish
+                      ? "انشر لدفعتك"
+                      : "ابعت للمراجعة"}
                 </button>
               )}
               <span className="muted small">
@@ -800,8 +833,8 @@ export function QuizEditor({
             </div>
             {!canPublish && (
               <p className="muted small">
-                تقدر تعمل أسئلة وتجربها بشكل خاص. النشر العام حاليًا للحسابات
-                المصرّح لها.
+                تقدر تحتفظ بنسخة خاصة أو تبعت المجموعة للمراجعة. هتظهر للطلبة
+                بعد الموافقة.
               </p>
             )}
           </>

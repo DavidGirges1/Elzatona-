@@ -1,8 +1,8 @@
 import { materialAccess } from "@/lib/material-access";
 import { MaterialLocked } from "@/components/material-locked";
 import { notFound, redirect } from "next/navigation";
-import { getResource, getTopics } from "@/lib/data";
-import { currentUser } from "@/lib/supabase/server";
+import { getCourse, getTopics } from "@/lib/data";
+import { currentUser, createClient } from "@/lib/supabase/server";
 import { editResource } from "@/lib/actions";
 import { ActionForm, Submit } from "@/components/forms";
 export default async function Edit({
@@ -11,20 +11,41 @@ export default async function Edit({
   params: Promise<{ slug: string; id: string }>;
 }) {
   const { slug, id } = await params;
-  const r = await getResource(id);
-  if (!r || r.course_slug !== slug) notFound();
+  const db = await createClient();
+  const row = await db.from("resources").select("*").eq("id", id).maybeSingle();
+  const r = row.data;
+  const course = await getCourse(slug);
+  if (
+    !r ||
+    !course ||
+    r.course_id !== course.id ||
+    r.status === "hidden" ||
+    (r.source_kind === "quiz" && r.status === "pending")
+  )
+    notFound();
   const user = await currentUser();
   if (!user)
     redirect(
       `/login?next=${encodeURIComponent(`/courses/${slug}/resources/${id}/edit`)}`,
     );
-  const access = await materialAccess();
-  if (!access.can_organize && !(r.author_id === user.id && access.can_publish))
+  const access = await materialAccess(r.course_id);
+  const admin = await db.rpc("is_admin");
+  if (
+    r.status === "pending"
+      ? !(r.author_id === user.id || admin.data)
+      : !access.can_organize && !(r.author_id === user.id && access.can_publish)
+  )
     return <MaterialLocked slug={slug} edit />;
   const topics = await getTopics(r.course_id);
   return (
     <div className="form-page">
       <h1>تعديل المصدر</h1>
+      {r.status === "pending" && (
+        <p className="notice">
+          التعديل هيتبعت للمراجعة من جديد. النسخة المعدّلة مش هتظهر للطلبة قبل
+          الموافقة.
+        </p>
+      )}
       <ActionForm className="panel" action={editResource.bind(null, id, slug)}>
         <label className="field">
           العنوان
@@ -57,7 +78,21 @@ export default async function Edit({
             ))}
           </select>
         </label>
-        <Submit>احفظ التعديل</Submit>
+        {r.status === "pending" && r.source_kind === "external" && (
+          <label className="field">
+            لينك المصدر
+            <input
+              name="external_url"
+              type="url"
+              required
+              defaultValue={r.external_url || ""}
+              dir="ltr"
+            />
+          </label>
+        )}
+        <Submit>
+          {r.status === "pending" ? "احفظ وأعد للمراجعة" : "احفظ التعديل"}
+        </Submit>
       </ActionForm>
     </div>
   );

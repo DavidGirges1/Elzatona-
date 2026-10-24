@@ -16,7 +16,7 @@ export async function finalizePdf(
       process.env.SUPABASE_STORAGE_FUNCTION,
       { body: { action: "finalize", resource_id: id } },
     );
-    return !error && data?.published === true;
+    return !error && (data?.complete === true || data?.published === true);
   }
   const { error } = await storageAdmin().rpc("finalize_pdf_checked", {
     p_resource: id,

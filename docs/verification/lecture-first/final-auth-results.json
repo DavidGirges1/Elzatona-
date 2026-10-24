@@ -1,0 +1,22 @@
+[
+  {
+    "name": "QA author global session revocation",
+    "passed": true
+  },
+  {
+    "name": "QA trusted global session revocation",
+    "passed": true
+  },
+  {
+    "name": "QA leader global session revocation",
+    "passed": true
+  },
+  {
+    "name": "real admin cross-author quiz key edit denied",
+    "passed": true
+  },
+  {
+    "name": "QA admin global session revocation",
+    "passed": true
+  }
+]

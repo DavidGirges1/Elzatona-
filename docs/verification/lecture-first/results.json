@@ -1,0 +1,61 @@
+{
+  "application_commit": "50618bf1be2c633d6978551eafd17440096034f4",
+  "vercel_status": "success",
+  "deployment_record": "https://vercel.com/ai-hackathon6/elzatona/JfSgJjjsGYP9iLosZ8GoaGmHbmu3",
+  "local": {
+    "automated": {
+      "passed": 355,
+      "failed": 0,
+      "files": 19,
+      "seconds": 18.6
+    },
+    "typecheck": "pass",
+    "lint": "pass",
+    "format": "pass",
+    "production_build": "pass",
+    "real_backend_browser": {
+      "passed": 12,
+      "failed": 0,
+      "seconds": 114
+    },
+    "placement_state_regression": {
+      "passed": 1,
+      "failed": 0,
+      "seconds": 5
+    }
+  },
+  "production": {
+    "real_backend_browser": {
+      "passed": 12,
+      "failed": 0,
+      "minutes": 2.2
+    },
+    "placement_state_regression": {
+      "passed": 1,
+      "failed": 0,
+      "seconds": 5.5
+    },
+    "after_cleanup_smoke": {
+      "passed": 4,
+      "failed": 0,
+      "seconds": 20.7
+    },
+    "widths": [360, 390, 768, 1440]
+  },
+  "reset": {
+    "old_resources_removed": 66,
+    "old_files_removed_via_storage_api": 65,
+    "old_topics_removed": 52,
+    "qa_resources_removed": 17,
+    "qa_files_removed_via_storage_api": 9,
+    "qa_accounts_removed": 4,
+    "qa_lectures_removed": 2,
+    "operator_retired_http_status": 410
+  },
+  "limitations": [
+    "Private Vercel management/logs:403 team scope",
+    "Current course maps intentionally empty; organizers must add actual current lectures and content",
+    "Existing leaked-password protection warning remains",
+    "No fresh Google consent or verification-email delivery claim"
+  ]
+}

@@ -33,6 +33,7 @@ export default async function CoursePage({
   searchParams: Promise<{
     q?: string;
     type?: string;
+    purpose?: string;
     topic?: string;
     sort?: string;
     page?: string;
@@ -184,18 +185,52 @@ export default async function CoursePage({
         </>
       ) : (
         <>
-          {highlights.length > 0 && !s.q && !s.type && !s.topic && (
-            <section className="highlight">
-              <span className="sticker">زتونة المادة</span>
-              <h2>مصادر مختارة من مجتمع المادة</h2>
-              <div className="resource-list">
-                {highlights.map((r) => (
-                  <ResourceRow key={r.id} resource={r} slug={slug} />
-                ))}
-              </div>
-            </section>
-          )}
+          {highlights.length > 0 &&
+            !s.q &&
+            !s.type &&
+            !s.topic &&
+            !s.purpose && (
+              <section className="highlight">
+                <span className="sticker">زتونة المادة</span>
+                <h2>مصادر مختارة من مجتمع المادة</h2>
+                <div className="resource-list">
+                  {highlights.map((r) => (
+                    <ResourceRow key={r.id} resource={r} slug={slug} />
+                  ))}
+                </div>
+              </section>
+            )}
+          <div className="section-head">
+            <nav className="purpose-tabs" aria-label="هدف المصدر">
+              {[
+                ["", "كل المصادر"],
+                ["study", "مذاكرة"],
+                ["solve", "حل"],
+              ].map(([value, label]) => (
+                <Link
+                  key={value}
+                  className="button secondary"
+                  aria-current={
+                    (s.purpose || "") === value ? "page" : undefined
+                  }
+                  href={value ? `${path}?purpose=${value}` : path}
+                >
+                  {label}
+                </Link>
+              ))}
+            </nav>
+            <Link className="text-link" href={`${path}/submit?purpose=solve`}>
+              اعمل أسئلة خاصة
+            </Link>
+          </div>
           <SearchBar action={path} value={s.q} placeholder="دور جوّه المادة…">
+            <input
+              type="hidden"
+              name="purpose"
+              value={
+                s.purpose === "solve" || s.purpose === "study" ? s.purpose : ""
+              }
+            />
             <div className="filters">
               <label>
                 المحاضرات والموضوعات
@@ -212,11 +247,19 @@ export default async function CoursePage({
                 نوع المصدر
                 <select name="type" defaultValue={s.type || ""}>
                   <option value="">كل الأنواع</option>
-                  {resourceTypes.map((t) => (
-                    <option value={t} key={t}>
-                      {ar.types[t]}
-                    </option>
-                  ))}
+                  {resourceTypes
+                    .filter((t) =>
+                      s.purpose === "solve"
+                        ? ["question_bank", "past_exam"].includes(t)
+                        : s.purpose === "study"
+                          ? !["question_bank", "past_exam"].includes(t)
+                          : true,
+                    )
+                    .map((t) => (
+                      <option value={t} key={t}>
+                        {ar.types[t]}
+                      </option>
+                    ))}
                 </select>
               </label>
               <label>

@@ -367,6 +367,22 @@ export type Database = {
         Update: Partial<Database["public"]["Tables"]["profiles"]["Insert"]>;
         Relationships: [];
       };
+      quiz_sets: {
+        Row: {
+          resource_id: string;
+          document: Json;
+          revision: number;
+          updated_at: string;
+        };
+        Insert: {
+          resource_id: string;
+          document: Json;
+          revision?: number;
+          updated_at?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["quiz_sets"]["Insert"]>;
+        Relationships: [];
+      };
       reports: {
         Row: {
           id: string;
@@ -830,6 +846,27 @@ export type Database = {
       add_material_topic: {
         Args: { p_course: string; p_title: string };
         Returns: string;
+      };
+      save_quiz: {
+        Args: {
+          p_course: string;
+          p_topic: string | null;
+          p_document: Json;
+          p_resource?: string | null;
+          p_publish?: boolean;
+          p_rights?: boolean;
+        };
+        Returns: string;
+      };
+      read_quiz: { Args: { p_resource: string | null }; Returns: Json };
+      export_quiz: { Args: { p_resource: string | null }; Returns: Json };
+      grade_quiz: {
+        Args: {
+          p_resource: string | null;
+          p_revision: number;
+          p_answers: Json;
+        };
+        Returns: Json;
       };
     };
     Enums: Record<string, never>;

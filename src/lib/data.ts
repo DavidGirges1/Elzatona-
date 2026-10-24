@@ -92,6 +92,7 @@ export type ResourceFilters = {
   courseIds?: string[];
   q?: string;
   type?: string;
+  purpose?: string;
   topic?: string;
   sort?: string;
   page?: number;
@@ -102,6 +103,7 @@ export async function getResources({
   courseIds,
   q,
   type,
+  purpose,
   topic,
   sort,
   page = 1,
@@ -113,6 +115,16 @@ export async function getResources({
   if (courseId) query = query.eq("course_id", courseId);
   if (courseIds) query = query.in("course_id", courseIds);
   if (ids) query = query.in("id", ids);
+  if (purpose === "solve")
+    query = query.in("type", ["question_bank", "past_exam"]);
+  if (purpose === "study")
+    query = query.in("type", [
+      "video",
+      "slides",
+      "notes",
+      "reference",
+      "other",
+    ]);
   if (type && resourceTypes.includes(type as Resource["type"]))
     query = query.eq("type", type);
   if (topic && /^[0-9a-f-]{36}$/.test(topic))

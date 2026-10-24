@@ -17,7 +17,7 @@ export async function GET(
     return new NextResponse("المصدر مش متاح", { status: 404 });
   const r = await db
     .from("resources")
-    .select("source_kind,external_url")
+    .select("source_kind,external_url,course_id")
     .eq("id", id)
     .maybeSingle();
   if (r.error || !r.data)
@@ -29,6 +29,18 @@ export async function GET(
     } catch {
       return new NextResponse("لينك غير صالح", { status: 400 });
     }
+  } else if (r.data.source_kind === "quiz") {
+    const course = await db
+      .from("courses")
+      .select("slug")
+      .eq("id", r.data.course_id)
+      .single();
+    if (!course.data)
+      return new NextResponse("المادة مش متاحة", { status: 404 });
+    destination = new URL(
+      `/courses/${course.data.slug}/resources/${id}/quiz/edit`,
+      _request.url,
+    ).href;
   } else {
     const f = await db.functions.invoke(
       process.env.SUPABASE_STORAGE_FUNCTION || "resource-files",

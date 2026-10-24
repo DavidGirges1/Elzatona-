@@ -83,6 +83,9 @@ test("admin approves and revokes publisher/organizer; students remain locked by 
       p.setDefaultNavigationTimeout(30000);
     }
     await student.goto(`/courses/${state.slug}/submit`);
+    await student.getByRole("button", { name: /مذاكرة.*شرح/ }).click();
+    await student.getByRole("button", { name: "مرجع", exact: true }).click();
+    await student.getByRole("button", { name: "لينك", exact: true }).click();
     await expect(
       student.getByRole("heading", { name: "إضافة المصادر للمصرّح لهم" }),
     ).toBeVisible();
@@ -125,12 +128,15 @@ test("admin approves and revokes publisher/organizer; students remain locked by 
       fullPage: true,
     });
     await student.goto(`/courses/${state.slug}/submit`);
+    await student.getByRole("button", { name: /مذاكرة.*شرح/ }).click();
+    await student.getByRole("button", { name: "مرجع", exact: true }).click();
+    await student.getByRole("button", { name: "لينك", exact: true }).click();
     const title = `اختبار نشر مصرح ${info.project.name} ${randomUUID().slice(0, 8)}`;
     await student.getByLabel("عنوان المصدر", { exact: true }).fill(title);
     await student
       .locator('input[name="external_url"]')
       .fill(`https://example.org/qa-publishing-${randomUUID()}`);
-    await student.locator('select[name="type"]').selectOption("reference");
+
     await student.locator('input[name="rights_confirmed"]').check();
     await student
       .getByRole("button", { name: "ضيف المصدر", exact: true })
@@ -183,6 +189,9 @@ test("admin approves and revokes publisher/organizer; students remain locked by 
     await page.goto(`/admin/users?q=${people[0].username}`);
     await change(false, false);
     await student.goto(`/courses/${state.slug}/submit`);
+    await student.getByRole("button", { name: /مذاكرة.*شرح/ }).click();
+    await student.getByRole("button", { name: "مرجع", exact: true }).click();
+    await student.getByRole("button", { name: "لينك", exact: true }).click();
     await expect(
       student.getByRole("heading", { name: "إضافة المصادر للمصرّح لهم" }),
     ).toBeVisible();

@@ -19,7 +19,8 @@ export default async function Profile({
       .from("resources")
       .select("*")
       .eq("author_id", user.id)
-      .eq("status", "pending"),
+      .eq("status", "pending")
+      .eq("source_kind", "pdf"),
     searchParams,
   ]);
   const { data: own } = await db
@@ -58,6 +59,9 @@ export default async function Profile({
         </Link>
       </section>
       <div className="actions">
+        <Link className="button secondary" href="/my-quizzes">
+          مجموعات أسئلتي
+        </Link>
         <Link className="button secondary" href={`/u/${user.id}`}>
           صفحتك العامة
         </Link>

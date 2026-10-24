@@ -10,6 +10,7 @@ import {
   ArrowUp,
   ArrowDown,
   Library,
+  ListChecks,
 } from "lucide-react";
 import { ar } from "@/i18n/ar-EG";
 import type { Course, Resource } from "@/lib/data";
@@ -89,7 +90,9 @@ export function ResourceRow({
       href={`/courses/${slug}/resources/${resource.id}`}
     >
       <span className={`resource-icon ${tones[resource.type]}`}>
-        {resource.type === "video" ? (
+        {resource.source_kind === "quiz" ? (
+          <ListChecks />
+        ) : resource.type === "video" ? (
           <Play />
         ) : resource.type === "slides" ? (
           <Layers />
@@ -102,8 +105,12 @@ export function ResourceRow({
           <bdi>{resource.title}</bdi>
         </h3>
         <p className="muted">
-          <span>{ar.types[resource.type]}</span> ·{" "}
-          <bdi>{resource.topic_title || "المادة كلها"}</bdi>
+          <span>
+            {resource.source_kind === "quiz"
+              ? "أسئلة تفاعلية"
+              : ar.types[resource.type]}
+          </span>{" "}
+          · <bdi>{resource.topic_title || "المادة كلها"}</bdi>
         </p>
       </div>
       <span className="score" aria-label={`${resource.score} صافي الأصوات`}>

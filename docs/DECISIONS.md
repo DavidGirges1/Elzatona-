@@ -56,3 +56,13 @@ The owner rejects the regulations/prerequisite/source-page disclosure as clutter
 - Approval is checked in resource RPCs, Storage insertion, metadata editing and service-only PDF finalization. Revocation does not wait for JWT refresh. No credentials or approval decisions are stored in editable profile metadata. Only owner-scoped cleanup of pending files remains possible after revocation.
 - A single database setting reopens publication/own edits for eligible students, without opening organization of other authors' work. Returning to restricted mode preserves individual grants. Tests of the reopening path use a rolled-back hosted transaction so the public launch remains restricted throughout verification.
 - See [controlled-publishing instructions](CONTROLLED_PUBLISHING.md) for operation, migration identity, scope and security advisor rationale.
+
+## Interactive question sets — 24 October 2026
+
+- Explicit owner request supersedes the original blueprint's quiz deferral. Study versus solve is the first contribution decision; existing seven resource types remain compatible (`notes`/`reference`, not newly invented enums). Course purpose filters map to existing types.
+- All eligible students may create **private** question drafts. Publishing remains restricted to currently approved publishers/admins; no real students are grandfathered in and general publishing stays off. Cross-author organizers may change metadata/topic placement, never answer keys.
+- Versioned `elzatona.quiz` JSON uses strict Zod and independent PostgreSQL validation, bounded text/bytes/question counts, and reserved identifier protection. Use plain text and native accessible controls. No AI backend, new heavyweight quiz package, leaderboard or timed/high-stakes grading.
+- Public player projection excludes keys; practice feedback checks submitted question IDs and exam feedback waits for submission. Explicit JSON export includes answers by design for portable study banks; this is not proctored assessment. Written long answers use a model plus transparent self-assessment; exact short answers use normalized text matching.
+- Session recovery is tab-local, version/mode scoped and expires after 24 hours; no attempt/marks table or cross-device grade history is implied. Author revision changes fail stale grading explicitly.
+- Reuse resource attribution, moderation/reporting, votes, discussions and PDF security. A database trigger guards generic admin publication. Keep existing fonts, token colors/radii and one-question focus. Lazy-load the editor and author preview; no unnecessary player animation or distraction.
+- See [QUIZ_FORMAT.md](QUIZ_FORMAT.md) for the data contract and full flows.

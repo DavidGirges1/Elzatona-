@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { materialAccess } from "@/lib/material-access";
 import { appPath } from "@/lib/paths";
+import { readQuiz } from "@/lib/quiz/data";
 import { MaterialPreview } from "@/components/material-preview";
 import { ResourceVote } from "@/components/resource-vote";
 import { notFound } from "next/navigation";
@@ -47,6 +48,7 @@ export default async function ResourcePage({
     searchParams,
   ]);
   const access = await materialAccess();
+  const quiz = r.source_kind === "quiz" ? await readQuiz(id) : null;
   let saved = false,
     myVote = 0;
   if (user) {
@@ -102,12 +104,67 @@ export default async function ResourcePage({
         </p>
         {r.description && <p className="description">{r.description}</p>}
         {r.is_ai_assisted && <p className="notice">المحتوى معمول بمساعدة AI</p>}
-        <MaterialPreview
-          id={id}
-          title={r.title}
-          kind={r.source_kind}
-          url={r.external_url}
-        />
+        {quiz ? (
+          <section className="quiz-intro">
+            <span className="type-chip lavender">
+              مجموعة تفاعلية ·{" "}
+              {new Intl.NumberFormat("ar-EG").format(quiz.questions.length)}{" "}
+              سؤال
+            </span>
+            <h2>حلّها بطريقتك</h2>
+            <div className="quiz-mode-grid">
+              <a
+                className="quiz-mode-card practice"
+                href={`/api/resources/${id}/open?mode=practice`}
+              >
+                <strong>تدرّب</strong>
+                <span>
+                  شوف التصحيح والتفسير بعد كل سؤال، وجرّب تاني براحتك.
+                </span>
+                <b>ابدأ التدريب ←</b>
+              </a>
+              <a
+                className="quiz-mode-card exam"
+                href={`/api/resources/${id}/open?mode=exam`}
+              >
+                <strong>اختبر نفسك</strong>
+                <span>
+                  جاوب بالترتيب اللي يناسبك، وراجع النتيجة بعد التسليم.
+                </span>
+                <b>ابدأ الاختبار ←</b>
+              </a>
+            </div>
+            <p className="muted small">
+              تدريب ذاتي، من غير توقيت أو درجات رسمية. الأسئلة الكتابية الطويلة
+              بتتقيّم ذاتيًا.
+            </p>
+            <details>
+              <summary className="text-link">خُد نسخة من الأسئلة</summary>
+              <p className="muted small">
+                ملف JSON قابل للاستيراد في محرّر الأسئلة. بيشمل مفاتيح الإجابات
+                والتفسيرات.
+              </p>
+              <a
+                className="text-link"
+                href={`/api/resources/${id}/quiz/export`}
+              >
+                نزّل JSON
+              </a>
+            </details>
+            {user && user.id === r.author_id && access.can_publish && (
+              <Link className="text-link" href={`${path}/quiz/edit`}>
+                تعديل الأسئلة والإجابات
+              </Link>
+            )}
+          </section>
+        ) : (
+          <MaterialPreview
+            id={id}
+            title={r.title}
+            kind={r.source_kind}
+            url={r.external_url}
+          />
+        )}
         <div className="resource-feedback">
           <ResourceVote
             id={id}

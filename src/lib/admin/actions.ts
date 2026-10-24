@@ -196,7 +196,7 @@ export async function manageResource(
   });
   if (r.error)
     return error(
-      "الحفظ ماكملش. ملف PDF المعلّق لازم يعدّي فحص الملف قبل نشره.",
+      "الحفظ ماكملش. PDF لازم يعدّي فحص الملف، ومجموعة الأسئلة لازم تكون مكتملة بإجاباتها وحقوق مشاركتها قبل النشر.",
     );
   revalidatePath("/", "layout");
   return { success: "اتحفظ القرار." };

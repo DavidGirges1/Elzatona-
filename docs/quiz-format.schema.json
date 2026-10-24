@@ -1,0 +1,241 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "format": {
+      "type": "string",
+      "const": "elzatona.quiz"
+    },
+    "version": {
+      "type": "number",
+      "const": 1
+    },
+    "title": {
+      "type": "string",
+      "minLength": 4,
+      "maxLength": 160
+    },
+    "description": {
+      "default": "",
+      "type": "string",
+      "maxLength": 2000
+    },
+    "language": {
+      "default": "mixed",
+      "type": "string",
+      "enum": ["ar", "en", "mixed"]
+    },
+    "aiAssisted": {
+      "default": false,
+      "type": "boolean"
+    },
+    "questions": {
+      "minItems": 1,
+      "maxItems": 100,
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9_-]{1,64}$"
+              },
+              "prompt": {
+                "type": "string",
+                "maxLength": 3000
+              },
+              "explanation": {
+                "default": "",
+                "type": "string",
+                "maxLength": 2000
+              },
+              "points": {
+                "default": 1,
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 10
+              },
+              "source": {
+                "default": "",
+                "type": "string",
+                "maxLength": 500
+              },
+              "type": {
+                "type": "string",
+                "const": "mcq"
+              },
+              "options": {
+                "minItems": 2,
+                "maxItems": 8,
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "pattern": "^[A-Za-z0-9_-]{1,64}$"
+                    },
+                    "text": {
+                      "type": "string",
+                      "maxLength": 500
+                    }
+                  },
+                  "required": ["id", "text"],
+                  "additionalProperties": false
+                }
+              },
+              "correctOptionIds": {
+                "anyOf": [
+                  {
+                    "maxItems": 8,
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "pattern": "^[A-Za-z0-9_-]{1,64}$"
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "id",
+              "prompt",
+              "explanation",
+              "points",
+              "source",
+              "type",
+              "options",
+              "correctOptionIds"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9_-]{1,64}$"
+              },
+              "prompt": {
+                "type": "string",
+                "maxLength": 3000
+              },
+              "explanation": {
+                "default": "",
+                "type": "string",
+                "maxLength": 2000
+              },
+              "points": {
+                "default": 1,
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 10
+              },
+              "source": {
+                "default": "",
+                "type": "string",
+                "maxLength": 500
+              },
+              "type": {
+                "type": "string",
+                "const": "true_false"
+              },
+              "answer": {
+                "type": ["boolean", "null"]
+              }
+            },
+            "required": [
+              "id",
+              "prompt",
+              "explanation",
+              "points",
+              "source",
+              "type",
+              "answer"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9_-]{1,64}$"
+              },
+              "prompt": {
+                "type": "string",
+                "maxLength": 3000
+              },
+              "explanation": {
+                "default": "",
+                "type": "string",
+                "maxLength": 2000
+              },
+              "points": {
+                "default": 1,
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 10
+              },
+              "source": {
+                "default": "",
+                "type": "string",
+                "maxLength": 500
+              },
+              "type": {
+                "type": "string",
+                "const": "written"
+              },
+              "grading": {
+                "default": "self",
+                "type": "string",
+                "enum": ["exact", "self"]
+              },
+              "modelAnswer": {
+                "type": "string",
+                "maxLength": 3000
+              },
+              "acceptedAnswers": {
+                "default": [],
+                "maxItems": 20,
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 500
+                }
+              }
+            },
+            "required": [
+              "id",
+              "prompt",
+              "explanation",
+              "points",
+              "source",
+              "type",
+              "grading",
+              "modelAnswer",
+              "acceptedAnswers"
+            ],
+            "additionalProperties": false
+          }
+        ]
+      }
+    }
+  },
+  "required": [
+    "format",
+    "version",
+    "title",
+    "description",
+    "language",
+    "aiAssisted",
+    "questions"
+  ],
+  "additionalProperties": false
+}

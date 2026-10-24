@@ -18,6 +18,15 @@ export async function GET(
     } catch {
       return new NextResponse("اللينك غير صالح", { status: 400 });
     }
+  } else if (r.source_kind === "quiz") {
+    const mode =
+      _request.nextUrl.searchParams.get("mode") === "exam"
+        ? "exam"
+        : "practice";
+    destination = new URL(
+      `/courses/${r.course_slug}/resources/${id}/quiz?mode=${mode}`,
+      _request.url,
+    ).href;
   } else {
     if (!pdfEnabled())
       return new NextResponse("فتح الملفات مش متاح حاليًا", { status: 503 });

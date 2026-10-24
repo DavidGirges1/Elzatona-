@@ -1,0 +1,55 @@
+{
+  "format": "elzatona.quiz",
+  "version": 1,
+  "title": "مجموعة أسئلة اختبار مؤقتة",
+  "description": "بيانات اختبار مؤقتة تُحذف بعد التحقق.",
+  "language": "mixed",
+  "aiAssisted": false,
+  "questions": [
+    {
+      "id": "mc",
+      "type": "mcq",
+      "prompt": "أيّ اختيارين يمثلان هياكل بيانات؟",
+      "options": [
+        { "id": "a", "text": "Stack" },
+        { "id": "b", "text": "Queue" },
+        { "id": "c", "text": "Compiler" }
+      ],
+      "correctOptionIds": ["a", "b"],
+      "points": 2,
+      "explanation": "Stack وQueue هياكل بيانات.",
+      "source": ""
+    },
+    {
+      "id": "tf",
+      "type": "true_false",
+      "prompt": "أول عنصر يدخل Stack هو أول عنصر يخرج.",
+      "answer": false,
+      "points": 1,
+      "explanation": "Stack تتبع LIFO.",
+      "source": ""
+    },
+    {
+      "id": "ex",
+      "type": "written",
+      "prompt": "اكتب اختصار Last In First Out.",
+      "grading": "exact",
+      "modelAnswer": "LIFO",
+      "acceptedAnswers": ["LIFO"],
+      "points": 1,
+      "explanation": "الاختصار من أول حرف من كل كلمة.",
+      "source": ""
+    },
+    {
+      "id": "wr",
+      "type": "written",
+      "prompt": "اشرح الفرق بين Stack وQueue.",
+      "grading": "self",
+      "modelAnswer": "Stack تتبع LIFO؛ Queue تتبع FIFO.",
+      "acceptedAnswers": [],
+      "points": 1,
+      "explanation": "قارن ترتيب خروج العناصر في إجابتك.",
+      "source": ""
+    }
+  ]
+}
